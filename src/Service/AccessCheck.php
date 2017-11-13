@@ -72,17 +72,12 @@ class AccessCheck {
   }
 
   /**
-   * @param int      $tid
-   * @param bool|int $uid
+   * @param int    $tid
+   * @param string $langcode
    * @return array
    */
-  public function isAccessAllowedByDatabase($tid, $uid = FALSE) {
-
-    if ($uid === FALSE) {
-      $user = \Drupal::currentUser();
-    } elseif (is_numeric($uid)) {
-      $user = User::load($uid);
-    }
+  public function isAccessAllowedByDatabase($tid, $langcode) {
+    $user = \Drupal::currentUser();
 
     // Admin can access everything (user id "1").
     if ($user->id() == 1) {
