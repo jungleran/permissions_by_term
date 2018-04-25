@@ -45,11 +45,7 @@ class AccessCheck {
    * @return array|bool
    */
   public function canUserAccessByNodeId($nid, $uid = FALSE, $langcode = 'en') {
-    if ($this->isRestrictedByPrivateMode()) {
-      return FALSE;
-    }
-
-    if (!$singleTermRestriction = \Drupal::config('permissions_by_term.settings.single_term_restriction')->get('value')) {
+    if (!$singleTermRestriction = \Drupal::config('permissions_by_term.settings')->get('single_term_restriction')) {
       $access_allowed = TRUE;
     } else {
       $access_allowed = FALSE;
@@ -204,8 +200,10 @@ class AccessCheck {
     }
   }
 
-  private function isRestrictedByPrivateMode() {
+  private function isRestrictedByPrivateMode($nid) {
+    if (\Drupal::config('permissions_by_term.settings')->get('private_mode')) {
 
+    }
   }
 
 }

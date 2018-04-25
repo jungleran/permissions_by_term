@@ -39,7 +39,7 @@ EOT;
       '#type' => 'checkbox',
       '#title' => t('Single Term Restriction'),
       '#description' => t($descriptionSingleTerm),
-      '#default_value' => \Drupal::config('permissions_by_term.settings.single_term_restriction')->get('value'),
+      '#default_value' => \Drupal::config('permissions_by_term.settings')->get('single_term_restriction'),
     ];
 
     $descriptionPrivateMode = <<<EOT
@@ -50,7 +50,7 @@ EOT;
       '#type' => 'checkbox',
       '#title' => t('Private Mode'),
       '#description' => t($descriptionPrivateMode),
-      '#default_value' => \Drupal::config('permissions_by_term.settings.single_term_restriction')->get('value'),
+      '#default_value' => \Drupal::config('permissions_by_term.settings')->get('single_term_restriction'),
     ];
 
     return parent::buildForm($form, $form_state);
