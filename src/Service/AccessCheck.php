@@ -45,6 +45,10 @@ class AccessCheck {
    * @return array|bool
    */
   public function canUserAccessByNodeId($nid, $uid = FALSE, $langcode = 'en') {
+    if (\Drupal::currentUser()->hasPermission('bypass node access')) {
+      return TRUE;
+    }
+
     if (!$singleTermRestriction = \Drupal::config('permissions_by_term.settings.single_term_restriction')->get('value')) {
       $access_allowed = TRUE;
     } else {
