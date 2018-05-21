@@ -38,8 +38,8 @@ pipelines:
           - (cd drupal && composer require behat/behat:^3 behat/mink:^1 behat/mink-goutte-driver:^1 behat/mink-extension:^2 drupal/drupal-extension:^3)
           - (cd drupal && cp web/modules/permissions_by_term/tests/src/Behat/composer-require-namespace.php . && php composer-require-namespace.php && composer dump-autoload)
           - (cd drupal && cat composer.json)
-          - screen -dmSL phantomjs /tmp/phantomjs-2.1.1-linux-x86_64 --webdriver=4444
-          - screen -dmSL php-webserver php -S localhost:8000 -t ./drupal/web
+          - /tmp/phantomjs-2.1.1-linux-x86_64 --webdriver=4444 &
+          - php -S localhost:8000 -t ./drupal/web &
           - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat -vvv)
     - step:
         name: Deploy
