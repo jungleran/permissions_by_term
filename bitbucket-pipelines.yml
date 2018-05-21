@@ -37,7 +37,7 @@ pipelines:
           - (cd drupal/web/modules/permissions_by_term/tests/ && ../../../../vendor/bin/phpunit)
           - cd drupal/web/modules/permissions_by_term/js/
           - ls
-          - yarn
+          - yarn install
           - yarn test
     - step:
         name: Deploy
