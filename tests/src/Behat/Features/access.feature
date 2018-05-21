@@ -34,7 +34,7 @@ Feature: Access
     Then I should see text matching "Anonymous user can access"
 
   Scenario: Anonymous users do not see unpublished nodes.
-    Given I am on "node/search"
+    Given I am on "search/node"
     And I fill in "edit-keys" with "Unpublished node"
     And I press "edit-submit--2"
     Then I should see text matching "Your search yielded no results."
