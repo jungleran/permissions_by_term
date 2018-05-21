@@ -33,6 +33,7 @@ pipelines:
           - mv build/* permissions_by_term/
           - mv permissions_by_term/ build/
           - cd build
+          - (cd permissions_by_term && ls -la)
           - composer create-project drupal-composer/drupal-project:8.x-dev drupal --stability dev --no-interaction
           - mv permissions_by_term drupal/web/modules/
           - (cd drupal/web/modules/permissions_by_term/tests/ && ../../../../vendor/bin/phpunit)
