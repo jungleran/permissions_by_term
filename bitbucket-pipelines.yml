@@ -23,8 +23,9 @@ pipelines:
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - export PATH="$HOME/.composer/vendor/bin:$PATH"
           - composer global require drush/drush:9.1.0
-          - mkdir permissions_by_term
-          - mv * permissions_by_term
+          - cd ..
+          # debug
+          - ls
           - composer create-project drupal-composer/drupal-project:8.x-dev drupal --stability dev --no-interaction
           - mv permissions_by_term drupal/web/modules/
           - cd drupal/web/modules/permissions_by_term/
