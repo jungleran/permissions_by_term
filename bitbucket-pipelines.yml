@@ -36,7 +36,9 @@ pipelines:
           - mv permissions_by_term drupal/web/modules/
           - (cd drupal/web/modules/permissions_by_term/tests/ && ../../../../vendor/bin/phpunit)
           - cd drupal/web/modules/permissions_by_term/js/
-          - yarn && yarn test
+          - ls
+          - yarn
+          - yarn test
     - step:
         name: Deploy
         script:
