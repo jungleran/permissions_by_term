@@ -19,11 +19,7 @@ pipelines:
           - curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
           - apt-get update
           - apt-get install -y nodejs npm
-          - pwd
-          - cd /tmp
-          - wget -qO- https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar jx
-          - chmod +x phantomjs-2.1.1-linux-x86_64
-          - ./phantomjs-2.1.1-linux-x86_64 --webdriver=4444 &
+          - (cd /tmp && wget -qO- https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar jx && chmod +x phantomjs-2.1.1-linux-x86_64 && ./phantomjs-2.1.1-linux-x86_64 --webdriver=4444 &)
           - apt-get install -y unzip git curl php7.1 php7.1-cli php7.1-gd php7.1-curl php7.1-sqlite3
           - apt-get install -y php7.1-dom php7.1-json php7.1-common php7.1-mbstring
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -42,7 +38,7 @@ pipelines:
           - (cd drupal && composer require behat/behat:^3.0 behat/mink:~1.7 behat/mink-goutte-driver:~1.2 behat/mink-extension:^2.2 drupal/drupal-extension:^3.2 --dev)
           - (cd drupal && cp web/modules/permissions_by_term/tests/src/Behat/composer-require-namespace.php . && php composer-require-namespace.php && composer dump-autoload)
           - (cd drupal && cat composer.json)
-          - php -S localhost:8000 -t ./drupal/web &
+          - (cd drupal/web && php -S localhost:8000 -t ./ &)
           - cd drupal/bin && ls -la
           - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat -vvv)
     - step:
