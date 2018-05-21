@@ -21,8 +21,8 @@ pipelines:
           - apt-get install -y nodejs npm
           - wget -qO- https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar jx
           - chmod +x phantomjs-2.1.1-linux-x86_64 && ./phantomjs-2.1.1-linux-x86_64 --webdriver=4444 &
-          - apt-get install -y unzip git curl php php-cli php-gd php-curl php7.1-sqlite3
-          - apt-get install -y php-dom php-json php-common php-mbstring
+          - apt-get install -y unzip git curl php7.1 php7.1-cli php7.1-gd php7.1-curl php7.1-sqlite3
+          - apt-get install -y php7.1-dom php7.1-json php7.1-common php7.1-mbstring
           - wget -qO- https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar jx
           - chmod +x phantomjs-2.1.1-linux-x86_64 && ./phantomjs-2.1.1-linux-x86_64 --webdriver=4444 &
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
