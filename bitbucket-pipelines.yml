@@ -15,7 +15,7 @@ pipelines:
           - composer
         script:
           - apt-get update
-          - apt-get install -y wget bzip2 curl
+          - apt-get install -y wget bzip2 curl sqlite3
           - curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
           - apt-get update
           - apt-get install -y nodejs npm
