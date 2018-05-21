@@ -36,6 +36,7 @@ pipelines:
           - (cd permissions_by_term && ls -la)
           - composer create-project drupal-composer/drupal-project:8.x-dev drupal --stability dev --no-interaction
           - mv permissions_by_term drupal/web/modules/
+          - (cd drupal/web/modules/ && ls -la && pwd)
           - (cd drupal/web/modules/permissions_by_term/tests/ && ../../../../vendor/bin/phpunit)
           - (cd drupal/web/modules/permissions_by_term/js/ && npm install && npm test)
           - cd drupal/web
