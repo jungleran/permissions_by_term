@@ -40,5 +40,6 @@ pipelines:
           - apt-get update && apt-get install -y unzip git
           - git remote add d.o jepSter@git.drupal.org:project/permissions_by_term.git
           - git config --global push.default simple
+          - git config --global user.name "Peter Majmesku"
           - git push -u d.o
           - git push tags --all
