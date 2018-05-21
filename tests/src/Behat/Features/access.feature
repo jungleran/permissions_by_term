@@ -39,7 +39,7 @@ Feature: Access
     And I press "edit-submit--2"
     Then I should see text matching "Your search yielded no results."
 
-  Scenario: Users access an nodes by view
+  Scenario: Users access nodes by view
     Given I am logged in as a user with the "administrator" role
     Then I am on "/"
     And I should see text matching "Only admin can access"
