@@ -25,9 +25,9 @@ pipelines:
           - export PATH="$HOME/.composer/vendor/bin:$PATH"
           - composer global require drush/drush:9.1.0
           - cd ..
-          - mv build permissions_by_term
-          - mkdir build
-          - mv permissions_by_term build
+          - mkdir permissions_by_term/
+          - mv build/* permissions_by_term/
+          - mv permissions_by_term/ build/
           - cd build
           - composer create-project drupal-composer/drupal-project:8.x-dev drupal --stability dev --no-interaction
           - mv permissions_by_term drupal/web/modules/
