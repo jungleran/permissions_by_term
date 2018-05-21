@@ -33,7 +33,7 @@ pipelines:
           - mv permissions_by_term drupal/web/modules/
           - cd drupal/web/modules/permissions_by_term/tests/
           - ls
-          - ../../../vendor/bin/phpunit
+          - ../../../../vendor/bin/phpunit
     - step:
         name: Deploy
         script:
