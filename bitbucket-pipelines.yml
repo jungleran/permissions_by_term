@@ -27,7 +27,7 @@ pipelines:
           - chmod +x phantomjs-2.1.1-linux-x86_64 && ./phantomjs-2.1.1-linux-x86_64 --webdriver=4444 &
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           - export PATH="$HOME/.composer/vendor/bin:$PATH"
-          - composer global require drush/drush:9.1.0
+          - composer global require drush/drush:^9
           - cd ..
           - mkdir permissions_by_term/
           - mv build/* permissions_by_term/
