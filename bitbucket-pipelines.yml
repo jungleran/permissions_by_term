@@ -35,7 +35,8 @@ pipelines:
           - composer create-project drupal-composer/drupal-project:8.x-dev drupal --stability dev --no-interaction
           - mv permissions_by_term drupal/web/modules/
           - (cd drupal/web/modules/permissions_by_term/tests/ && ../../../../vendor/bin/phpunit)
-          - (cd drupal/web/modules/permissions_by_term/js/ && yarn && yarn test)
+          - cd drupal/web/modules/permissions_by_term/js/
+          - yarn && yarn test
     - step:
         name: Deploy
         script:
