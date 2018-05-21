@@ -40,7 +40,7 @@ pipelines:
           - (cd drupal && cat composer.json)
           - /tmp/phantomjs-2.1.1-linux-x86_64/bin/phantomjs --webdriver=4444 &
           - php -S localhost:8000 -t ./drupal/web &
-          - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat -vvv)
+          - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat)
     - step:
         name: Deploy
         script:
