@@ -40,6 +40,7 @@ pipelines:
           - (cd drupal/web/modules/permissions_by_term/tests/ && ../../../../vendor/bin/phpunit)
           - (cd drupal/web/modules/permissions_by_term/js/ && npm install && npm test)
           - cd drupal/web
+          - chmod 777 -R sites/default/files
           - drush si standard --db-url=sqlite://sites/default/files/db.sqlite -y
           - drush cr
           - drush en permissions_by_term -y --debug
