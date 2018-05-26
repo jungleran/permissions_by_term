@@ -240,3 +240,7 @@ NodeForm.prototype.getPermissionsByTids = function(tids, permissions) {
 
   return permissionsToDisplay;
 }
+
+function createNodeForm($) {
+  return new NodeForm($);
+}

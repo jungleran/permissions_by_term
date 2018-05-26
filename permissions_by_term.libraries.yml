@@ -3,3 +3,4 @@ nodeForm:
   js:
     js/node-form.js: {}
     js/node-form.prototype.js: {}
+    js/permissions-collector.prototype.js: {}
