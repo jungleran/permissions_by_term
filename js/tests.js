@@ -1,8 +1,10 @@
 QUnit.test( "Compute field wrapper CSS classes", function( assert ) {
 
-  let jQuery = createJQuery();
+  let $ = sinon.stub();;
 
-  let nodeForm = createNodeForm(jQuery);
+  let infoRenderer = sinon.stub();
+
+  let nodeForm = new NodeForm($, infoRenderer);
   let fieldNames = ['field_name-one', 'field_name_two'];
 
   console.log(nodeForm.computeFieldWrapperCSSClasses(fieldNames));
@@ -11,7 +13,7 @@ QUnit.test( "Compute field wrapper CSS classes", function( assert ) {
 });
 
 QUnit.test( "Display permissions by select", function( assert ) {
-  $ = sinon.stub();
+  let $ = sinon.stub();
   $.withArgs().returns(sinon.stub({
     val: function () {
     },
@@ -22,7 +24,11 @@ QUnit.test( "Display permissions by select", function( assert ) {
   Drupal = sinon.stub();
   Drupal.t = sinon.stub();
 
-  let nodeForm = createNodeForm($);
+  var infoRenderer = sinon.stub();
+  var infoRendererSpy = sinon.spy();
+  infoRenderer.render = infoRendererSpy;
+
+  let nodeForm = new NodeForm($, infoRenderer);
 
   // const NodeForm = new NodeForm(jQuery);
   let fieldNames = ['field_name-one', 'field_name_two'];
@@ -53,9 +59,12 @@ QUnit.test( "Display permissions by select", function( assert ) {
     }
   };
 
-  let permissionsDisplay = nodeForm.displayPermissionsBySelect(fieldWrapperCSSClasses, formInfo);
+  nodeForm.displayPermissionsBySelect(fieldWrapperCSSClasses, formInfo);
 
-  console.log('foo');
+  // @TODO: Modify expected html to REALLY expected html!
+  var expectedHtml = "undefined<br /><br /><b>undefined</b> <i>undefined</i><br /><b>undefined</b> <i>undefined</i>";
+
+  assert.ok( infoRenderer.render.withArgs(expectedHtml).calledOnce, "Expect call with specific html for info rendering on advanced widget." );
 
 });
 

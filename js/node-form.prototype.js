@@ -1,7 +1,8 @@
-var NodeForm = function($){
+var NodeForm = function($, infoRenderer){
   this.jQuery = $;
   this.selectedTids = [];
   this.formElementCssClasses = [];
+  this.infoRenderer = infoRenderer;
 };
 
 NodeForm.prototype.getSelectedTids = function() {
@@ -167,7 +168,9 @@ NodeForm.prototype.renderPermissionsInfo = function(permissions) {
 
   var generalInfoText = Drupal.t("This widget shows information about taxonomy term related permissions. It's being updated, as soon you make any related changes in the form.");
 
-  this.jQuery('#edit-permissions-by-term-info .form-type-item').html(generalInfoText + '<br /><br />' + allowedUsersHtml + '<br />' + allowedRolesHtml);
+  var html = generalInfoText + '<br /><br />' + allowedUsersHtml + '<br />' + allowedRolesHtml;
+
+  this.infoRenderer.render(html);
 }
 
 NodeForm.prototype.isAllowedUsersRestriction = function(permissionsToDisplay) {
@@ -239,8 +242,4 @@ NodeForm.prototype.getPermissionsByTids = function(tids, permissions) {
   permissionsToDisplay = this.pushUserDisplayNames(tids, permissionsToDisplay, permissions);
 
   return permissionsToDisplay;
-}
-
-function createNodeForm($) {
-  return new NodeForm($);
 }
