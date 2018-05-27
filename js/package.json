@@ -4,7 +4,8 @@
   "description": "JavaScript code has been tested with [Jasmine](https://jasmine.github.io/). Install the dependencies by [Yarn](https://yarnpkg.com/lang/en/). Just run `yarn`. To run the tests, switch to the `js` folder and run `yarn test`.",
   "main": "node-form.js",
   "dependencies": {
-    "jest": "^22.4.4"
+    "jest": "^22.4.4",
+    "sinon": "^5.0.10"
   },
   "devDependencies": {},
   "scripts": {
