@@ -1,5 +1,5 @@
 var InfoRenderer = function($){
-  this.jquery = $;
+  this.jQuery = $;
 };
 
 InfoRenderer.prototype.render = function(html) {

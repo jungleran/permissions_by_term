@@ -44,7 +44,7 @@ class AccessStorage {
   protected $aSubmittedRolesGrantedAccess;
 
   /**
-   * @var Term
+   * @var TermHandler
    */
   protected $term;
 
@@ -62,10 +62,10 @@ class AccessStorage {
    * AccessStorageService constructor.
    *
    * @param Connection  $database
-   * @param Term        $term
+   * @param TermHandler        $term
    * @param AccessCheck $accessCheck
    */
-  public function __construct(Connection $database, Term $term, AccessCheck $accessCheck) {
+  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck) {
     $this->database  = $database;
     $this->term = $term;
     $this->accessCheck = $accessCheck;

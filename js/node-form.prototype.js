@@ -74,11 +74,28 @@ NodeForm.prototype.computeFieldWrapperCSSClasses = function(fieldNames) {
   return wrapperCssClasses;
 }
 
-NodeForm.prototype.displayPermissionsByCheckbox = function(tid, checked, permissions) {
+NodeForm.prototype.displayPermissionsByCheckingCheckbox = function(tid, checked, permissions) {
   if (checked === false) {
     this.resetData('checkbox_tid_' + tid);
   } else if (checked === true){
     this.addSelectedTid(parseInt(tid), 'checkbox_tid_' + tid);
+  }
+
+  this.renderPermissionsInfo(permissions);
+}
+
+NodeForm.prototype.displayPermissionsByInitCheckbox = function(fieldWrapperCSSClasses, permissions) {
+  for (var index = 0; index < this.jQuery(fieldWrapperCSSClasses + ' input:checkbox').length; ++index) {
+
+    var checkbox = this.jQuery(fieldWrapperCSSClasses + ' input:checkbox')[index],
+      checkboxChecked = this.jQuery(fieldWrapperCSSClasses + ' input:checkbox')[index].checked,
+      tid = parseInt(checkbox.attributes.value.value);
+
+    if (checkboxChecked === false) {
+      this.resetData('checkbox_tid' + tid);
+    } else if (checkboxChecked === true) {
+      this.addSelectedTid(tid, 'checkbox_tid_' + tid);
+    }
   }
 
   this.renderPermissionsInfo(permissions);

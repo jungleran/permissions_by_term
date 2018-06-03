@@ -31,7 +31,8 @@
 
           if (formInfo['taxonomyRelationFieldNames'] !== null) {
 
-            var nodeForm = new NodeForm($),
+            var infoRenderer = new InfoRenderer($);
+            var nodeForm = new NodeForm($, infoRenderer),
                 fieldWrapperCSSClasses = nodeForm.computeFieldWrapperCSSClasses(formInfo['taxonomyRelationFieldNames']);
 
             initPermissionInfoByFormElements(nodeForm, fieldWrapperCSSClasses, formInfo);
@@ -54,8 +55,9 @@
                 nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses, formInfo['permissions']);
               });
 
+
               $(formElementCssClass + ' input[type="checkbox"]').change(function (){
-                nodeForm.displayPermissionsByCheckbox($(this).prop('value'), $(this).prop('checked'), formInfo['permissions']);
+                nodeForm.displayPermissionsByCheckingCheckbox($(this).prop('value'), $(this).prop('checked'), formInfo['permissions']);
               });
             }
           }
@@ -65,7 +67,7 @@
         function initPermissionInfoByFormElements(nodeForm, fieldWrapperCSSClasses, formInfo) {
           nodeForm.displayPermissionsBySelect(fieldWrapperCSSClasses, formInfo['permissions']);
           nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses, formInfo['permissions']);
-          nodeForm.displayPermissionsByCheckbox($(this).prop('value'), $(this).prop('checked'), formInfo['permissions']);
+          nodeForm.displayPermissionsByInitCheckbox(fieldWrapperCSSClasses, formInfo['permissions']);
         }
 
         function getContentType() {

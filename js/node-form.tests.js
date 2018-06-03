@@ -9,14 +9,10 @@ if (typeof window === 'undefined') {
 }
 
 QUnit.test( "Compute field wrapper CSS classes", function( assert ) {
-  let $ = sinon.stub();;
-
-  let infoRenderer = sinon.stub();
-
-  let nodeForm = new NodeForm($, infoRenderer);
-  let fieldNames = ['field_name-one', 'field_name_two'];
-
-  console.log(nodeForm.computeFieldWrapperCSSClasses(fieldNames));
+  let $ = sinon.stub(),
+    infoRenderer = sinon.stub(),
+    nodeForm = new NodeForm($, infoRenderer),
+    fieldNames = ['field_name-one', 'field_name_two'];
 
   assert.deepEqual(nodeForm.computeFieldWrapperCSSClasses(fieldNames), ['.field--name-field-name-one', '.field--name-field-name-two']);
 });
@@ -48,7 +44,7 @@ QUnit.test( "Display permissions by select", function( assert ) {
   let formInfo = {
     permissions: {
       roleLabels: {
-
+        0: 'Administrator'
       },
       userDisplayNames: {
         6: [
