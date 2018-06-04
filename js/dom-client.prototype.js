@@ -1,8 +1,8 @@
-let Display = function() {
+let DomClient = function() {
 
 }
 
-Display.prototype.computeFieldWrapperCSSClasses = function(fieldNames) {
+DomClient.prototype.computeFieldWrapperCSSClasses = function(fieldNames) {
   var wrapperCssClasses = [];
 
   for (var index = 0; index < fieldNames.length; ++index) {
@@ -14,7 +14,7 @@ Display.prototype.computeFieldWrapperCSSClasses = function(fieldNames) {
   return wrapperCssClasses;
 }
 
-Display.prototype.displayPermissionsByCheckingCheckbox = function(tid, checked, permissions) {
+DomClient.prototype.DomClientPermissionsByCheckingCheckbox = function(tid, checked, permissions) {
   if (checked === false) {
     this.resetData('checkbox_tid_' + tid);
   } else if (checked === true){
@@ -24,7 +24,7 @@ Display.prototype.displayPermissionsByCheckingCheckbox = function(tid, checked, 
   this.renderPermissionsInfo(permissions);
 }
 
-Display.prototype.displayPermissionsByInitCheckbox = function(fieldWrapperCSSClasses, permissions) {
+DomClient.prototype.DomClientPermissionsByInitCheckbox = function(fieldWrapperCSSClasses, permissions) {
   for (var index = 0; index < this.jQuery(fieldWrapperCSSClasses + ' input:checkbox').length; ++index) {
 
     var checkbox = this.jQuery(fieldWrapperCSSClasses + ' input:checkbox')[index],
@@ -41,7 +41,7 @@ Display.prototype.displayPermissionsByInitCheckbox = function(fieldWrapperCSSCla
   this.renderPermissionsInfo(permissions);
 }
 
-Display.prototype.displayPermissionsBySelect = function(fieldWrapperCSSClasses, permissions) {
+DomClient.prototype.DomClientPermissionsBySelect = function(fieldWrapperCSSClasses, permissions) {
   for (var index = 0; index < fieldWrapperCSSClasses.length; ++index) {
     var inputTypes = ['select', 'input'];
 
@@ -70,7 +70,7 @@ Display.prototype.displayPermissionsBySelect = function(fieldWrapperCSSClasses, 
 
 }
 
-Display.prototype.displayPermissionsByAutocomplete = function(fieldWrapperCSSClasses, permissions) {
+DomClient.prototype.DomClientPermissionsByAutocomplete = function(fieldWrapperCSSClasses, permissions) {
   for (var index = 0; index < fieldWrapperCSSClasses.length; ++index) {
     var fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
 
@@ -99,22 +99,22 @@ Display.prototype.displayPermissionsByAutocomplete = function(fieldWrapperCSSCla
 
 }
 
-Display.prototype.renderPermissionsInfo = function(permissions) {
+DomClient.prototype.renderPermissionsInfo = function(permissions) {
 
-  var permissionsToDisplay = this.getPermissionsByTids(this.getSelectedTids(), permissions);
+  var permissionsToDomClient = this.getPermissionsByTids(this.getSelectedTids(), permissions);
 
   var allowedUsersHtml = '<b>' + Drupal.t('Allowed users:') + '</b> ';
 
-  if (this.isAllowedUsersRestriction(permissionsToDisplay)) {
-    allowedUsersHtml += permissionsToDisplay['permittedUsers'].join(', ');
+  if (this.isAllowedUsersRestriction(permissionsToDomClient)) {
+    allowedUsersHtml += permissionsToDomClient['permittedUsers'].join(', ');
   } else {
     allowedUsersHtml += '<i>' + Drupal.t('No user restrictions.') + '</i>';
   }
 
   var allowedRolesHtml = '<b>' + Drupal.t('Allowed roles:') + '</b> ';
 
-  if (this.isAllowedRolesRestriction(permissionsToDisplay)) {
-    allowedRolesHtml += permissionsToDisplay['permittedRoles'].join(', ');
+  if (this.isAllowedRolesRestriction(permissionsToDomClient)) {
+    allowedRolesHtml += permissionsToDomClient['permittedRoles'].join(', ');
   } else {
     allowedRolesHtml += '<i>' + Drupal.t('No role restrictions.') + '</i>';;
   }
@@ -127,6 +127,6 @@ Display.prototype.renderPermissionsInfo = function(permissions) {
 
 }
 
-Display.prototype.addFormElementCssClass = function(formElementCssClass) {
+DomClient.prototype.addFormElementCssClass = function(formElementCssClass) {
   this.formElementCssClasses.push(formElementCssClass);
 }

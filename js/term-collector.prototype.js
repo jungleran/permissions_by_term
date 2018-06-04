@@ -1,4 +1,4 @@
-var Term = function($, infoRenderer, document){
+var TermCollector = function($, infoRenderer, document){
   this.jQuery = $;
   this.selectedTids = [];
   this.formElementCssClasses = [];
@@ -6,7 +6,7 @@ var Term = function($, infoRenderer, document){
   this.document = document;
 };
 
-Term.prototype.getSelectedTids = function() {
+TermCollector.prototype.getSelectedTids = function() {
   var tids = [];
 
   for (var index = 0; index < this.formElementCssClasses.length; ++index) {
@@ -21,7 +21,7 @@ Term.prototype.getSelectedTids = function() {
   return tids;
 }
 
-Term.prototype.keyExists = function(key, array) {
+TermCollector.prototype.keyExists = function(key, array) {
   if (!array || (array.constructor !== Array && array.constructor !== Object)) {
     return false;
   }
@@ -33,7 +33,7 @@ Term.prototype.keyExists = function(key, array) {
   return key in array;
 }
 
-Term.prototype.addSelectedTid = function(tid, formElementCssClass) {
+TermCollector.prototype.addSelectedTid = function(tid, formElementCssClass) {
   if (!this.keyExists(formElementCssClass, this.formElementCssClasses)) {
     this.formElementCssClasses.push(formElementCssClass);
   }
@@ -46,7 +46,7 @@ Term.prototype.addSelectedTid = function(tid, formElementCssClass) {
   this.selectedTids[formElementCssClass].push(tid);
 }
 
-Term.prototype.removeTid = function(value, formElementCssClass) {
+TermCollector.prototype.removeTid = function(value, formElementCssClass) {
   const index = this.selectedTids[formElementCssClass].indexOf(parseInt(value));
 
   if (index !== -1) {
@@ -54,6 +54,6 @@ Term.prototype.removeTid = function(value, formElementCssClass) {
   }
 }
 
-Term.prototype.resetData = function(formElementCssClass) {
+TermCollector.prototype.resetData = function(formElementCssClass) {
   this.selectedTids[formElementCssClass] = [];
 }
