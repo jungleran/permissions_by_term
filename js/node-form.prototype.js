@@ -1,8 +1,9 @@
-var NodeForm = function($, infoRenderer){
+var NodeForm = function($, infoRenderer, document){
   this.jQuery = $;
   this.selectedTids = [];
   this.formElementCssClasses = [];
   this.infoRenderer = infoRenderer;
+  this.document = document;
 };
 
 NodeForm.prototype.getSelectedTids = function() {
@@ -108,16 +109,16 @@ NodeForm.prototype.displayPermissionsBySelect = function(fieldWrapperCSSClasses,
     var fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
 
     for (var inputTypesIndex = 0; inputTypesIndex <= inputTypes.length; inputTypesIndex++) {
-      var values = this.jQuery(fieldWrapperCSSClass + ' select').val();
+      let tids = this.document.querySelector(fieldWrapperCSSClass + ' select').val();
 
-      if (values !== undefined && values !== null && values.constructor === Array) {
-        if (values[0] === '_none') {
+      if (tids !== undefined && tids !== null && tids.constructor === Array) {
+        if (tids[0] === '_none') {
           this.resetData(fieldWrapperCSSClass);
         }
 
-        for (var i = 0; i < values.length; ++i) {
-          if (isNaN(values[i]) === false) {
-            this.addSelectedTid(parseInt(values[i]), fieldWrapperCSSClass);
+        for (var i = 0; i < tids.length; ++i) {
+          if (isNaN(tids[i]) === false) {
+            this.addSelectedTid(parseInt(tids[i]), fieldWrapperCSSClass);
           }
         }
       }
@@ -206,6 +207,7 @@ NodeForm.prototype.isAllowedRolesRestriction = function(permissionsToDisplay) {
   return false;
 }
 
+//@TODO: What the fuck! throw this away.
 NodeForm.prototype.pushUserDisplayNames = function(tids, permissionsToDisplay, permissions) {
   for (var index = 0; index < tids.length; ++index) {
     if (permissions.hasOwnProperty('userDisplayNames') && permissions['userDisplayNames'].hasOwnProperty(tids[index]) && permissions['userDisplayNames'][tids[index]] !== null &&

@@ -4,27 +4,26 @@ if (typeof window === 'undefined') {
 
   fs.readFile('node-form.prototype.js');
 
-  prototypeClass = fs.readFileSync('node-form.prototype.js','utf-8');
+  const prototypeClass = fs.readFileSync('node-form.prototype.js','utf-8');
   eval(prototypeClass);
 }
 
 QUnit.test( "Compute field wrapper CSS classes", function( assert ) {
   let $ = sinon.stub(),
     infoRenderer = sinon.stub(),
-    nodeForm = new NodeForm($, infoRenderer),
+    document = sinon.stub(),
+    nodeForm = new NodeForm(document, infoRenderer),
     fieldNames = ['field_name-one', 'field_name_two'];
 
   assert.deepEqual(nodeForm.computeFieldWrapperCSSClasses(fieldNames), ['.field--name-field-name-one', '.field--name-field-name-two']);
 });
 
 QUnit.test( "Display permissions by select", function( assert ) {
-  let $ = sinon.stub();
-  $.withArgs().returns(sinon.stub({
-    val: function () {
-    },
-    html: function () {
-    },
-  }));
+  var $ = sinon.stub();
+  $.val = function () {
+  };
+  $.html = function () {
+  };
 
   Drupal = sinon.stub();
   Drupal.t = sinon.stub();
@@ -33,7 +32,13 @@ QUnit.test( "Display permissions by select", function( assert ) {
   var infoRendererSpy = sinon.spy();
   infoRenderer.render = infoRendererSpy;
 
-  let nodeForm = new NodeForm($, infoRenderer);
+  let document = {
+    querySelector: sinon.stub().returns({
+      val: sinon.stub().returns(['6'])
+    })
+  }
+
+  let nodeForm = new NodeForm($, infoRenderer, document);
 
   // const NodeForm = new NodeForm(jQuery);
   let fieldNames = ['field_name-one', 'field_name_two'];
@@ -44,7 +49,7 @@ QUnit.test( "Display permissions by select", function( assert ) {
   let formInfo = {
     permissions: {
       roleLabels: {
-        0: 'Administrator'
+        6: 'Administrator'
       },
       userDisplayNames: {
         6: [

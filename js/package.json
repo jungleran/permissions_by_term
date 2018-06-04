@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "qunit tests.js"
+    "test": "qunit *.tests.js"
   },
   "author": "",
   "license": "ISC"
