@@ -1,2 +1,0 @@
-JavaScript code has been tested with [Jasmine](https://jasmine.github.io/). Install the dependencies by [Yarn](https://yarnpkg.com/lang/en/).
-Just run `yarn`. To run the tests, switch to the `js` folder and run `yarn test`.
