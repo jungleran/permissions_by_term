@@ -7,7 +7,7 @@
     /**
      * @returns Access
      */
-    let createAccess = async () => {
+    const createAccess = async () => {
       let contentType = null;
       if (window.location.href.indexOf('/node/add') !== -1) {
         contentType = window.location.href.split("/").pop();
@@ -22,9 +22,31 @@
         .then(function(response) {
           return response.json();
         }).then(function(data) {
-          return new Access(data.taxonomyRelationFieldNames, data.permissions.userDisplayNames, data.permissions.roleLabels);
+
+          let fieldCssClasses = [];
+
+          for (let fieldName in data.taxonomyRelationFieldNames) {
+            let fieldWrapperClass = '.field--name-' + fieldName.replace(/_/g, '-');
+
+            fieldCssClasses.push(fieldWrapperClass);
+          }
+          
+          return new Access(
+            data.taxonomyRelationFieldNames.values(),
+            data.permissions.userDisplayNames,
+            data.permissions.roleLabels,
+            fieldCssClasses
+          );
         });
     };
+
+    const hasTaxonomyFormFields = (access) => {
+      if (access.taxonomyRelationFieldNames.length !== 0) {
+        return true;
+      }
+
+      return false;
+    }
 
     /**
      * @type {Drupal~behavior}
@@ -35,6 +57,12 @@
          * @var Access access
          */
         let access = await createAccess();
+
+        if (hasTaxonomyFormFields(access)) {
+
+
+
+        }
 
 
         // $.when(getFormInfo).done((formInfo) => {

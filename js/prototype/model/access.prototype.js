@@ -1,7 +1,8 @@
-let Access = function(taxonomyRelationFieldNames, userDisplayNames, roles) {
+let Access = function(taxonomyRelationFieldNames, userDisplayNames, roles, fieldWrapperCSSClasses) {
   this.taxonomyRelationFieldNames = taxonomyRelationFieldNames;
   this.roles = roles;
   this.userDisplayNames = userDisplayNames;
+  this.fieldWrapperCSSClasses = fieldWrapperCSSClasses;
 }
 
 /**
@@ -23,4 +24,8 @@ Access.prototype.getRoles = function() {
  */
 Access.prototype.getTaxonomyRelationFieldNames = function() {
   return this.taxonomyRelationFieldNames;
+}
+
+Access.prototype.getFieldWrapperCSSClasses = function() {
+  return this.fieldWrapperCSSClasses;
 }
