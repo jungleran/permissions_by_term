@@ -1,4 +1,4 @@
-let Permissions = function () {};
+let Permission = function () {};
 
 //@TODO: What the fuck! throw this away.
 Permission.prototype.pushUserDisplayNames = function (tids, permissionsToDisplay, permissions) {

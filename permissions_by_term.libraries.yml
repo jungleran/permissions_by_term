@@ -1,7 +1,8 @@
 nodeForm:
   version: 'VERSION'
   js:
-    js/info-renderer.prototype.js: {}
-    js/node-form.js: {}
-    js/node-form.prototype.js: {}
-    js/permissions-collector.prototype.js: {}
+#    js/info-renderer.prototype.js: {}
+    js/prototype/model/access.prototype.js: {}
+    js/node-form-client.js: {}
+#    js/node-form.prototype.js: {}
+#    js/permissions-collector.prototype.js: {}

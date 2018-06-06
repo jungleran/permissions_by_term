@@ -1,9 +1,5 @@
 var TermCollector = function($, infoRenderer, document){
-  this.jQuery = $;
   this.selectedTids = [];
-  this.formElementCssClasses = [];
-  this.infoRenderer = infoRenderer;
-  this.document = document;
 };
 
 TermCollector.prototype.getSelectedTids = function() {
