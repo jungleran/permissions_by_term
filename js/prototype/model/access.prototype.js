@@ -1,4 +1,4 @@
-let Access = function(taxonomyRelationFieldNames, userDisplayNames, roles, fieldWrapperCSSClasses) {
+let Access = function(taxonomyRelationFieldNames = [], userDisplayNames = [], roles = [], fieldWrapperCSSClasses = []) {
   this.taxonomyRelationFieldNames = taxonomyRelationFieldNames;
   this.roles = roles;
   this.userDisplayNames = userDisplayNames;
