@@ -4,49 +4,6 @@
 
   if (document.querySelector("#edit-permissions-by-term-info") !== null) {
 
-    /**
-     * @returns Access
-     */
-    const createAccess = async () => {
-      let contentType = null;
-      if (window.location.href.indexOf('/node/add') !== -1) {
-        contentType = window.location.href.split("/").pop();
-      }
-
-      let url = '/admin/permissions-by-term/access-info-by-url?url=' + window.location.pathname;
-      if (contentType !== null) {
-        url = '/admin/permissions-by-term/access-info-by-content-type/' + contentType;
-      }
-
-      return await fetch(url, { credentials:'include' })
-        .then(function(response) {
-          return response.json();
-        }).then(function(data) {
-
-          let fieldCssClasses = [];
-
-          for (let fieldName in data.taxonomyRelationFieldNames) {
-            let fieldWrapperClass = '.field--name-' + fieldName.replace(/_/g, '-');
-
-            fieldCssClasses.push(fieldWrapperClass);
-          }
-          
-          return new Access(
-            data.taxonomyRelationFieldNames.values(),
-            data.permissions.userDisplayNames,
-            data.permissions.roleLabels,
-            fieldCssClasses
-          );
-        });
-    };
-
-    const hasTaxonomyFormFields = (access) => {
-      if (access.taxonomyRelationFieldNames.length !== 0) {
-        return true;
-      }
-
-      return false;
-    }
 
     /**
      * @type {Drupal~behavior}
@@ -56,7 +13,17 @@
         /**
          * @var Access access
          */
-        let access = await createAccess();
+        let access = await createAccess(fetchFromBackend);
+
+        console.log();
+
+        const hasTaxonomyFormFields = (access) => {
+          if (access.taxonomyRelationFieldNames.length !== 0) {
+            return true;
+          }
+
+          return false;
+        }
 
         if (hasTaxonomyFormFields(access)) {
 

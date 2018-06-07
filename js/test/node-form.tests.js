@@ -1,13 +1,3 @@
-if (typeof window === 'undefined') {
-  sinon = require('sinon');
-  let fs = require('fs');
-
-  fs.readFile('node-form.prototype.js');
-
-  const prototypeClass = fs.readFileSync('node-form.prototype.js','utf-8');
-  eval(prototypeClass);
-}
-
 QUnit.test( "Compute field wrapper CSS classes", function( assert ) {
   let $ = sinon.stub(),
     infoRenderer = sinon.stub(),
