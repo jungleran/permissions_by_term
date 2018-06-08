@@ -19,6 +19,7 @@ pipelines:
           - curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
           - apt-get update
           - apt-get install -y nodejs npm
+          - nvm install 8.11.2
           - apt-get install -y unzip git curl php php-cli php-gd php-curl php7.1-sqlite
           - apt-get install -y php-dom php-json php-common php-mbstring
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
