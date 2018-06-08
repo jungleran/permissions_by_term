@@ -1,7 +1,7 @@
 const Chromy = require('chromy')
 
 const main = async () => {
-  let chromy = new Chromy()
+  let chromy = new Chromy({launchBrowser: false})
   await chromy.goto('http://localhost:3000/test/access-creator.tests.html')
   const findings = await chromy.evaluate(() => {
     return document.querySelectorAll('.fail').length;

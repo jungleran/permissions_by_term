@@ -45,7 +45,6 @@ pipelines:
 #          - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat)
           - screen -S php-server -X quit
           - screen -dmS php-server php -S localhost:3000 -t ./drupal/web/modules/permissions_by_term/js/
-          - export launchBrowser="false"
           - (cd drupal/web/modules/permissions_by_term/js/ && node chromy-test.js)
       services:
         - testing
