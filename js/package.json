@@ -4,6 +4,7 @@
   "description": "JavaScript code has been tested with [Jasmine](https://jasmine.github.io/). Install the dependencies by [Yarn](https://yarnpkg.com/lang/en/). Just run `yarn`. To run the tests, switch to the `js` folder and run `yarn test`.",
   "main": "node-form.js",
   "dependencies": {
+    "chromy": "^0.5.11",
     "qunit": "^2.6.1",
     "sinon": "^5.0.10"
   },
@@ -12,7 +13,7 @@
   },
   "scripts": {
     "test": "qunit *.tests.js",
-    "build": "babel ./**/*.js -d lib --ignore node_modules"
+    "build": "babel ./**/*.js -d babel-compiled --ignore node_modules"
   },
   "author": "",
   "license": "ISC",
