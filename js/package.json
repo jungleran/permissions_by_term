@@ -12,8 +12,15 @@
   },
   "scripts": {
     "test": "qunit *.tests.js",
-    "build": "babel *.js -d lib"
+    "build": "babel ./**/*.js -d lib --ignore node_modules"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "babel": {
+    "ignore": [
+      "node_modules",
+      "package.json",
+      "package-json.lock"
+    ]
+  }
 }
