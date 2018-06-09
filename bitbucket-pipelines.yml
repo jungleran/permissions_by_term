@@ -42,7 +42,7 @@ pipelines:
           - (cd drupal && cp web/modules/permissions_by_term/tests/src/Behat/composer-require-namespace.php . && php composer-require-namespace.php && composer dump-autoload)
           - (cd drupal && cat composer.json)
           - screen -dmS php-server php -S localhost:80 -t ./drupal/web
-          - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat)
+          - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat --strict)
       services:
         - testing
     - step:
