@@ -1,0 +1,31 @@
+{
+  "name": "pbt",
+  "version": "1.0.0",
+  "description": "JavaScript code has been tested with [Jasmine](https://jasmine.github.io/). Install the dependencies by [Yarn](https://yarnpkg.com/lang/en/). Just run `yarn`. To run the tests, switch to the `js` folder and run `yarn test`.",
+  "main": "node-form.js",
+  "dependencies": {
+    "babel-core": "^5.8.25",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.3.0",
+    "gulp-util": "^3.0.7",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1",
+    "sinon": "^5.0.10"
+  },
+  "scripts": {
+    "test": "qunit *.tests.js",
+    "build": "gulp"
+  },
+  "author": "",
+  "license": "ISC",
+  "babel": {
+    "ignore": [
+      "node_modules",
+      "package.json",
+      "package-json.lock"
+    ],
+    "presets": [
+      "import-export"
+    ]
+  }
+}
