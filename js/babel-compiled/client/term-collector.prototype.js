@@ -1,6 +1,6 @@
 "use strict";
 
-var TermCollector = function TermCollector($, infoRenderer, document) {
+var TermCollector = function ($, infoRenderer, document) {
   this.selectedTids = [];
 };
 
@@ -45,7 +45,7 @@ TermCollector.prototype.addSelectedTid = function (tid, formElementCssClass) {
 };
 
 TermCollector.prototype.removeTid = function (value, formElementCssClass) {
-  var index = this.selectedTids[formElementCssClass].indexOf(parseInt(value));
+  const index = this.selectedTids[formElementCssClass].indexOf(parseInt(value));
 
   if (index !== -1) {
     this.selectedTids[formElementCssClass].splice(index, 1);

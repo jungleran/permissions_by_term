@@ -17,13 +17,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * @returns Access
  */
-var createAccess = async function createAccess(fetchFromBackend) {
-  var data = await fetchFromBackend(),
+const createAccess = async fetchFromBackend => {
+  let data = await fetchFromBackend(),
       fieldCssClasses = [];
 
   if (!(0, _empty2.default)(data.taxonomyRelationFieldNames)) {
-    data.taxonomyRelationFieldNames.forEach(function (fieldName) {
-      var fieldWrapperClass = '.field--name-' + fieldName.replace(/_/g, '-');
+    data.taxonomyRelationFieldNames.forEach(fieldName => {
+      const fieldWrapperClass = '.field--name-' + fieldName.replace(/_/g, '-');
 
       fieldCssClasses.push(fieldWrapperClass);
     });

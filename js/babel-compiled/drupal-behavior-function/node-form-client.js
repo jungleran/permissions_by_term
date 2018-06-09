@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+(() => {
 
   'use strict';
 
@@ -10,15 +10,15 @@
      * @type {Drupal~behavior}
      */
     Drupal.behaviors.nodeForm = {
-      attach: async function attach() {
+      attach: async () => {
         /**
          * @var Access access
          */
-        var access = await createAccess(fetchFromBackend);
+        let access = await createAccess(fetchFromBackend);
 
         console.log();
 
-        var hasTaxonomyFormFields = function hasTaxonomyFormFields(access) {
+        const hasTaxonomyFormFields = access => {
           if (access.taxonomyRelationFieldNames.length !== 0) {
             return true;
           }

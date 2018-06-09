@@ -1,7 +1,7 @@
 'use strict';
 
 QUnit.test("Compute field wrapper CSS classes", function (assert) {
-  var $ = sinon.stub(),
+  let $ = sinon.stub(),
       infoRenderer = sinon.stub(),
       document = sinon.stub(),
       nodeForm = new NodeForm(document, infoRenderer),
@@ -22,20 +22,20 @@ QUnit.test("Display permissions by select", function (assert) {
   var infoRendererSpy = sinon.spy();
   infoRenderer.render = infoRendererSpy;
 
-  var document = {
+  let document = {
     querySelector: sinon.stub().returns({
       val: sinon.stub().returns(['6'])
     })
   };
 
-  var nodeForm = new NodeForm($, infoRenderer, document);
+  let nodeForm = new NodeForm($, infoRenderer, document);
 
   // const NodeForm = new NodeForm(jQuery);
-  var fieldNames = ['field_name-one', 'field_name_two'];
+  let fieldNames = ['field_name-one', 'field_name_two'];
 
-  var fieldWrapperCSSClasses = ['.field--name-field-name-one', '.field--name-field-name-two'];
+  let fieldWrapperCSSClasses = ['.field--name-field-name-one', '.field--name-field-name-two'];
 
-  var formInfo = {
+  let formInfo = {
     permissions: {
       roleLabels: {
         6: 'Administrator'

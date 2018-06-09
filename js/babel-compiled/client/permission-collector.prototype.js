@@ -1,6 +1,6 @@
 'use strict';
 
-var PermissionCollector = function PermissionCollector() {
+let PermissionCollector = function () {
   this.permittedUsers = [];
   this.permittedRoles = [];
 };

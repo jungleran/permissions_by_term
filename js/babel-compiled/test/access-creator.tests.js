@@ -12,7 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 QUnit.test("Get access objects by querying backend with all params", async function (assert) {
 
-  var fetchFromBackend = async function fetchFromBackend() {
+  const fetchFromBackend = async () => {
     return {
       taxonomyRelationFieldNames: ['field-one', 'field-two', 'field-thrid'],
       permissions: {
@@ -25,7 +25,7 @@ QUnit.test("Get access objects by querying backend with all params", async funct
   /**
    * @var Access access
    */
-  var access = await (0, _createAccess2.default)(fetchFromBackend);
+  let access = await (0, _createAccess2.default)(fetchFromBackend);
 
   assert.ok(access.getUserDisplayName().length > 0, 'user display names are contained');
   assert.ok(access.getRoles().length > 0, 'roles are contained');
@@ -35,7 +35,7 @@ QUnit.test("Get access objects by querying backend with all params", async funct
 
 QUnit.test("Get access objects by querying backend with partly params", async function (assert) {
 
-  var fetchFromBackend = async function fetchFromBackend() {
+  const fetchFromBackend = async () => {
     return {
       taxonomyRelationFieldNames: undefined,
       permissions: {
@@ -47,7 +47,7 @@ QUnit.test("Get access objects by querying backend with partly params", async fu
   /**
    * @var Access access
    */
-  var access = await (0, _createAccess2.default)(fetchFromBackend);
+  let access = await (0, _createAccess2.default)(fetchFromBackend);
 
   assert.ok(access.getUserDisplayName().length > 0, 'user display names are contained');
   assert.ok((0, _empty2.default)(access.getRoles()), 'roles are contained');

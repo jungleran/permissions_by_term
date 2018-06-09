@@ -1,6 +1,6 @@
 'use strict';
 
-var DomClient = function DomClient() {};
+let DomClient = function () {};
 
 DomClient.prototype.computeFieldWrapperCSSClasses = function (fieldNames) {
   var wrapperCssClasses = [];
@@ -48,7 +48,7 @@ DomClient.prototype.DomClientPermissionsBySelect = function (fieldWrapperCSSClas
     var fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
 
     for (var inputTypesIndex = 0; inputTypesIndex <= inputTypes.length; inputTypesIndex++) {
-      var tids = this.document.querySelector(fieldWrapperCSSClass + ' select').val();
+      let tids = this.document.querySelector(fieldWrapperCSSClass + ' select').val();
 
       if (tids !== undefined && tids !== null && tids.constructor === Array) {
         if (tids[0] === '_none') {
@@ -114,7 +114,7 @@ DomClient.prototype.renderPermissionsInfo = function (permissions) {
 
   var generalInfoText = Drupal.t("This widget shows information about taxonomy term related permissions. It's being updated, as soon you make any related changes in the form.");
 
-  var newTermInfo = this.document.createElement('div');
+  let newTermInfo = this.document.createElement('div');
   newTermInfo.innerHTML = generalInfoText + '<br /><br />' + allowedUsersHtml + '<br />' + allowedRolesHtml;
   this.document.querySelector('#edit-permissions-by-term-info .form-type-item').replaceWith(newTermInfo);
 };

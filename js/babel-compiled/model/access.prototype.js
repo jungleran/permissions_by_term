@@ -3,12 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var Access = function Access() {
-  var taxonomyRelationFieldNames = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var userDisplayNames = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-  var roles = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-  var fieldWrapperCSSClasses = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-
+let Access = function (taxonomyRelationFieldNames = [], userDisplayNames = [], roles = [], fieldWrapperCSSClasses = []) {
   this.taxonomyRelationFieldNames = taxonomyRelationFieldNames;
   this.roles = roles;
   this.userDisplayNames = userDisplayNames;
