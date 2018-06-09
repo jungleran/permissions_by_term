@@ -11,20 +11,13 @@ default:
         features: '%paths.base%/modules/permissions_by_term/tests/src/Behat/Features'
   extensions:
     Behat\MinkExtension:
+      javascript_session: 'selenium2'
+      browser_name: 'phantomjs'
+      show_cmd: "open %s"
+      selenium2:
+        wd_host: 'http://localhost:4444/wd/hub'
+        browser: 'phantomjs'
       base_url: http://localhost:8000
-      default_session: selenium_chrome
-      sessions:
-        selenium_chrome:
-          selenium2:
-            wd_host: http://127.0.0.1:4444/wd/hub
-            browser: chrome
-            capabilities:
-              extra_capabilities:
-                chromeOptions:
-                  args:
-                    - "--no-sandbox"
-                    - "--headless"
-                    - "--disable-gpu"
     Drupal\DrupalExtension:
       blackbox: ~
       api_driver: 'drupal'
