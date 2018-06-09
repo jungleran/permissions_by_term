@@ -29,3 +29,5 @@ Access.prototype.getTaxonomyRelationFieldNames = function() {
 Access.prototype.getFieldWrapperCSSClasses = function() {
   return this.fieldWrapperCSSClasses;
 }
+
+export default Access;

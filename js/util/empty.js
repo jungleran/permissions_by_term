@@ -1,4 +1,4 @@
-function empty (mixedVar) {
+const empty = (mixedVar) => {
   let undef,
       key,
       i,
@@ -22,3 +22,5 @@ function empty (mixedVar) {
 
   return false
 }
+
+export default empty;

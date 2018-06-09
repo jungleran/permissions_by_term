@@ -1,3 +1,6 @@
+import empty from '../util/empty';
+import Access from '../model/access.prototype';
+
 /**
  * @returns Access
  */
@@ -20,3 +23,5 @@ const createAccess = async (fetchFromBackend) => {
       fieldCssClasses
   );
 }
+
+export default createAccess;

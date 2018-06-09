@@ -1,0 +1,56 @@
+'use strict';
+
+var _createAccess = require('../async-function/create-access');
+
+var _createAccess2 = _interopRequireDefault(_createAccess);
+
+var _empty = require('../util/empty');
+
+var _empty2 = _interopRequireDefault(_empty);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+QUnit.test("Get access objects by querying backend with all params", async function (assert) {
+
+  var fetchFromBackend = async function fetchFromBackend() {
+    return {
+      taxonomyRelationFieldNames: ['field-one', 'field-two', 'field-thrid'],
+      permissions: {
+        userDisplayNames: ['jeff', 'brandon', 'brian'],
+        roleLabels: ['admin', 'editor']
+      }
+    };
+  };
+
+  /**
+   * @var Access access
+   */
+  var access = await (0, _createAccess2.default)(fetchFromBackend);
+
+  assert.ok(access.getUserDisplayName().length > 0, 'user display names are contained');
+  assert.ok(access.getRoles().length > 0, 'roles are contained');
+  assert.ok(access.getFieldWrapperCSSClasses().length > 0, 'field wrapper css classes are contained');
+  assert.ok(access.getTaxonomyRelationFieldNames().length > 0, 'taxonomy relation field names are contained');
+});
+
+QUnit.test("Get access objects by querying backend with partly params", async function (assert) {
+
+  var fetchFromBackend = async function fetchFromBackend() {
+    return {
+      taxonomyRelationFieldNames: undefined,
+      permissions: {
+        userDisplayNames: ['jeff', 'brandon', 'brian']
+      }
+    };
+  };
+
+  /**
+   * @var Access access
+   */
+  var access = await (0, _createAccess2.default)(fetchFromBackend);
+
+  assert.ok(access.getUserDisplayName().length > 0, 'user display names are contained');
+  assert.ok((0, _empty2.default)(access.getRoles()), 'roles are contained');
+  assert.ok((0, _empty2.default)(access.getFieldWrapperCSSClasses()), 'field wrapper css classes are contained');
+  assert.ok((0, _empty2.default)(access.getTaxonomyRelationFieldNames()), 'taxonomy relation field names are contained');
+});
