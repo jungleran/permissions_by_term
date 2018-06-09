@@ -12,9 +12,9 @@
   },
   "scripts": {
     "test": "qunit *.tests.js",
-    "build": "babel **/*.js -d babel-compiled --ignore node_modules,webpack-dist,drupal-behavior-function",
+    "build": "babel src/**/*.js test/*.js -d babel-compiled --ignore node_modules,webpack-dist,drupal-behavior-function",
     "build-and-test": "rm -rf babel-compiled/ && npm run-script build && npm run-script webpack && qunit babel-compiled/test/access-creator.tests.js",
-    "webpack": "npx webpack --entry babel-compiled/**/*.js --output webpack-dist/bundle.js --mode development",
+    "webpack": "npx webpack --entry ./src/**/*.js ./test/*.js --output ./webpack-dist/bundle.js --mode development",
     "bat": "npm run-script build-and-test"
   },
   "author": "",

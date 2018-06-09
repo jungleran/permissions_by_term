@@ -1,5 +1,5 @@
-import createAccess from '../async-function/create-access';
-import empty from '../util/empty';
+import createAccess from '../src/async-function/create-access';
+import empty from '../src/util/empty';
 
 QUnit.test( "Get access objects by querying backend with all params", async function( assert ) {
 

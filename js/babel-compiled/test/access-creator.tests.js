@@ -1,10 +1,10 @@
 'use strict';
 
-var _createAccess = require('../async-function/create-access');
+var _createAccess = require('../src/async-function/create-access');
 
 var _createAccess2 = _interopRequireDefault(_createAccess);
 
-var _empty = require('../util/empty');
+var _empty = require('../src/util/empty');
 
 var _empty2 = _interopRequireDefault(_empty);
 
