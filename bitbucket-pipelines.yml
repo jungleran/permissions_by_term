@@ -44,7 +44,6 @@ pipelines:
           - (cd drupal && cat composer.json)
           - screen -dmS phantomjs /tmp/phantomjs-2.1.1-linux-x86_64/bin/phantomjs --webdriver=4444
           - screen -dmS php-server php -S localhost:8000 -t ./drupal/web
-          - php -S localhost:8000 -t ./drupal/web &
           - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat)
       services:
         - testing
