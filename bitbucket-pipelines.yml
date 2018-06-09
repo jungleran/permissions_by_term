@@ -58,4 +58,4 @@ pipelines:
 definitions:
   services:
     testing:
-      image: darksolar/selenium-chrome-headless
+      image: alpeware/chrome-headless-trunk
