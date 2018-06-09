@@ -38,8 +38,7 @@ pipelines:
           - (cd drupal/web/modules/permissions_by_term/tests/ && ../../../../vendor/bin/phpunit)
           - (cd drupal/web/modules/permissions_by_term/js/ && npm install && npm run bat)
           - (cd drupal/web && drush si standard --db-url=sqlite://sites/default/files/db.sqlite -y && drush en permissions_by_term -y)
-          - (cd drupal && composer require behat/behat:^3.1 behat/mink:~1.7 guzzlehttp/guzzle:^6.0@dev behat/mink-extension:^2.2 drupal/drupal-driver:~1.0
-          drupal/drupal-extension:^3.2 behat/mink-selenium2-driver:^1.3 dmore/behat-chrome-extension:^1.1 --dev)
+          - (cd drupal && composer require behat/behat:^3.1 behat/mink:~1.7 guzzlehttp/guzzle:^6.0@dev behat/mink-extension:^2.2 drupal/drupal-driver:~1.0 drupal/drupal-extension:^3.2 behat/mink-selenium2-driver:^1.3 dmore/behat-chrome-extension:^1.1 --dev)
           - (cd drupal && cp web/modules/permissions_by_term/tests/src/Behat/composer-require-namespace.php . && php composer-require-namespace.php && composer dump-autoload)
           - (cd drupal && cat composer.json)
           - screen -dmS php-server php -S localhost:80 -t ./drupal/web
