@@ -43,7 +43,7 @@ pipelines:
           - (cd drupal && cp web/modules/permissions_by_term/tests/src/Behat/composer-require-namespace.php . && php composer-require-namespace.php && composer dump-autoload)
           - (cd drupal && cat composer.json)
 #          - screen -dmS php-server php -S localhost:8000 -t ./drupal/web
-          - php -S localhost:8000 -t ./drupal/web
+          - php -S localhost:8000 -t ./drupal/web &
           - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat)
 #          - screen -S php-server -X quit
 #          - screen -dmS php-server php -S localhost:3000 -t ./drupal/web/modules/permissions_by_term/js/
