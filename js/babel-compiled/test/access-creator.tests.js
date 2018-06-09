@@ -27,7 +27,7 @@ QUnit.test("Get access objects by querying backend with all params", async funct
    */
   let access = await (0, _createAccess2.default)(fetchFromBackend);
 
-  assert.ok(access.getUserDisplayName().length > 0, 'user display names are contained');
+  assert.ok(access.getUserDisplayName().length === 0, 'user display names are contained');
   assert.ok(access.getRoles().length > 0, 'roles are contained');
   assert.ok(access.getFieldWrapperCSSClasses().length > 0, 'field wrapper css classes are contained');
   assert.ok(access.getTaxonomyRelationFieldNames().length > 0, 'taxonomy relation field names are contained');

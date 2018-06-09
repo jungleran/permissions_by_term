@@ -12,7 +12,7 @@
     "webpack-cli": "^3.0"
   },
   "scripts": {
-    "test": "qunit *.tests.js",
+    "test": "npx qunit babel-compiled/test/access-creator.tests.js",
     "build": "babel src/**/*.js test/*.js -d babel-compiled --ignore node_modules,webpack-dist,drupal-behavior-function",
     "build-and-test": "rm -rf babel-compiled/ && npm run-script build && npm run-script webpack && npx qunit babel-compiled/test/access-creator.tests.js",
     "webpack": "npx webpack --entry ./src/**/*.js ./test/*.js --output ./webpack-dist/bundle.js --mode development",
