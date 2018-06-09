@@ -6,14 +6,15 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "qunit": "^2.6.1",
     "sinon": "^5.0.10",
     "webpack": "^4.12.0",
-    "webpack-cli": "github:webpack/webpack-cli"
+    "webpack-cli": "^3.0"
   },
   "scripts": {
     "test": "qunit *.tests.js",
     "build": "babel src/**/*.js test/*.js -d babel-compiled --ignore node_modules,webpack-dist,drupal-behavior-function",
-    "build-and-test": "rm -rf babel-compiled/ && npm run-script build && npm run-script webpack && qunit babel-compiled/test/access-creator.tests.js",
+    "build-and-test": "rm -rf babel-compiled/ && npm run-script build && npm run-script webpack && npx qunit babel-compiled/test/access-creator.tests.js",
     "webpack": "npx webpack --entry ./src/**/*.js ./test/*.js --output ./webpack-dist/bundle.js --mode development",
     "bat": "npm run-script build-and-test"
   },
