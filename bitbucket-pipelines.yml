@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: ubuntu:17.10
+image: jepster/php-js-base:latest
 clone:
   depth: full
 
@@ -14,8 +14,6 @@ pipelines:
         caches:
           - composer
         script:
-          - apt-get update
-          - apt-get install -y wget bzip2 curl sqlite3 screen
           - curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
           - apt-get update
           - apt-get install -y nodejs npm
@@ -23,12 +21,6 @@ pipelines:
           - bash install_nvm.sh
           - source ~/.profile
           - nvm install 9.11.1
-          - (cd /tmp && wget -qO- https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar jx && chmod +x /tmp/phantomjs-2.1.1-linux-x86_64/bin/phantomjs)
-          - apt-get install -y unzip git curl php php-cli php-gd php-curl php7.1-sqlite
-          - apt-get install -y php-dom php-json php-common php-mbstring
-          - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-          - export PATH="$HOME/.composer/vendor/bin:$PATH"
-          - composer global require drush/drush:^9
           - cd ..
           - mkdir permissions_by_term/
           - mv build/* permissions_by_term/
