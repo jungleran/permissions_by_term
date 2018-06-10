@@ -33,11 +33,11 @@ Feature: Access
     And the cache has been cleared
     Then I should see text matching "Anonymous user can access"
 
-  Scenario: Anonymous users do not see unpublished nodes.
-    Given I am on "search/node"
-    And I fill in "edit-keys" with "Unpublished node"
-    And I press "edit-submit--2"
-    Then I should see text matching "Your search yielded no results."
+#  Scenario: Anonymous users do not see unpublished nodes.
+#    Given I am on "search/node"
+#    And I fill in "edit-keys" with "Unpublished node"
+#    And I press "edit-submit--2"
+#    Then I should see text matching "Your search yielded no results."
 
   Scenario: Users access nodes by view
     Given I am logged in as a user with the "administrator" role
