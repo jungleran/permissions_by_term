@@ -1,5 +1,7 @@
-let DomClient = function() {
+const _ = require('lodash');
 
+let DomClient = function(document) {
+  this.document = document;
 }
 
 DomClient.prototype.computeFieldWrapperCSSClasses = function(fieldNames) {
@@ -70,28 +72,33 @@ DomClient.prototype.permissionsInitBySelect = function(fieldWrapperCSSClasses, p
 
 }
 
-DomClient.prototype.computeTidsByAutocomplete = function(fieldWrapperCSSClasses) {
-  for (let index = 0; index < fieldWrapperCSSClasses.length; ++index) {
-    let fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
+DomClient.prototype.computeTidsByAutocomplete = function(fieldWrapperCSSClasses = []) {
+  let selectedTids = []
 
-    let values = this.jQuery(fieldWrapperCSSClass + ' input').val();
+  if (!_.isEmpty(fieldWrapperCSSClasses)) {
+    for (let index = 0; index < fieldWrapperCSSClasses.length; ++index) {
+      let fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
 
-    if (values !== undefined && values.indexOf('(') !== -1 && values.indexOf(')')) {
+      let values = this.document.querySelector(fieldWrapperCSSClass + ' input').val();
 
-      let tidsInBrackets = values.match(/\(\d+\)/g),
-          selectedTids = [];
+      if (values !== undefined && values.includes('(') && values.includes(')')) {
 
-      if (tidsInBrackets !== undefined && tidsInBrackets !== null && tidsInBrackets.constructor === Array) {
+        let tidsInBrackets = values.match(/\(\d+\)/g);
 
-        for (let i = 0; i < tidsInBrackets.length; ++i) {
-          let selectedTid = parseInt(tidsInBrackets[i].replace('(', '').replace(')', ''));
-          selectedTids.push(selectedTid);
+        if (tidsInBrackets !== undefined && tidsInBrackets !== null && tidsInBrackets.constructor === Array) {
+
+          for (let i = 0; i < tidsInBrackets.length; ++i) {
+            let selectedTid = parseInt(tidsInBrackets[i].replace('(', '').replace(')', ''));
+            if (!_.includes(selectedTids, selectedTid)) {
+              selectedTids.push(selectedTid);
+            }
+          }
+
         }
 
       }
 
     }
-
   }
 
   return selectedTids;
