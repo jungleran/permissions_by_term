@@ -42,6 +42,12 @@ TermCollector.prototype.addSelectedTid = function(tid, formElementCssClass) {
   this.selectedTids[formElementCssClass].push(tid);
 }
 
+TermCollector.prototype.addSelectedTids = (tids) => {
+  tids.foreach((tid) => {
+    this.addSelectedTid(tid);
+  });
+}
+
 TermCollector.prototype.removeTid = function(value, formElementCssClass) {
   const index = this.selectedTids[formElementCssClass].indexOf(parseInt(value));
 
@@ -53,3 +59,5 @@ TermCollector.prototype.removeTid = function(value, formElementCssClass) {
 TermCollector.prototype.resetData = function(formElementCssClass) {
   this.selectedTids[formElementCssClass] = [];
 }
+
+export default TermCollector;

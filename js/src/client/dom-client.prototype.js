@@ -3,10 +3,10 @@ let DomClient = function() {
 }
 
 DomClient.prototype.computeFieldWrapperCSSClasses = function(fieldNames) {
-  var wrapperCssClasses = [];
+  let wrapperCssClasses = [];
 
-  for (var index = 0; index < fieldNames.length; ++index) {
-    var fieldWrapperClass = '.field--name-' + fieldNames[index].replace(/_/g, '-');
+  for (let index = 0; index < fieldNames.length; ++index) {
+    let fieldWrapperClass = '.field--name-' + fieldNames[index].replace(/_/g, '-');
 
     wrapperCssClasses.push(fieldWrapperClass);
   }
@@ -24,10 +24,10 @@ DomClient.prototype.DomClientPermissionsByCheckingCheckbox = function(tid, check
   this.renderPermissionsInfo(permissions);
 }
 
-DomClient.prototype.DomClientPermissionsByInitCheckbox = function(fieldWrapperCSSClasses, permissions) {
-  for (var index = 0; index < this.jQuery(fieldWrapperCSSClasses + ' input:checkbox').length; ++index) {
+DomClient.prototype.permissionsInitByCheckbox = function(fieldWrapperCSSClasses, permissions) {
+  for (let index = 0; index < this.jQuery(fieldWrapperCSSClasses + ' input:checkbox').length; ++index) {
 
-    var checkbox = this.jQuery(fieldWrapperCSSClasses + ' input:checkbox')[index],
+    let checkbox = this.jQuery(fieldWrapperCSSClasses + ' input:checkbox')[index],
       checkboxChecked = this.jQuery(fieldWrapperCSSClasses + ' input:checkbox')[index].checked,
       tid = parseInt(checkbox.attributes.value.value);
 
@@ -41,13 +41,13 @@ DomClient.prototype.DomClientPermissionsByInitCheckbox = function(fieldWrapperCS
   this.renderPermissionsInfo(permissions);
 }
 
-DomClient.prototype.DomClientPermissionsBySelect = function(fieldWrapperCSSClasses, permissions) {
-  for (var index = 0; index < fieldWrapperCSSClasses.length; ++index) {
-    var inputTypes = ['select', 'input'];
+DomClient.prototype.permissionsInitBySelect = function(fieldWrapperCSSClasses, permissions) {
+  for (let index = 0; index < fieldWrapperCSSClasses.length; ++index) {
+    let inputTypes = ['select', 'input'];
 
-    var fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
+    let fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
 
-    for (var inputTypesIndex = 0; inputTypesIndex <= inputTypes.length; inputTypesIndex++) {
+    for (let inputTypesIndex = 0; inputTypesIndex <= inputTypes.length; inputTypesIndex++) {
       let tids = this.document.querySelector(fieldWrapperCSSClass + ' select').val();
 
       if (tids !== undefined && tids !== null && tids.constructor === Array) {
@@ -55,7 +55,7 @@ DomClient.prototype.DomClientPermissionsBySelect = function(fieldWrapperCSSClass
           this.resetData(fieldWrapperCSSClass);
         }
 
-        for (var i = 0; i < tids.length; ++i) {
+        for (let i = 0; i < tids.length; ++i) {
           if (isNaN(tids[i]) === false) {
             this.addSelectedTid(parseInt(tids[i]), fieldWrapperCSSClass);
           }
@@ -70,23 +70,22 @@ DomClient.prototype.DomClientPermissionsBySelect = function(fieldWrapperCSSClass
 
 }
 
-DomClient.prototype.DomClientPermissionsByAutocomplete = function(fieldWrapperCSSClasses, permissions) {
-  for (var index = 0; index < fieldWrapperCSSClasses.length; ++index) {
-    var fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
+DomClient.prototype.computeTidsByAutocomplete = function(fieldWrapperCSSClasses) {
+  for (let index = 0; index < fieldWrapperCSSClasses.length; ++index) {
+    let fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
 
-    var values = this.jQuery(fieldWrapperCSSClass + ' input').val();
-
-    this.resetData(fieldWrapperCSSClass);
+    let values = this.jQuery(fieldWrapperCSSClass + ' input').val();
 
     if (values !== undefined && values.indexOf('(') !== -1 && values.indexOf(')')) {
 
-      var tidsInBrackets = values.match(/\(\d+\)/g);
+      let tidsInBrackets = values.match(/\(\d+\)/g),
+          selectedTids = [];
 
       if (tidsInBrackets !== undefined && tidsInBrackets !== null && tidsInBrackets.constructor === Array) {
 
-        for (var i = 0; i < tidsInBrackets.length; ++i) {
-          var selectedTid = parseInt(tidsInBrackets[i].replace('(', '').replace(')', ''));
-          this.addSelectedTid(selectedTid, fieldWrapperCSSClass);
+        for (let i = 0; i < tidsInBrackets.length; ++i) {
+          let selectedTid = parseInt(tidsInBrackets[i].replace('(', '').replace(')', ''));
+          selectedTids.push(selectedTid);
         }
 
       }
@@ -95,15 +94,14 @@ DomClient.prototype.DomClientPermissionsByAutocomplete = function(fieldWrapperCS
 
   }
 
-  this.renderPermissionsInfo(permissions);
-
+  return selectedTids;
 }
 
 DomClient.prototype.renderPermissionsInfo = function(permissions) {
 
-  var permissionsToDomClient = this.getPermissionsByTids(this.getSelectedTids(), permissions);
+  let permissionsToDomClient = this.getPermissionsByTids(this.getSelectedTids(), permissions);
 
-  var allowedUsersHtml = '<b>' + Drupal.t('Allowed users:') + '</b> ';
+  let allowedUsersHtml = '<b>' + Drupal.t('Allowed users:') + '</b> ';
 
   if (this.isAllowedUsersRestriction(permissionsToDomClient)) {
     allowedUsersHtml += permissionsToDomClient['permittedUsers'].join(', ');
@@ -111,7 +109,7 @@ DomClient.prototype.renderPermissionsInfo = function(permissions) {
     allowedUsersHtml += '<i>' + Drupal.t('No user restrictions.') + '</i>';
   }
 
-  var allowedRolesHtml = '<b>' + Drupal.t('Allowed roles:') + '</b> ';
+  let allowedRolesHtml = '<b>' + Drupal.t('Allowed roles:') + '</b> ';
 
   if (this.isAllowedRolesRestriction(permissionsToDomClient)) {
     allowedRolesHtml += permissionsToDomClient['permittedRoles'].join(', ');
@@ -119,7 +117,7 @@ DomClient.prototype.renderPermissionsInfo = function(permissions) {
     allowedRolesHtml += '<i>' + Drupal.t('No role restrictions.') + '</i>';;
   }
 
-  var generalInfoText = Drupal.t("This widget shows information about taxonomy term related permissions. It's being updated, as soon you make any related changes in the form.");
+  let generalInfoText = Drupal.t("This widget shows information about taxonomy term related permissions. It's being updated, as soon you make any related changes in the form.");
 
   let newTermInfo = this.document.createElement('div');
   newTermInfo.innerHTML = generalInfoText + '<br /><br />' + allowedUsersHtml + '<br />' + allowedRolesHtml;
@@ -130,3 +128,5 @@ DomClient.prototype.renderPermissionsInfo = function(permissions) {
 DomClient.prototype.addFormElementCssClass = function(formElementCssClass) {
   this.formElementCssClasses.push(formElementCssClass);
 }
+
+export default DomClient;

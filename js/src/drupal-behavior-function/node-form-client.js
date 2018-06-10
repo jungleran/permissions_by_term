@@ -15,8 +15,6 @@
          */
         let access = await createAccess(fetchFromBackend);
 
-        console.log();
-
         const hasTaxonomyFormFields = (access) => {
           if (access.taxonomyRelationFieldNames.length !== 0) {
             return true;
@@ -32,45 +30,45 @@
         }
 
 
-        // $.when(getFormInfo).done((formInfo) => {
-        //
-        //   if (formInfo['taxonomyRelationFieldNames'] !== null) {
-        //
-        //     let infoRenderer = new InfoRenderer($);
-        //     let nodeForm = new NodeForm($, infoRenderer),
-        //         fieldWrapperCSSClasses = nodeForm.computeFieldWrapperCSSClasses(formInfo['taxonomyRelationFieldNames']);
-        //
-        //     initPermissionInfoByFormElements(nodeForm, fieldWrapperCSSClasses, formInfo);
-        //
-        //     for (let formElementCssClass in fieldWrapperCSSClasses) {
-        //       nodeForm.addFormElementCssClass(formElementCssClass);
-        //
-        //       $(formElementCssClass + ' select').change(() => {
-        //         nodeForm.displayPermissionsBySelect(fieldWrapperCSSClasses, formInfo['permissions']);
-        //       });
-        //
-        //       $(formElementCssClass + ' input[type="text"]').on('autocomplete-select', () => {
-        //         nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses, formInfo['permissions']);
-        //       });
-        //
-        //       $(formElementCssClass + ' input[type="text"]').on('keyup', () => {
-        //         nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses, formInfo['permissions']);
-        //       });
-        //
-        //
-        //       $(formElementCssClass + ' input[type="checkbox"]').change(() => {
-        //         nodeForm.displayPermissionsByCheckingCheckbox($(this).prop('value'), $(this).prop('checked'), formInfo['permissions']);
-        //       });
-        //     }
-        //   }
-        //
-        // });
-        //
-        // function initPermissionInfoByFormElements(nodeForm, fieldWrapperCSSClasses, formInfo) {
-        //   nodeForm.displayPermissionsBySelect(fieldWrapperCSSClasses, formInfo['permissions']);
-        //   nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses, formInfo['permissions']);
-        //   nodeForm.displayPermissionsByInitCheckbox(fieldWrapperCSSClasses, formInfo['permissions']);
-        // }
+        $.when(getFormInfo).done((formInfo) => {
+
+          if (formInfo['taxonomyRelationFieldNames'] !== null) {
+
+            let infoRenderer = new InfoRenderer($);
+            let nodeForm = new NodeForm($, infoRenderer),
+                fieldWrapperCSSClasses = nodeForm.computeFieldWrapperCSSClasses(formInfo['taxonomyRelationFieldNames']);
+
+            initPermissionInfoByFormElements(nodeForm, fieldWrapperCSSClasses, formInfo);
+
+            for (let formElementCssClass in fieldWrapperCSSClasses) {
+              nodeForm.addFormElementCssClass(formElementCssClass);
+
+              $(formElementCssClass + ' select').change(() => {
+                nodeForm.displayPermissionsBySelect(fieldWrapperCSSClasses, formInfo['permissions']);
+              });
+
+              $(formElementCssClass + ' input[type="text"]').on('autocomplete-select', () => {
+                nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses, formInfo['permissions']);
+              });
+
+              $(formElementCssClass + ' input[type="text"]').on('keyup', () => {
+                nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses, formInfo['permissions']);
+              });
+
+
+              $(formElementCssClass + ' input[type="checkbox"]').change(() => {
+                nodeForm.displayPermissionsByCheckingCheckbox($(this).prop('value'), $(this).prop('checked'), formInfo['permissions']);
+              });
+            }
+          }
+
+        });
+
+        function initPermissionInfoByFormElements(nodeForm, fieldWrapperCSSClasses, formInfo) {
+          nodeForm.displayPermissionsBySelect(fieldWrapperCSSClasses, formInfo['permissions']);
+          nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses, formInfo['permissions']);
+          nodeForm.displayPermissionsByInitCheckbox(fieldWrapperCSSClasses, formInfo['permissions']);
+        }
 
       }
     };
