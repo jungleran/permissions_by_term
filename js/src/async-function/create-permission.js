@@ -1,4 +1,4 @@
-import empty from '../util/empty';
+import _ from 'lodash';
 import Access from '../model/permission.prototype';
 
 /**
@@ -8,7 +8,7 @@ const createPermission = async (fetchFromBackend) => {
   let data = await fetchFromBackend(),
       fieldCssClasses = [];
 
-  if (!empty(data.taxonomyRelationFieldNames)) {
+  if (!_.isEmpty(data.taxonomyRelationFieldNames)) {
     data.taxonomyRelationFieldNames.forEach((fieldName) => {
       const fieldWrapperClass = '.field--name-' + fieldName.replace(/_/g, '-');
 

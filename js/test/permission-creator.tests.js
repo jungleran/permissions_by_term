@@ -1,7 +1,7 @@
 import createPermission from '../src/async-function/create-permission';
-import empty from '../src/util/empty';
+import _ from 'lodash';
 
-QUnit.test( "Get access objects by querying backend with all params", async function( assert ) {
+QUnit.test( "Get permission objects by querying backend with all params", async function( assert ) {
 
   const fetchFromBackend = async() => {
     return {
@@ -14,17 +14,17 @@ QUnit.test( "Get access objects by querying backend with all params", async func
   };
 
   /**
-   * @var Access access
+   * @var Permission permission
    */
-  let access = await createPermission(fetchFromBackend);
+  let permission = await createPermission(fetchFromBackend);
 
-  assert.ok(access.getUserDisplayName().length > 0, 'user display names are contained');
-  assert.ok(access.getRoles().length > 0, 'roles are contained');
-  assert.ok(access.getFieldWrapperCSSClasses().length > 0, 'field wrapper css classes are contained');
-  assert.ok(access.getTaxonomyRelationFieldNames().length > 0, 'taxonomy relation field names are contained');
+  assert.ok(permission.getUserDisplayName().length > 0, 'user display names are contained');
+  assert.ok(permission.getRoles().length > 0, 'roles are contained');
+  assert.ok(permission.getFieldWrapperCSSClasses().length > 0, 'field wrapper css classes are contained');
+  assert.ok(permission.getTaxonomyRelationFieldNames().length > 0, 'taxonomy relation field names are contained');
 });
 
-QUnit.test( "Get access objects by querying backend with partly params", async function( assert ) {
+QUnit.test( "Get permission objects by querying backend with partly params", async function( assert ) {
 
   const fetchFromBackend = async() => {
     return {
@@ -36,12 +36,12 @@ QUnit.test( "Get access objects by querying backend with partly params", async f
   };
 
   /**
-   * @var Access access
+   * @var Access permission
    */
-  let access = await createPermission(fetchFromBackend);
+  let permission = await createPermission(fetchFromBackend);
 
-  assert.ok(access.getUserDisplayName().length > 0, 'user display names are contained');
-  assert.ok(empty(access.getRoles()), 'roles are contained');
-  assert.ok(empty(access.getFieldWrapperCSSClasses()), 'field wrapper css classes are contained');
-  assert.ok(empty(access.getTaxonomyRelationFieldNames()), 'taxonomy relation field names are contained');
+  assert.ok(permission.getUserDisplayName().length > 0, 'user display names are contained');
+  assert.ok(_.isEmpty(permission.getRoles()), 'roles are contained');
+  assert.ok(_.isEmpty(permission.getFieldWrapperCSSClasses()), 'field wrapper css classes are contained');
+  assert.ok(_.isEmpty(permission.getTaxonomyRelationFieldNames()), 'taxonomy relation field names are contained');
 });
