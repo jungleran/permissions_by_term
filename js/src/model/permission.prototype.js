@@ -1,4 +1,4 @@
-let Access = function(taxonomyRelationFieldNames = [], userDisplayNames = [], roles = [], fieldWrapperCSSClasses = []) {
+let Permission = function(taxonomyRelationFieldNames = [], userDisplayNames = [], roles = [], fieldWrapperCSSClasses = []) {
   this.taxonomyRelationFieldNames = taxonomyRelationFieldNames;
   this.roles = roles;
   this.userDisplayNames = userDisplayNames;
@@ -8,26 +8,26 @@ let Access = function(taxonomyRelationFieldNames = [], userDisplayNames = [], ro
 /**
  * @returns string[]
  */
-Access.prototype.getUserDisplayName = function() {
+Permission.prototype.getUserDisplayName = function() {
   return this.userDisplayNames;
 }
 
 /**
  * @returns string[]
  */
-Access.prototype.getRoles = function() {
+Permission.prototype.getRoles = function() {
   return this.roles;
 }
 
 /**
  * @returns string[]
  */
-Access.prototype.getTaxonomyRelationFieldNames = function() {
+Permission.prototype.getTaxonomyRelationFieldNames = function() {
   return this.taxonomyRelationFieldNames;
 }
 
-Access.prototype.getFieldWrapperCSSClasses = function() {
+Permission.prototype.getFieldWrapperCSSClasses = function() {
   return this.fieldWrapperCSSClasses;
 }
 
-export default Access;
+export default Permission;

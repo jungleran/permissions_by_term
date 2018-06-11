@@ -1,10 +1,10 @@
 import empty from '../util/empty';
-import Access from '../model/access.prototype';
+import Access from '../model/permission.prototype';
 
 /**
  * @returns Access
  */
-const createAccess = async (fetchFromBackend) => {
+const createPermission = async (fetchFromBackend) => {
   let data = await fetchFromBackend(),
       fieldCssClasses = [];
 
@@ -24,4 +24,4 @@ const createAccess = async (fetchFromBackend) => {
   );
 }
 
-export default createAccess;
+export default createPermission;

@@ -1,4 +1,4 @@
-import createAccess from '../src/async-function/create-access';
+import createPermission from '../src/async-function/create-permission';
 import empty from '../src/util/empty';
 
 QUnit.test( "Get access objects by querying backend with all params", async function( assert ) {
@@ -16,7 +16,7 @@ QUnit.test( "Get access objects by querying backend with all params", async func
   /**
    * @var Access access
    */
-  let access = await createAccess(fetchFromBackend);
+  let access = await createPermission(fetchFromBackend);
 
   assert.ok(access.getUserDisplayName().length > 0, 'user display names are contained');
   assert.ok(access.getRoles().length > 0, 'roles are contained');
@@ -38,7 +38,7 @@ QUnit.test( "Get access objects by querying backend with partly params", async f
   /**
    * @var Access access
    */
-  let access = await createAccess(fetchFromBackend);
+  let access = await createPermission(fetchFromBackend);
 
   assert.ok(access.getUserDisplayName().length > 0, 'user display names are contained');
   assert.ok(empty(access.getRoles()), 'roles are contained');

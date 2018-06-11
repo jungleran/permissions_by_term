@@ -13,7 +13,7 @@
         /**
          * @var Access access
          */
-        let access = await createAccess(fetchFromBackend);
+        let access = await createPermission(fetchFromBackend);
 
         const hasTaxonomyFormFields = (access) => {
           if (access.taxonomyRelationFieldNames.length !== 0) {
