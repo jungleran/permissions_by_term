@@ -1,5 +1,8 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 /**
  * @returns array
  */
@@ -20,3 +23,5 @@ const fetchFromBackend = async () => {
     return data;
   });
 };
+
+exports.default = fetchFromBackend;

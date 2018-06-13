@@ -19,3 +19,5 @@ const fetchFromBackend = async () => {
         return data;
       });
 };
+
+export default fetchFromBackend;

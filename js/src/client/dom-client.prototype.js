@@ -36,18 +36,6 @@ DomClient.prototype.renderPermissionsInfo = function() {
 
 }
 
-DomClient.prototype.computeFieldWrapperCSSClasses = function(fieldNames) {
-  let wrapperCssClasses = [];
-
-  for (let index = 0; index < fieldNames.length; ++index) {
-    let fieldWrapperClass = '.field--name-' + fieldNames[index].replace(/_/g, '-');
-
-    wrapperCssClasses.push(fieldWrapperClass);
-  }
-
-  return wrapperCssClasses;
-}
-
 DomClient.prototype.computeTidsByAutocomplete = function(fieldWrapperCSSClasses = []) {
   let selectedTids = []
 
