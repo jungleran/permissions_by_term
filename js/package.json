@@ -13,11 +13,15 @@
     "webpack-cli": "^3.0"
   },
   "scripts": {
-    "test": "npx qunit babel-compiled/test/*.tests.js",
-    "build": "babel src/**/*.js test/*.js -d babel-compiled --ignore node_modules,webpack-dist,drupal-behavior-function",
+    "test": "npx qunit babel-compiled-test/test/*.tests.js",
+    "babel-build-for-test": "babel src/**/*.js test/*.js -d babel-compiled-test --ignore node_modules,webpack-dist,drupal-behavior-function",
+    "babel-build": "babel src/**/*.js -d babel-compiled --ignore node_modules,webpack-dist,drupal-behavior-function",
+    "cleanup-babel-test": "rm -rf babel-compiled-test/",
     "cleanup-babel": "rm -rf babel-compiled/",
-    "build-and-test": "npm run-script cleanup-babel && npm run-script build && npm run-script webpack && npm run-script test",
-    "webpack": "npx webpack --entry ./src/**/*.js ./test/*.js --output ./webpack-dist/bundle.js --mode development",
+    "build-and-test": "npm run-script cleanup-babel-test && npm run-script babel-build-for-test && npm run-script webpack-test && npm run-script test",
+    "build": "npm run-script cleanup-babel && npm run-script babel-build && npm run-script webpack",
+    "webpack-test": "npx webpack --entry ./src/**/*.js ./test/*.js --output ./webpack-dist/bundle-test.js --mode development",
+    "webpack": "npx webpack --entry ./src/**/*.js --output ./webpack-dist/bundle.js --mode development",
     "bat": "npm run-script build-and-test"
   },
   "author": "",

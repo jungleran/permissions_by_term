@@ -1,10 +1,4 @@
 nodeForm:
   version: 'VERSION'
   js:
-#    js/info-renderer.prototype.js: {}
-    js/prototype/model/access.prototype.js: {}
-    js/async-function/create-access.js: {}
-    js/async-function/fetch-from-backend.js: {}
-    js/drupal-behavior-function/node-form-client.js: {}
-#    js/node-form.prototype.js: {}
-#    js/permissions-collector.prototype.js: {}
+    js/webpack-dist/bundle.js: {}
