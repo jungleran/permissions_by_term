@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Access from '../model/permission.prototype';
+import Backend from '../model/backend.prototype';
 
 /**
  * @returns Access
@@ -16,7 +16,7 @@ const createPermission = async (fetchFromBackend) => {
     });
   }
 
-  return new Access(
+  return new Backend(
       data.taxonomyRelationFieldNames,
       data.permissions.userDisplayNames,
       data.permissions.roleLabels,

@@ -13,7 +13,7 @@
     "webpack-cli": "^3.0"
   },
   "scripts": {
-    "test": "npx qunit babel-compiled/test/permission-creator.tests.js && npx qunit babel-compiled/test/term-selector.tests.js",
+    "test": "npx qunit babel-compiled/test/*.tests.js",
     "build": "babel src/**/*.js test/*.js -d babel-compiled --ignore node_modules,webpack-dist,drupal-behavior-function",
     "cleanup-babel": "rm -rf babel-compiled/",
     "build-and-test": "npm run-script cleanup-babel && npm run-script build && npm run-script webpack && npm run-script test",
