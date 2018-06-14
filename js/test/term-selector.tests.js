@@ -14,7 +14,7 @@ QUnit.test( "Term selector retrieves empty array if no tids selected", function(
 QUnit.test( "Term selector retrieves array with tids if tids selected", function( assert ) {
   let document = {
     querySelector: sinon.stub().returns({
-      val: sinon.stub().returns('(1),(2),(3)')
+      value: '(1),(2),(3)'
     })
   }
 

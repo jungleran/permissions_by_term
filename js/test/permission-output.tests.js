@@ -25,7 +25,7 @@ QUnit.test("Collect output roles and usernames", async ( assert ) => {
 
   let document = {
     querySelector: sinon.stub().returns({
-      val: sinon.stub().returns('(2)')
+      value: '(2)'
     })
   }
 

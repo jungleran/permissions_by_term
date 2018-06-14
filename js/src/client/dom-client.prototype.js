@@ -43,9 +43,9 @@ DomClient.prototype.computeTidsByAutocomplete = function(fieldWrapperCSSClasses 
     for (let index = 0; index < fieldWrapperCSSClasses.length; ++index) {
       let fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
 
-      let values = this.document.querySelector(fieldWrapperCSSClass + ' input').val();
+      let values = this.document.querySelector(fieldWrapperCSSClass + ' input').value;
 
-      if (values !== undefined && values.includes('(') && values.includes(')')) {
+      if (values !== undefined && _.includes(values, '(') && _.includes(values, ')')) {
 
         let tidsInBrackets = values.match(/\(\d+\)/g);
 
