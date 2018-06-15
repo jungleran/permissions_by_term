@@ -11,7 +11,6 @@ import TermCollector from "../client/term-collector.prototype";
 
   if (document.querySelector("#edit-permissions-by-term-info") !== null) {
 
-
     /**
      * @type {Drupal~behavior}
      */
@@ -32,37 +31,43 @@ import TermCollector from "../client/term-collector.prototype";
 
         if (hasTaxonomyFormFields(backend)) {
 
+          const permissionOutput = new PermissionOutput,
+            permissionOutputCollector = new PermissionOutputCollector(permissionOutput),
+            domClient = new DomClient(document, permissionOutputCollector.getPermissionOutput(), Drupal),
+            termCollector = new TermCollector;
+
+          const processPermissionsDisplay = () => {
+            for (let formElementCssClass of backend.getFieldWrapperCSSClasses()) {
+
+              domClient.computeTids(formElementCssClass);
+
+              // termCollector.addSelectedTids(domClient.computeTidsByAutocomplete(backend.getFieldWrapperCSSClasses()));
+              // permissionOutputCollector.collect(backend, termCollector.getSelectedTids());
+              // domClient.renderPermissionsInfo();
+            }
+          }
+
           for (let formElementCssClass of backend.getFieldWrapperCSSClasses()) {
-            // $(formElementCssClass + ' select').change(() => {
-            //   nodeForm.displayPermissionsBySelect(fieldWrapperCSSClasses,
-            // formInfo['permissions']); });
 
             $(formElementCssClass + ' input[type="text"]').on('autocomplete-select', () => {
-              console.log('I have been selected');
-              const permissionOutput = new PermissionOutput,
-                  permissionOutputCollector = new PermissionOutputCollector(permissionOutput),
-                  domClient = new DomClient(document, permissionOutputCollector.getPermissionOutput(), Drupal),
-                  termCollector = new TermCollector;
-
-              termCollector.addSelectedTids(domClient.computeTidsByAutocomplete(backend.getFieldWrapperCSSClasses()));
-
-              permissionOutputCollector.collect(backend, termCollector.getSelectedTids());
-              domClient.renderPermissionsInfo();
+              processPermissionsDisplay();
             });
 
-            // $(formElementCssClass + '
-            // input[type="text"]').on('autocomplete-select', () => {
-            // nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses,
-            // formInfo['permissions']); });
+            $(formElementCssClass + ' select').change(function (){
+              processPermissionsDisplay();
+            });
 
-            // $(formElementCssClass + ' input[type="text"]').on('keyup', () =>
-            // {
-            // nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses,
-            // formInfo['permissions']); });   $(formElementCssClass + '
-            // input[type="checkbox"]').change(() => {
-            // nodeForm.displayPermissionsByCheckingCheckbox($(this).prop('value'),
-            // $(this).prop('checked'), formInfo['permissions']); });
+            $(formElementCssClass + ' input[type="text"]').on('keyup', function (){
+              processPermissionsDisplay();
+            });
+
+            $(formElementCssClass + ' input[type="checkbox"]').change(function (){
+              processPermissionsDisplay();
+            });
+
           }
+
+
 
 
           // function initPermissionInfoByFormElements(nodeForm,
