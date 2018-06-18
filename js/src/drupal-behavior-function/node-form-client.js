@@ -31,19 +31,24 @@ import TermCollector from "../client/term-collector.prototype";
 
         if (hasTaxonomyFormFields(backend)) {
 
-          const permissionOutput = new PermissionOutput,
-            permissionOutputCollector = new PermissionOutputCollector(permissionOutput),
-            domClient = new DomClient(document, permissionOutputCollector.getPermissionOutput(), Drupal),
-            termCollector = new TermCollector;
+          const domClient = new DomClient(document, Drupal);
 
           const processPermissionsDisplay = () => {
+            const termCollector = new TermCollector;
+
             for (let formElementCssClass of backend.getFieldWrapperCSSClasses()) {
 
-              domClient.computeTids(formElementCssClass);
+              const permissionOutput = new PermissionOutput,
+                permissionOutputCollector = new PermissionOutputCollector(permissionOutput);
 
-              // termCollector.addSelectedTids(domClient.computeTidsByAutocomplete(backend.getFieldWrapperCSSClasses()));
-              // permissionOutputCollector.collect(backend, termCollector.getSelectedTids());
-              // domClient.renderPermissionsInfo();
+              termCollector.addSelectedTids(domClient.computeTids(formElementCssClass));
+              permissionOutputCollector.collect(backend, termCollector.getSelectedTids());
+
+              domClient.setPermissionsOutput(permissionOutput);
+
+              console.log(permissionOutputCollector.getPermissionOutput());
+
+              domClient.renderPermissionsInfo();
             }
           }
 
@@ -67,17 +72,6 @@ import TermCollector from "../client/term-collector.prototype";
 
           }
 
-
-
-
-          // function initPermissionInfoByFormElements(nodeForm,
-          // fieldWrapperCSSClasses, formInfo) {
-          // nodeForm.displayPermissionsBySelect(fieldWrapperCSSClasses,
-          // formInfo['permissions']);
-          // nodeForm.displayPermissionsByAutocomplete(fieldWrapperCSSClasses,
-          // formInfo['permissions']);
-          // nodeForm.displayPermissionsByInitCheckbox(fieldWrapperCSSClasses,
-          // formInfo['permissions']); }
         };
 
       }

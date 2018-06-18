@@ -9,13 +9,18 @@ const _ = require('lodash');
  * @param PermissionsOutput permissionsOutput
  * @param document
  */
-let DomClient = function (document, permissionsOutput, drupal) {
+let DomClient = function (document, drupal) {
   this.document = document;
-  this.permissionsOutput = permissionsOutput;
   this.drupal = drupal;
 };
 
+DomClient.prototype.setPermissionsOutput = function (permissionsOutput) {
+  this.permissionsOutput = permissionsOutput;
+};
+
 DomClient.prototype.renderPermissionsInfo = function () {
+
+  console.log(this.permissionsOutput.getUsernames());
 
   let allowedUsersHtml = '<b>' + this.drupal.t('Allowed users:') + '</b> ';
 
@@ -36,7 +41,7 @@ DomClient.prototype.renderPermissionsInfo = function () {
   let generalInfoText = this.drupal.t("This widget shows information about taxonomy term related permissions. It's being updated, as soon you make any related changes in the form.");
 
   let newTermInfo = this.document.createElement('div');
-  newTermInfo.innerHTML = generalInfoText + '<br /><br />' + allowedUsersHtml + '<br />' + allowedRolesHtml;
+  newTermInfo.innerHTML = '<div id="edit-permissions-by-term-info"><div class="form-type-item">' + generalInfoText + '<br /><br />' + allowedUsersHtml + '<br />' + allowedRolesHtml + '</div></div>';
   this.document.querySelector('#edit-permissions-by-term-info .form-type-item').replaceWith(newTermInfo);
 };
 
@@ -69,7 +74,7 @@ DomClient.prototype._computeTidsByAutocomplete = function (fieldWrapperCSSClasse
   return selectedTids;
 };
 
-DomClient.prototype.computeTidsBySelect = function (fieldWrapperCSSClasses) {
+DomClient.prototype._computeTidsBySelect = function (fieldWrapperCSSClasses) {
   let tids = [],
       inputTypes = ['select', 'input'];
 
@@ -111,8 +116,17 @@ DomClient.prototype._computeTidsByCheckbox = function (formElementCssClass) {
 DomClient.prototype.computeTids = function (formElementCssClass) {
   let tids = [];
 
-  tids.push(this._computeTidsByCheckbox(formElementCssClass));
-  // @TODO: add other input types.
+  let lookup = {
+    checkbox: '_computeTidsByCheckbox',
+    text: '_computeTidsByAutocomplete',
+    select: '_computeTidsBySelect'
+  };
+
+  let inputType = this._getInputType(formElementCssClass);
+
+  tids.push(this[lookup[inputType]](formElementCssClass));
+
+  return tids;
 };
 
 DomClient.prototype._getInputType = function (formElementCssClass) {

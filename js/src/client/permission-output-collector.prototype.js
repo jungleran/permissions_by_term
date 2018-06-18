@@ -15,11 +15,13 @@ PermissionsOutputCollector.prototype.collect = function(permissions, tids) {
 PermissionsOutputCollector.prototype._collectRoles = function(permissions, tids) {
   for (let tidToRole in permissions.tidsToRoles) {
 
-    if (_.includes(tids, parseInt(tidToRole))) {
+    if (_.includes(tids[0], tidToRole)) {
 
       for (let role of permissions.tidsToRoles[tidToRole]) {
         if (!_.includes(this.permissionOutput.getRoles())) {
           this.permissionOutput.addRole(role);
+
+          console.log(role);
         }
       }
 
@@ -30,12 +32,12 @@ PermissionsOutputCollector.prototype._collectRoles = function(permissions, tids)
 
 PermissionsOutputCollector.prototype._collectUsers = function(permissions, tids) {
   for (let tidToUsername in permissions.tidToUsernames) {
-
-    if (_.includes(tids, parseInt(tidToUsername))) {
-
+    if (_.includes(tids[0], tidToUsername)) {
       for (let username of permissions.tidToUsernames[tidToUsername]) {
         if (!_.includes(this.permissionOutput.getUsernames())) {
           this.permissionOutput.addUsername(username);
+
+          console.log(username);
         }
       }
 
