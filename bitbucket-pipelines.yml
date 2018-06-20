@@ -36,9 +36,9 @@ pipelines:
           - screen -dmS php-server php -S localhost:8000 -t ./drupal/web
           - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat)
 
-    - step:
-        name: Deploy
-        script:
+    #- step:
+    #    name: Deploy
+    #    script:
           #- apt-get update && apt-get install -y unzip git
           #- git remote add d.o jepSter@git.drupal.org:project/permissions_by_term.git
           #- git config --global push.default simple
