@@ -15,7 +15,7 @@ pipelines:
           - composer
         script:
           - apt-get update
-          - apt-get install -y  screen php7.1-sqlite
+          - apt-get install -y  screen php7.1-sqlite libsqlite3-dev
           - curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
           - sh nodesource_setup.sh
           - apt-get update
