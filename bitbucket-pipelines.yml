@@ -33,7 +33,6 @@ pipelines:
           - (cd drupal/web && ../vendor/drush/drush/drush si standard --db-url=sqlite://sites/default/files/db.sqlite -y && ../vendor/drush/drush/drush en permissions_by_term -y)
           - (cd drupal && cp web/modules/permissions_by_term/tests/src/Behat/composer-require-namespace.php . && php composer-require-namespace.php && composer dump-autoload)
           - (cd drupal && cat composer.json)
-          #- screen -dmS phantomjs /tmp/phantomjs-2.1.1-linux-x86_64/bin/phantomjs --webdriver=4444
           - screen -dmS php-server php -S localhost:8000 -t ./drupal/web
           - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat)
         services:
