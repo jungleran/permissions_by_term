@@ -17,6 +17,7 @@ pipelines:
           - apt-get update
           - apt-get install -y  screen
           - curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
+          - sh nodesource_setup.sh
           - apt-get update
           - apt-get install -y nodejs npm
           - cd ..
