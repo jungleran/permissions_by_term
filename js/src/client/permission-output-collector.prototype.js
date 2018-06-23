@@ -18,10 +18,8 @@ PermissionsOutputCollector.prototype._collectRoles = function(permissions, tids)
     if (_.includes(tids[0], tidToRole)) {
 
       for (let role of permissions.tidsToRoles[tidToRole]) {
-        if (!_.includes(this.permissionOutput.getRoles())) {
+        if (!_.includes(this.permissionOutput.getRoles(), role)) {
           this.permissionOutput.addRole(role);
-
-          console.log(role);
         }
       }
 
@@ -34,10 +32,8 @@ PermissionsOutputCollector.prototype._collectUsers = function(permissions, tids)
   for (let tidToUsername in permissions.tidToUsernames) {
     if (_.includes(tids[0], tidToUsername)) {
       for (let username of permissions.tidToUsernames[tidToUsername]) {
-        if (!_.includes(this.permissionOutput.getUsernames())) {
+        if (!_.includes(this.permissionOutput.getUsernames(), username)) {
           this.permissionOutput.addUsername(username);
-
-          console.log(username);
         }
       }
 
@@ -52,6 +48,5 @@ PermissionsOutputCollector.prototype._collectUsers = function(permissions, tids)
 PermissionsOutputCollector.prototype.getPermissionOutput = function() {
   return this.permissionOutput;
 }
-
 
 export default PermissionsOutputCollector;

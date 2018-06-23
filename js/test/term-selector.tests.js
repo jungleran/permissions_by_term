@@ -23,3 +23,10 @@ QUnit.test( "Term selector retrieves array with tids if tids selected", function
 
   assert.deepEqual(termCollector.getSelectedTids(), ['1','2','3']);
 });
+
+QUnit.test( "Term selector retrieves tid array with no duplicates", function( assert ) {
+  const termCollector = new TermCollector;
+  termCollector.addSelectedTids(['1','1','1','2','2','2']);
+
+  assert.deepEqual(termCollector.getSelectedTids(), ['1','2']);
+});
