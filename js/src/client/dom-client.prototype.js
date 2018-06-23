@@ -39,19 +39,23 @@ DomClient.prototype.renderPermissionsInfo = function() {
 DomClient.prototype._computeTidsByAutocomplete = function(fieldWrapperCSSClass) {
   let selectedTids = []
 
-  let values = this.document.querySelectorAll(fieldWrapperCSSClass + ' input').value;
+  let autocompleteInputs = this.document.querySelectorAll(fieldWrapperCSSClass + ' input.form-autocomplete');
 
-  if (values !== undefined && _.includes(values, '(') && _.includes(values, ')')) {
+  for (let autocompleteInput of autocompleteInputs) {
 
-    let tidsInBrackets = values.match(/\(\d+\)/g);
+    if (autocompleteInput.value !== undefined && _.includes(autocompleteInput.value, '(') && _.includes(autocompleteInput.value, ')')) {
 
-    if (tidsInBrackets !== undefined && tidsInBrackets !== null && tidsInBrackets.constructor === Array) {
+      let tidsInBrackets = autocompleteInput.value.match(/\(\d+\)/g);
 
-      for (let i = 0; i < tidsInBrackets.length; ++i) {
-        let selectedTid = parseInt(tidsInBrackets[i].replace('(', '').replace(')', ''));
-        if (!_.includes(selectedTids, selectedTid)) {
-          selectedTids.push(selectedTid);
+      if (tidsInBrackets !== undefined && tidsInBrackets !== null && tidsInBrackets.constructor === Array) {
+
+        for (let i = 0; i < tidsInBrackets.length; ++i) {
+          let selectedTid = parseInt(tidsInBrackets[i].replace('(', '').replace(')', ''));
+          if (!_.includes(selectedTids, selectedTid)) {
+            selectedTids.push(String(selectedTid));
+          }
         }
+
       }
 
     }
@@ -116,16 +120,16 @@ DomClient.prototype.computeTids = function(formElementCssClass) {
 DomClient.prototype._getInputType = function(formElementCssClass) {
   let formElement = null;
 
-  if (!_.isEmpty(this.document.querySelector(formElementCssClass + ' input'))) {
-    formElement = 'input';
-  }
-
   if (!_.isEmpty(this.document.querySelector(formElementCssClass + ' select'))) {
     formElement = 'select';
   }
 
+  if (!_.isEmpty(this.document.querySelector(formElementCssClass + ' input'))) {
+    formElement = 'input';
+  }
+
   if (formElement === 'input') {
-    if (this.document.querySelector(formElementCssClass + ' input').type === "text") {
+    if (_.get(this.document.querySelector(formElementCssClass + ' input.form-autocomplete'), 'type') && this.document.querySelector(formElementCssClass + ' input.form-autocomplete').type === "text") {
       return 'text';
     }
     if (this.document.querySelector(formElementCssClass + ' input').type === "checkbox") {
@@ -138,8 +142,6 @@ DomClient.prototype._getInputType = function(formElementCssClass) {
   if (!_.isEmpty(formElement) && this.document.querySelector(formElementCssClass + ' select').tagName === "SELECT") {
     return 'select';
   }
-
-  throw 'No input type could be gathered.';
 
 }
 

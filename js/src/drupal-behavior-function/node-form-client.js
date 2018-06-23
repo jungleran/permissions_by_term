@@ -40,7 +40,6 @@ import TermCollector from "../client/term-collector.prototype";
             const permissionOutputCollector = new PermissionOutputCollector(permissionOutput);
 
             for (let formElementCssClass of backend.getFieldWrapperCSSClasses()) {
-
               termCollector.addSelectedTids(domClient.computeTids(formElementCssClass));
 
               permissionOutputCollector.collect(backend, termCollector.getSelectedTids());

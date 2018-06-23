@@ -39,7 +39,7 @@ PermissionsOutputCollector.prototype._collectUsers = function(permissions, tidsB
   for (let tids of tidsByInputs) {
 
     for (let tidToUsername in permissions.tidToUsernames) {
-      if (_.includes(tids['0'], tidToUsername)) {
+      if (_.includes(tids, tidToUsername)) {
         for (let username of permissions.tidToUsernames[tidToUsername]) {
           if (!_.includes(this.permissionOutput.getUsernames(), username)) {
             this.permissionOutput.addUsername(username);
