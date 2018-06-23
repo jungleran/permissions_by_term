@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 const _ = require('lodash');
 
-let TermCollector = function ($, infoRenderer, document) {
+let TermCollector = function () {
   this.selectedTids = [];
 };
 
@@ -13,25 +13,32 @@ TermCollector.prototype.getSelectedTids = function () {
   return this.selectedTids;
 };
 
-TermCollector.prototype.keyExists = function (key, array) {
-  if (!array || array.constructor !== Array && array.constructor !== Object) {
+TermCollector.prototype.termExists = function (key) {
+  if (!this.selectedTids || this.selectedTids.constructor !== Array && this.selectedTids.constructor !== Object) {
     return false;
   }
-  for (let i = 0; i < array.length; i++) {
-    if (array[i] === key) {
+  for (let i = 0; i < this.selectedTids.length; i++) {
+    if (this.selectedTids[i] === key) {
       return true;
     }
   }
-  return key in array;
+  return key in this.selectedTids;
 };
 
 TermCollector.prototype.addSelectedTid = function (tid) {
-  this.selectedTids.push(tid);
+  if (!this.termExists(tid)) {
+    this.selectedTids.push(tid);
+  }
 };
 
 TermCollector.prototype.addSelectedTids = function (tids) {
   if (!_.isEmpty(tids)) {
-    tids.forEach(tid => {
+    _.flatten(tids).forEach(tid => {
+
+      if (_.isArray(tid)) {
+        throw 'Wanted to add array. Must be string.';
+      }
+
       this.addSelectedTid(tid);
     });
   }

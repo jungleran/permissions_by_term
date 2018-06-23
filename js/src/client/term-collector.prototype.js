@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-let TermCollector = function($, infoRenderer, document){
+let TermCollector = function(){
   this.selectedTids = [];
 };
 
@@ -28,7 +28,12 @@ TermCollector.prototype.addSelectedTid = function(tid) {
 
 TermCollector.prototype.addSelectedTids = function(tids) {
   if (!_.isEmpty(tids)) {
-    tids.forEach((tid) => {
+    _.flatten(tids).forEach((tid) => {
+
+      if (_.isArray(tid)) {
+        throw 'Wanted to add array. Must be string.';
+      }
+
       this.addSelectedTid(tid);
     });
   }

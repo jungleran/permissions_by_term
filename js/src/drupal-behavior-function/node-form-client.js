@@ -30,19 +30,23 @@ import TermCollector from "../client/term-collector.prototype";
         }
 
         if (hasTaxonomyFormFields(backend)) {
+
           const processPermissionsDisplay = () => {
+
             const permissionOutput = new PermissionOutput,
                 termCollector = new TermCollector,
-              domClient = new DomClient(document, permissionOutput, Drupal);
+                domClient = new DomClient(document, permissionOutput, Drupal);
+
+            const permissionOutputCollector = new PermissionOutputCollector(permissionOutput);
 
             for (let formElementCssClass of backend.getFieldWrapperCSSClasses()) {
-              const permissionOutputCollector = new PermissionOutputCollector(permissionOutput);
 
               termCollector.addSelectedTids(domClient.computeTids(formElementCssClass));
-              permissionOutputCollector.collect(backend, termCollector.getSelectedTids());
 
-              domClient.renderPermissionsInfo();
+              permissionOutputCollector.collect(backend, termCollector.getSelectedTids());
             }
+
+            domClient.renderPermissionsInfo();
           }
 
           for (let formElementCssClass of backend.getFieldWrapperCSSClasses()) {

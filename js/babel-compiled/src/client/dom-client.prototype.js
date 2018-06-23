@@ -17,8 +17,6 @@ let DomClient = function (document, permissionsOutput, drupal) {
 
 DomClient.prototype.renderPermissionsInfo = function () {
 
-  console.log(this.permissionsOutput.getUsernames());
-
   let allowedUsersHtml = '<b>' + this.drupal.t('Allowed users:') + '</b> ';
 
   if (!_.isEmpty(this.permissionsOutput.getUsernames())) {
@@ -42,27 +40,21 @@ DomClient.prototype.renderPermissionsInfo = function () {
   this.document.querySelector('#edit-permissions-by-term-info .form-type-item').replaceWith(newTermInfo);
 };
 
-DomClient.prototype._computeTidsByAutocomplete = function (fieldWrapperCSSClasses = []) {
+DomClient.prototype._computeTidsByAutocomplete = function (fieldWrapperCSSClass) {
   let selectedTids = [];
 
-  if (!_.isEmpty(fieldWrapperCSSClasses)) {
-    for (let index = 0; index < fieldWrapperCSSClasses.length; ++index) {
-      let fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
+  let values = this.document.querySelectorAll(fieldWrapperCSSClass + ' input').value;
 
-      let values = this.document.querySelectorAll(fieldWrapperCSSClass + ' input').value;
+  if (values !== undefined && _.includes(values, '(') && _.includes(values, ')')) {
 
-      if (values !== undefined && _.includes(values, '(') && _.includes(values, ')')) {
+    let tidsInBrackets = values.match(/\(\d+\)/g);
 
-        let tidsInBrackets = values.match(/\(\d+\)/g);
+    if (tidsInBrackets !== undefined && tidsInBrackets !== null && tidsInBrackets.constructor === Array) {
 
-        if (tidsInBrackets !== undefined && tidsInBrackets !== null && tidsInBrackets.constructor === Array) {
-
-          for (let i = 0; i < tidsInBrackets.length; ++i) {
-            let selectedTid = parseInt(tidsInBrackets[i].replace('(', '').replace(')', ''));
-            if (!_.includes(selectedTids, selectedTid)) {
-              selectedTids.push(selectedTid);
-            }
-          }
+      for (let i = 0; i < tidsInBrackets.length; ++i) {
+        let selectedTid = parseInt(tidsInBrackets[i].replace('(', '').replace(')', ''));
+        if (!_.includes(selectedTids, selectedTid)) {
+          selectedTids.push(selectedTid);
         }
       }
     }
@@ -71,25 +63,21 @@ DomClient.prototype._computeTidsByAutocomplete = function (fieldWrapperCSSClasse
   return selectedTids;
 };
 
-DomClient.prototype._computeTidsBySelect = function (fieldWrapperCSSClasses) {
+DomClient.prototype._computeTidsBySelect = function (fieldWrapperCSSClass) {
   let tids = [],
       inputTypes = ['select', 'input'];
 
-  for (let index = 0; index < fieldWrapperCSSClasses.length; ++index) {
-    let fieldWrapperCSSClass = fieldWrapperCSSClasses[index];
+  for (let inputTypesIndex = 0; inputTypesIndex <= inputTypes.length; inputTypesIndex++) {
+    let values = this.document.querySelector(fieldWrapperCSSClass + ' select').value;
 
-    for (let inputTypesIndex = 0; inputTypesIndex <= inputTypes.length; inputTypesIndex++) {
-      let values = this.document.querySelector(fieldWrapperCSSClass + ' select').value;
+    if (values !== undefined && values !== null && values.constructor === Array) {
+      if (values[0] === '_none') {
+        this.resetData(fieldWrapperCSSClass);
+      }
 
-      if (values !== undefined && values !== null && values.constructor === Array) {
-        if (values[0] === '_none') {
-          this.resetData(fieldWrapperCSSClass);
-        }
-
-        for (let i = 0; i < values.length; ++i) {
-          if (isNaN(values[i]) === false) {
-            tids.push(parseInt(values[i]));
-          }
+      for (let i = 0; i < values.length; ++i) {
+        if (isNaN(values[i]) === false) {
+          tids.push(parseInt(values[i]));
         }
       }
     }
