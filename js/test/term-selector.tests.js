@@ -4,23 +4,22 @@ import _ from 'lodash';
 import sinon from 'sinon';
 
 QUnit.test( "Term selector retrieves empty array if no tids selected", function( assert ) {
-  const domClient = new DomClient,
-      termCollector = new TermCollector;
-  termCollector.addSelectedTids(domClient.computeTidsByAutocomplete());
+
+  const domClient = {
+      computeTids: sinon.stub().returns([])
+    },
+    termCollector = new TermCollector;
+  termCollector.addSelectedTids(domClient.computeTids());
 
   assert.ok(_.isEmpty(termCollector.getSelectedTids()));
 });
 
 QUnit.test( "Term selector retrieves array with tids if tids selected", function( assert ) {
-  let document = {
-    querySelector: sinon.stub().returns({
-      value: '(1),(2),(3)'
-    })
-  }
-
-  const domClient = new DomClient(document),
+  const domClient = {
+        computeTids: sinon.stub().returns(['1','2','3'])
+      },
       termCollector = new TermCollector;
-  termCollector.addSelectedTids(domClient.computeTidsByAutocomplete(['first-field', 'second-field']));
+  termCollector.addSelectedTids(domClient.computeTids(['first-field', 'second-field']));
 
-  assert.deepEqual(termCollector.getSelectedTids(), [1,2,3]);
+  assert.deepEqual(termCollector.getSelectedTids(), ['1','2','3']);
 });

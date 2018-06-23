@@ -4,12 +4,9 @@ const _ = require('lodash');
  * @param PermissionsOutput permissionsOutput
  * @param document
  */
-let DomClient = function(document, drupal) {
+let DomClient = function(document, permissionsOutput, drupal) {
   this.document = document;
   this.drupal = drupal;
-}
-
-DomClient.prototype.setPermissionsOutput = function(permissionsOutput) {
   this.permissionsOutput = permissionsOutput;
 }
 

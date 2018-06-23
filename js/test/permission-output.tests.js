@@ -21,26 +21,20 @@ QUnit.test("Collect output roles and usernames", async ( assert ) => {
         }
       }
     };
-  };
+  },
+    domClient = {
+      computeTids: sinon.stub().returns(['2'])
+    },
+    termCollector = new TermCollector;
 
-  let document = {
-    querySelector: sinon.stub().returns({
-      value: '(2)'
-    })
-  }
-
-  const domClient = new DomClient(document),
-      termCollector = new TermCollector;
-  termCollector.addSelectedTids(domClient.computeTidsByAutocomplete(['first-field', 'second-field']));
+  termCollector.addSelectedTids(domClient.computeTids(['first-field', 'second-field']));
 
   /**
    * @var Backend[] permissions
    */
-  let permissions = await createPermission(fetchFromBackend);
-
-  let permissionOutput = new PermissionOutput;
-
-  let permissionOutputCollector = new PermissionOutputCollector(permissionOutput);
+  let permissions = await createPermission(fetchFromBackend),
+      permissionOutput = new PermissionOutput,
+      permissionOutputCollector = new PermissionOutputCollector(permissionOutput);
 
   permissionOutputCollector.collect(permissions, termCollector.getSelectedTids());
 
