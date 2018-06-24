@@ -70,18 +70,12 @@ DomClient.prototype._computeTidsBySelect = function(fieldWrapperCSSClass) {
     inputTypes = ['select', 'input'];
 
   for (let inputTypesIndex = 0; inputTypesIndex <= inputTypes.length; inputTypesIndex++) {
-    let values = this.document.querySelector(fieldWrapperCSSClass + ' select').value;
+    let value = this.document.querySelector(fieldWrapperCSSClass + ' select').value;
 
-    if (values !== undefined && values !== null && values.constructor === Array) {
-      if (values[0] === '_none') {
-        this.resetData(fieldWrapperCSSClass);
-      }
-
-      for (let i = 0; i < values.length; ++i) {
-        if (isNaN(values[i]) === false) {
-          tids.push(parseInt(values[i]));
-        }
-      }
+    if (typeof value === "string") {
+      tids.push(value);
+    } else {
+      throw "Value must be type of string.";
     }
 
   }
