@@ -298,7 +298,9 @@ class AccessStorage {
    *
    * @throws \Exception
    */
-  public function addTermPermissionsByUserIds($aUserIdsGrantedAccess, $term_id, $langcode = 'en') {
+  public function addTermPermissionsByUserIds($aUserIdsGrantedAccess, $term_id, $langcode = '') {
+		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
+
     foreach ($aUserIdsGrantedAccess as $iUserIdGrantedAccess) {
       $this->database->insert('permissions_by_term_user')
         ->fields(['tid', 'uid', 'langcode'], [$term_id, $iUserIdGrantedAccess, $langcode])
@@ -313,7 +315,9 @@ class AccessStorage {
    *
    * @throws \Exception
    */
-  public function addTermPermissionsByRoleIds($aRoleIdsGrantedAccess, $term_id, $langcode = 'en') {
+  public function addTermPermissionsByRoleIds($aRoleIdsGrantedAccess, $term_id, $langcode = '') {
+  	$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
+
     $roles = Role::loadMultiple();
     foreach ($roles as $role => $roleObj) {
       if ($roleObj->hasPermission('bypass node access')) {
