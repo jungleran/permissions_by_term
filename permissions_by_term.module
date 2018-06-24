@@ -122,11 +122,9 @@ and this taxonomy term itself.
 EOT;
 
     $form['access'] = [
-      '#type' => 'fieldset',
+      '#type' => 'details',
       '#title' => t('Permissions'),
       '#description' => t($description),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
       '#attributes' => ['id' => 'fieldset_term_access'],
       '#weight' => -5,
       '#tree' => TRUE,
