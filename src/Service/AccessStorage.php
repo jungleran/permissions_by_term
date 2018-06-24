@@ -375,8 +375,8 @@ class AccessStorage {
       $aSubmittedRolesGrantedAccess);
 
     $langcode = 'en';
-    if (!empty($form_state->getValue('langcode', 'en'))) {
-      $langcode = $form_state->getValue('langcode', 'en')['0']['value'];
+    if (!empty($form_state->getValue('langcode'))) {
+      $langcode = $form_state->getValue('langcode')['0']['value'];
     }
 
     // Run the database queries.
