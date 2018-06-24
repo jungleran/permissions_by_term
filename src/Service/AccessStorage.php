@@ -352,17 +352,12 @@ class AccessStorage {
     return $aUserIds;
   }
 
-  /**
-   * Saves term permissions by users.
-   *
-   * Opposite to save term permission by roles.
-   *
-   * @param FormState $form_state
-   * @param int       $term_id
-   *
-   * @return array
-   *   Data for database queries.
-   */
+	/**
+	 * @param FormState $form_state
+	 * @param int $term_id
+	 * @return array
+	 * @throws \Exception
+	 */
   public function saveTermPermissions(FormState $form_state, $term_id) {
     $aExistingUserPermissions       = $this->getUserTermPermissionsByTid($term_id);
     $aSubmittedUserIdsGrantedAccess = $this->getSubmittedUserIds();
@@ -374,12 +369,11 @@ class AccessStorage {
       $aSubmittedUserIdsGrantedAccess, $aExistingRoleIdsGrantedAccess,
       $aSubmittedRolesGrantedAccess);
 
-    $langcode = 'en';
+    $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
     if (!empty($form_state->getValue('langcode'))) {
       $langcode = $form_state->getValue('langcode')['0']['value'];
     }
 
-    // Run the database queries.
     $this->deleteTermPermissionsByUserIds($aRet['UserIdPermissionsToRemove'], $term_id);
     $this->addTermPermissionsByUserIds($aRet['UserIdPermissionsToAdd'], $term_id, $langcode);
 
