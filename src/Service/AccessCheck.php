@@ -44,7 +44,9 @@ class AccessCheck {
    *
    * @return array|bool
    */
-  public function canUserAccessByNodeId($nid, $uid = FALSE, $langcode = 'en') {
+  public function canUserAccessByNodeId($nid, $uid = FALSE, $langcode = '') {
+		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
+
     if (\Drupal::currentUser()->hasPermission('bypass node access')) {
       return TRUE;
     }
@@ -90,7 +92,8 @@ class AccessCheck {
    * @param string   $langcode
    * @return bool
    */
-  public function isAccessAllowedByDatabase($tid, $uid = FALSE, $langcode = 'en') {
+  public function isAccessAllowedByDatabase($tid, $uid = FALSE, $langcode = '') {
+		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
 
     if ($uid === FALSE || (int) $uid === 0) {
       $user = \Drupal::currentUser();
@@ -172,7 +175,9 @@ class AccessCheck {
    *
    * @return bool
    */
-  public function isAnyPermissionSetForTerm($tid, $langcode = 'en') {
+  public function isAnyPermissionSetForTerm($tid, $langcode = '') {
+		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
+
     $iUserTableResults = intval($this->database->query("SELECT COUNT(1) FROM {permissions_by_term_user} WHERE tid = :tid AND langcode = :langcode",
       [':tid' => $tid, ':langcode' => $langcode])->fetchField());
 
