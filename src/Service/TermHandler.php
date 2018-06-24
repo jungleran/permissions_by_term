@@ -3,7 +3,7 @@
 namespace Drupal\permissions_by_term\Service;
 
 use Drupal\Core\Database\Connection;
-use Drupal\taxonomy\Entity\Term as TermEntity;
+use Drupal\taxonomy\Entity\Term;
 use Drupal\Component\Utility\Html;
 
 /**
@@ -11,7 +11,7 @@ use Drupal\Component\Utility\Html;
  *
  * @package Drupal\permissions_by_term\Service
  */
-class Term {
+class TermHandler {
 
   /**
    * The database connection.
@@ -21,7 +21,7 @@ class Term {
   private $database;
 
   /**
-   * @var TermEntity
+   * @var Term
    */
   private $term;
 
@@ -74,20 +74,24 @@ class Term {
   /**
    * @param string $sTermName
    *
-   * @return int
+   * @return int|null
    */
   public function getTermIdByName($sTermName) {
     $sTermName = Html::decodeEntities($sTermName);
     $aTermId = \Drupal::entityQuery('taxonomy_term')
-      ->condition('name', $sTermName)
+      ->condition('name', $sTermName . '%', 'LIKE')
       ->execute();
 
-    $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load(key($aTermId));
-    if ($term instanceof TermEntity) {
-      $this->setTerm($term);
+    if (!empty($aTermId)) {
+      $term = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load(key($aTermId));
+      if ($term instanceof TermEntity) {
+        $this->setTerm($term);
+      }
+
+      return key($aTermId);
     }
 
-    return key($aTermId);
+    return null;
   }
 
   /**

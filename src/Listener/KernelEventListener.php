@@ -6,7 +6,7 @@ use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\permissions_by_term\Event\PermissionsByTermDeniedEvent;
 use Drupal\permissions_by_term\Service\AccessCheck;
 use Drupal\permissions_by_term\Service\AccessStorage;
-use Drupal\permissions_by_term\Service\Term;
+use Drupal\permissions_by_term\Service\TermHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,7 +29,7 @@ class KernelEventListener implements EventSubscriberInterface
   private $accessCheckService;
 
   /**
-   * @var Term
+   * @var TermHandler
    */
   private $term;
 
@@ -50,7 +50,7 @@ class KernelEventListener implements EventSubscriberInterface
   {
     $this->accessCheckService = \Drupal::service('permissions_by_term.access_check');
     $this->accessStorageService = \Drupal::service('permissions_by_term.access_storage');
-    $this->term = \Drupal::service('permissions_by_term.term');
+    $this->term = \Drupal::service('permissions_by_term.term_handler');
     $this->eventDispatcher = \Drupal::service('event_dispatcher');
   }
 
