@@ -79,7 +79,7 @@ class KernelEventListener implements EventSubscriberInterface
       $tid = $this->term->getTermIdByName($query_string);
 
       $term = $this->term->getTerm();
-      $termLangcode = 'en';
+      $termLangcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
       if ($term instanceof \Drupal\taxonomy\Entity\Term) {
         $termLangcode = $term->language()->getId();
       }
@@ -109,7 +109,7 @@ class KernelEventListener implements EventSubscriberInterface
       $allowed_terms = [];
       foreach ($suggested_terms as $term) {
         $tid = $this->term->getTermIdByName($term->label);
-        $termLangcode = 'en';
+        $termLangcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
         if ($this->term->getTerm() instanceof \Drupal\taxonomy\Entity\Term) {
           $termLangcode = $this->term->getTerm()->language()->getId();
         }
