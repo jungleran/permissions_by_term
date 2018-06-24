@@ -7,6 +7,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\Entity\User;
+use Drupal\user\Entity\Role;
 
 /**
  * Class AccessStorage.
@@ -313,6 +314,15 @@ class AccessStorage {
    * @throws \Exception
    */
   public function addTermPermissionsByRoleIds($aRoleIdsGrantedAccess, $term_id, $langcode = 'en') {
+    $roles = Role::loadMultiple();
+    foreach ($roles as $role => $roleObj) {
+      if ($roleObj->hasPermission('bypass node access')) {
+        $aRoleIdsGrantedAccess[] = $roleObj->id();
+      }
+    }
+
+    $aRoleIdsGrantedAccess = array_unique($aRoleIdsGrantedAccess);
+
     foreach ($aRoleIdsGrantedAccess as $sRoleIdGrantedAccess) {
       $this->database->insert('permissions_by_term_role')
         ->fields(['tid', 'rid', 'langcode'], [$term_id, $sRoleIdGrantedAccess, $langcode])
