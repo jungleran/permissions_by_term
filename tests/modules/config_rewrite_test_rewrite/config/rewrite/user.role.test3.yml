@@ -1,4 +1,4 @@
-config_rewrite: 'replace'
+config_replace: 'replace'
 langcode: en
 status: true
 dependencies: {  }

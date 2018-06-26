@@ -10,6 +10,6 @@
  *
  * Allow config to be rewritten before a module is installed.
  */
-function config_rewrite_module_preinstall($module) {
-  \Drupal::service('config_rewrite.config_rewriter')->rewriteModuleConfig($module);
+function config_replace_module_preinstall($module) {
+  \Drupal::service('config_replace.config_replacer')->rewriteModuleConfig($module);
 }

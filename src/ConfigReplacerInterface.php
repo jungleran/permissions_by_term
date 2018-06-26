@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\config_rewrite;
+namespace Drupal\config_replace;
 
 /**
- * Provides an interface for the ConfigRewriter.
+ * Provides an interface for the ConfigReplacer.
  */
-interface ConfigRewriterInterface {
+interface ConfigReplacerInterface {
 
   /**
    * Extension sub-directory containing default configuration for installation.
    */
-  const CONFIG_REWRITE_DIRECTORY = 'config/rewrite';
+  public const CONFIG_REWRITE_DIRECTORY = 'config/rewrite';
 
   /**
    * Rewrites module config.

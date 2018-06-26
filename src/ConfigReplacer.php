@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\config_rewrite;
+namespace Drupal\config_replace;
 
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Provides methods to rewrite configuration.
  */
-class ConfigRewriter implements ConfigRewriterInterface {
+class ConfigReplacer implements ConfigReplacerInterface {
 
   /**
    * The config factory.
@@ -123,15 +123,15 @@ class ConfigRewriter implements ConfigRewriterInterface {
           }
         }
 
-        // Unset 'config_rewrite' key before saving rewritten values.
-        if (isset($rewrite['config_rewrite'])) {
-          unset($rewrite['config_rewrite']);
+        // Unset 'config_replace' key before saving rewritten values.
+        if (isset($rewrite['config_replace'])) {
+          unset($rewrite['config_replace']);
         }
 
         // Retain the original 'uuid' and '_core' keys if it's not explicitly
         // asked to rewrite them.
-        if (isset($rewrite['config_rewrite_uuids'])) {
-          unset($rewrite['config_rewrite_uuids']);
+        if (isset($rewrite['config_replace_uuids'])) {
+          unset($rewrite['config_replace_uuids']);
         }
         else {
           foreach (['_core', 'uuid'] as $key) {
@@ -163,7 +163,7 @@ class ConfigRewriter implements ConfigRewriterInterface {
    *   The rewritten config.
    */
   public function rewriteConfig($original_config, $rewrite) {
-    if (isset($rewrite['config_rewrite']) && $rewrite['config_rewrite'] == 'replace') {
+    if (isset($rewrite['config_replace']) && $rewrite['config_replace'] == 'replace') {
       return $rewrite;
     }
     return NestedArray::mergeDeep($original_config, $rewrite);

@@ -1,21 +1,21 @@
 <?php
 
-namespace Drupal\Tests\config_rewrite\Kernel;
+namespace Drupal\Tests\config_replace\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * @coversDefaultClass \Drupal\config_rewrite\ConfigRewriter
- * @group config_rewrite
+ * @coversDefaultClass \Drupal\config_replace\ConfigReplacer
+ * @group config_replace
  */
-class ConfigRewriteTest extends KernelTestBase {
+class ConfigReplaceTest extends KernelTestBase {
 
   /**
    * Modules to enable.
    *
    * @var array
    */
-  public static $modules = ['system', 'user', 'config_rewrite', 'config_rewrite_test', 'config_rewrite_test_rewrite', 'language'];
+  public static $modules = ['system', 'user', 'config_replace', 'config_replace_test', 'config_replace_test_rewrite', 'language'];
 
   /**
    * The active configuration storage.
@@ -27,7 +27,7 @@ class ConfigRewriteTest extends KernelTestBase {
   /**
    * The configuration rewriter.
    *
-   * @var \Drupal\config_rewrite\ConfigRewriterInterface
+   * @var \Drupal\config_replace\ConfigReplacerInterface
    */
   protected $configRewriter;
 
@@ -44,12 +44,12 @@ class ConfigRewriteTest extends KernelTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->configRewriter = $this->container->get('config_rewrite.config_rewriter');
+    $this->configRewriter = $this->container->get('config_replace.config_replacer');
     $this->activeConfigStorage = $this->container->get('config.storage');
     $this->languageConfigFactoryOverride = $this->container->get('language.config_factory_override');
     $this->installSchema('system', ['sequence']);
     $this->installEntitySchema('user_role');
-    $this->installConfig(['language', 'config_rewrite_test']);
+    $this->installConfig(['language', 'config_replace_test']);
   }
 
   /**
@@ -71,9 +71,9 @@ class ConfigRewriteTest extends KernelTestBase {
     $this->assertIdentical($data['permissions'], $expected_original_data['permissions']);
 
     // Rewrite configuration.
-    $this->configRewriter->rewriteModuleConfig('config_rewrite_test_rewrite');
+    $this->configRewriter->rewriteModuleConfig('config_replace_test_rewrite');
 
-    // Test a rewrite where config_rewrite is not set.
+    // Test a rewrite where config_replace is not set.
     // Test that data is modified.
     $expected_rewritten_data = [
       'label' => 'Test 1 rewritten',
@@ -90,7 +90,7 @@ class ConfigRewriteTest extends KernelTestBase {
     $this->assertEquals($user_role['is_admin'], $expected_rewritten_data['is_admin']);
     $this->assertEquals($user_role['permissions'], $expected_rewritten_data['permissions']);
 
-    // Test a rewrite where config_rewrite is set to an unsupported value.
+    // Test a rewrite where config_replace is set to an unsupported value.
     // Test that data is modified.
     $expected_rewritten_data = [
       'label' => 'Test 2 rewritten',
@@ -106,10 +106,10 @@ class ConfigRewriteTest extends KernelTestBase {
     $this->assertEquals($user_role['label'], $expected_rewritten_data['label']);
     $this->assertEquals($user_role['is_admin'], $expected_rewritten_data['is_admin']);
     $this->assertEquals($user_role['permissions'], $expected_rewritten_data['permissions']);
-    // Test that the "config_rewrite" key was unset.
-    $this->assertFalse(isset($user_role['config_rewrite']));
+    // Test that the "config_replace" key was unset.
+    $this->assertFalse(isset($user_role['config_replace']));
 
-    // Test a rewrite where config_rewrite is set to "replace".
+    // Test a rewrite where config_replace is set to "replace".
     // Test that data is replaced.
     $expected_rewritten_data = [
       'label' => 'Test 3 replaced',
@@ -124,8 +124,8 @@ class ConfigRewriteTest extends KernelTestBase {
     $this->assertEquals($user_role['label'], $expected_rewritten_data['label']);
     $this->assertEquals($user_role['is_admin'], $expected_rewritten_data['is_admin']);
     $this->assertEquals($user_role['permissions'], $expected_rewritten_data['permissions']);
-    // Test that the "config_rewrite" key was unset.
-    $this->assertFalse(isset($user_role['config_rewrite']));
+    // Test that the "config_replace" key was unset.
+    $this->assertFalse(isset($user_role['config_replace']));
 
     // Test a multilingual rewrite.
     $expected_rewritten_data = [
