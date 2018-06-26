@@ -107,12 +107,20 @@ class ConfigRewriter implements ConfigRewriterInterface {
           /** @var \Drupal\language\Config\LanguageConfigOverride $original_config */
           $config = $this->languageConfigFactoryOverride->getOverride($langcode, $file->name);
           $original_data = $config->get();
-          $rewrite = $this->rewriteConfig($original_data, $rewrite);
+          if (!empty($original_data)) {
+            $rewrite = $this->rewriteConfig($original_data, $rewrite);
+          } else {
+            break;
+          }
         }
         else {
           $config = $this->configFactory->getEditable($file->name);
           $original_data = $config->getRawData();
-          $rewrite = $this->rewriteConfig($original_data, $rewrite);
+          if (!empty($original_data)) {
+            $rewrite = $this->rewriteConfig($original_data, $rewrite);
+          } else {
+            break;
+          }
         }
 
         // Unset 'config_rewrite' key before saving rewritten values.
