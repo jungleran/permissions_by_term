@@ -42,7 +42,7 @@ class ConfigReplacer implements ConfigReplacerInterface {
   protected $logger;
 
   /**
-   * Constructs a new ConfigRewriter.
+   * Constructs a new ConfigReplacer.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
@@ -107,19 +107,17 @@ class ConfigReplacer implements ConfigReplacerInterface {
           /** @var \Drupal\language\Config\LanguageConfigOverride $original_config */
           $config = $this->languageConfigFactoryOverride->getOverride($langcode, $file->name);
           $original_data = $config->get();
+
           if (!empty($original_data)) {
             $rewrite = $this->rewriteConfig($original_data, $rewrite);
-          } else {
-            break;
           }
         }
         else {
           $config = $this->configFactory->getEditable($file->name);
           $original_data = $config->getRawData();
+
           if (!empty($original_data)) {
             $rewrite = $this->rewriteConfig($original_data, $rewrite);
-          } else {
-            break;
           }
         }
 

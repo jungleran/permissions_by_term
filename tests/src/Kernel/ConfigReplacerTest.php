@@ -8,7 +8,7 @@ use Drupal\KernelTests\KernelTestBase;
  * @coversDefaultClass \Drupal\config_replace\ConfigReplacer
  * @group config_replace
  */
-class ConfigReplaceTest extends KernelTestBase {
+class ConfigReplacerTest extends KernelTestBase {
 
   /**
    * Modules to enable.
