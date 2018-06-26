@@ -157,9 +157,9 @@ class ConfigReplacer implements ConfigReplacerInterface {
    */
   public function rewriteConfig($original_config, $rewrite, $configName, $extensionName) {
     if (empty($original_config)) {
-      $log = 'Tried to replace config @config for @module without initial config.';
+      $log = 'Tried to replace config @config by @module module without initial config.';
       $this->logger->error($log, ['@config' => $configName, '@module' => $extensionName]);
-      throw new NonexistentInitialConfigException("Tried to replace config $configName for $extensionName without initial config.");
+      throw new NonexistentInitialConfigException("Tried to replace config $configName by $extensionName module without initial config.");
     }
 
     if (isset($rewrite['config_replace']) && $rewrite['config_replace'] == 'replace') {
