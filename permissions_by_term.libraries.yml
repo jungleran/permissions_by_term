@@ -1,4 +1,4 @@
 nodeForm:
   version: 'VERSION'
   js:
-    js/webpack-dist/bundle.js: {}
+    js/webpack-dist/bundle.js: { }
