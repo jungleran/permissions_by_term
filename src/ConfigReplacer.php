@@ -109,7 +109,7 @@ class ConfigReplacer implements ConfigReplacerInterface {
           $config = $this->languageConfigFactoryOverride->getOverride($langcode, $file->name);
           $original_data = $config->get();
 
-          $rewrite = $this->rewriteConfig($original_data, $rewrite);
+          $rewrite = $this->rewriteConfig($original_data, $rewrite, $file->name, $extension->getName());
         }
         else {
           $config = $this->configFactory->getEditable($file->name);
