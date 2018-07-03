@@ -14,8 +14,6 @@ pipelines:
         caches:
           - composer
         script:
-          - apt-get update
-          - apt-get install -y screen php7.1-sqlite libsqlite3-dev sqlite3
           - cd ..
           - mkdir config_replace/
           - mv build/* config_replace/
@@ -27,7 +25,6 @@ pipelines:
     - step:
         name: Deploy
         script:
-          - apt-get update && apt-get install -y unzip git
           - git remote add d.o jepSter@git.drupal.org:project/config_replace.git
           - git config --global push.default simple
           - git config --global user.name "Peter Majmesku"
