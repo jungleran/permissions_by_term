@@ -21,16 +21,13 @@ interface ConfigReplacerInterface {
   public function rewriteModuleConfig($module);
 
   /**
-   * Returns rewritten configuration.
-   *
    * @param array $original_config
-   *   The original configuration array to rewrite.
    * @param array $rewrite
-   *   An array of configuration rewrites.
+   * @param string $configName
+   * @param string $extensionName
    *
    * @return array
-   *   The rewritten config.
    */
-  public function rewriteConfig($original_config, $rewrite);
+  public function rewriteConfig($original_config, $rewrite, $configName, $extensionName);
 
 }

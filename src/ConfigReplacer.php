@@ -7,6 +7,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Symfony\Component\Yaml\Yaml;
+use Drupal\config_replace\Exception\NonexistentInitialConfigException;
 
 /**
  * Provides methods to rewrite configuration.
@@ -42,7 +43,7 @@ class ConfigReplacer implements ConfigReplacerInterface {
   protected $logger;
 
   /**
-   * Constructs a new ConfigRewriter.
+   * Constructs a new ConfigReplacer.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
@@ -107,20 +108,14 @@ class ConfigReplacer implements ConfigReplacerInterface {
           /** @var \Drupal\language\Config\LanguageConfigOverride $original_config */
           $config = $this->languageConfigFactoryOverride->getOverride($langcode, $file->name);
           $original_data = $config->get();
-          if (!empty($original_data)) {
-            $rewrite = $this->rewriteConfig($original_data, $rewrite);
-          } else {
-            break;
-          }
+
+          $rewrite = $this->rewriteConfig($original_data, $rewrite, $file->name, $extension->getName());
         }
         else {
           $config = $this->configFactory->getEditable($file->name);
           $original_data = $config->getRawData();
-          if (!empty($original_data)) {
-            $rewrite = $this->rewriteConfig($original_data, $rewrite);
-          } else {
-            break;
-          }
+
+          $rewrite = $this->rewriteConfig($original_data, $rewrite, $file->name, $extension->getName());
         }
 
         // Unset 'config_replace' key before saving rewritten values.
@@ -152,17 +147,21 @@ class ConfigReplacer implements ConfigReplacerInterface {
   }
 
   /**
-   * Returns rewritten configuration.
-   *
    * @param array $original_config
-   *   The original configuration array to rewrite.
    * @param array $rewrite
-   *   An array of configuration rewrites.
+   * @param string $configName
+   * @param string $extensionName
    *
    * @return array
-   *   The rewritten config.
+   * @throws \Drupal\config_replace\Exception\NonexistentInitialConfigException
    */
-  public function rewriteConfig($original_config, $rewrite) {
+  public function rewriteConfig($original_config, $rewrite, $configName, $extensionName) {
+    if (empty($original_config)) {
+      $log = 'Tried to replace config @config by @module module without initial config.';
+      $this->logger->error($log, ['@config' => $configName, '@module' => $extensionName]);
+      throw new NonexistentInitialConfigException("Tried to replace config $configName by $extensionName module without initial config.");
+    }
+
     if (isset($rewrite['config_replace']) && $rewrite['config_replace'] == 'replace') {
       return $rewrite;
     }

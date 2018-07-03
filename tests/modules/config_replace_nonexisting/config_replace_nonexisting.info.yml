@@ -1,0 +1,7 @@
+name: Configuration Replace Nonexisting
+type: module
+description: 'Support module for Configuration Replace testing. Provides a replace the intent to replace nonexistent config.'
+core: 8.x
+package: Testing
+dependencies:
+ - config_replace
