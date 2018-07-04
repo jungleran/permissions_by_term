@@ -29,4 +29,4 @@ pipelines:
           - git config --global push.default simple
           - git config --global user.name "Peter Majmesku"
           - git push -u d.o
-          - git push --tags
+          - git push -f --tags
