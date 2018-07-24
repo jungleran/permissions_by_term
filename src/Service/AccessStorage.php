@@ -302,9 +302,17 @@ class AccessStorage {
 		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
 
     foreach ($aUserIdsGrantedAccess as $iUserIdGrantedAccess) {
-      $this->database->insert('permissions_by_term_user')
-        ->fields(['tid', 'uid', 'langcode'], [$term_id, $iUserIdGrantedAccess, $langcode])
-        ->execute();
+      $queryResult = $this->database->query("SELECT uid FROM {permissions_by_term_user} WHERE tid = :tid AND uid = :uid AND langcode = :langcode",
+        [':tid' => $term_id, ':uid' => $iUserIdGrantedAccess, ':langcode' => $langcode])->fetchField();
+      if (empty($queryResult)) {
+        $this->database->insert('permissions_by_term_user')
+          ->fields(['tid', 'uid', 'langcode'], [
+            $term_id,
+            $iUserIdGrantedAccess,
+            $langcode
+          ])
+          ->execute();
+      }
     }
   }
 
