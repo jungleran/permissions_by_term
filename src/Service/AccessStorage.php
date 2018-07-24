@@ -392,7 +392,9 @@ class AccessStorage {
     $this->addTermPermissionsByUserIds($aRet['UserIdPermissionsToAdd'], $term_id, $langcode);
 
     $this->deleteTermPermissionsByRoleIds($aRet['UserRolePermissionsToRemove'], $term_id);
-    $this->addTermPermissionsByRoleIds($aRet['aRoleIdPermissionsToAdd'], $term_id, $langcode);
+    if (!empty($aRet['aRoleIdPermissionsToAdd'])) {
+      $this->addTermPermissionsByRoleIds($aRet['aRoleIdPermissionsToAdd'], $term_id, $langcode);
+    }
 
     return $aRet;
   }
