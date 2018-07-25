@@ -89,19 +89,20 @@ function permissions_by_term_submit($form, FormState $formState) {
   $access_update = $access_storage->saveTermPermissions($formState, $termId);
 
   // Check if we need to rebuild node_access by term id
-  $invalidate_cache_tag = false;
+  $rebuild_node_access_and_flush_cache = false;
 
   // Has anything has changed?
   foreach($access_update as $values) {
     if(!empty($values)) {
-      $invalidate_cache_tag = true;
+      $rebuild_node_access_and_flush_cache = true;
       break;
     }
   }
 
-  // Do we need to flush the cache?
-  if($invalidate_cache_tag === true) {
+  // Do we need to flush the cache and rebuild the node access records?
+  if($rebuild_node_access_and_flush_cache === true) {
     Cache::invalidateTags(['search_index:node_search']);
+    node_access_rebuild(TRUE);
   }
 }
 
