@@ -5,6 +5,8 @@
  * Allows modules to rewrite configuration provided by other extensions.
  */
 
+use Drupal\Core\Routing\RouteMatchInterface;
+
 /**
  * Implements hook_module_preinstall().
  *
