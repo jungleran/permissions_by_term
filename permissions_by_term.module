@@ -89,20 +89,19 @@ function permissions_by_term_submit($form, FormState $formState) {
   $access_update = $access_storage->saveTermPermissions($formState, $termId);
 
   // Check if we need to rebuild node_access by term id
-  $rebuild_node_access_and_flush_cache = false;
+  $rebuild_cache = false;
 
   // Has anything has changed?
   foreach($access_update as $values) {
     if(!empty($values)) {
-      $rebuild_node_access_and_flush_cache = true;
+      $rebuild_cache = true;
       break;
     }
   }
 
-  // Do we need to flush the cache and rebuild the node access records?
-  if($rebuild_node_access_and_flush_cache === true) {
+  // Do we need to flush the cache?
+  if($rebuild_cache === true) {
     Cache::invalidateTags(['search_index:node_search']);
-    node_access_rebuild(TRUE);
   }
 }
 
@@ -317,12 +316,12 @@ function permissions_by_term_node_access_records(\Drupal\node\NodeInterface $nod
   $grantObject = $nodeAccess->createGrant($node->id(), $node->id());
 
   $grants[] = [
-    'realm' => $grantObject->realm,
-    'gid' => $grantObject->gid,
-    'grant_view' => $grantObject->grant_view,
+    'realm'        => $grantObject->realm,
+    'gid'          => $grantObject->gid,
+    'grant_view'   => $grantObject->grant_view,
     'grant_update' => $grantObject->grant_update,
     'grant_delete' => $grantObject->grant_delete,
-    'nid' => $node->id(),
+    'nid'          => $node->id(),
   ];
 
   return $grants;
