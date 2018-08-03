@@ -28,6 +28,6 @@ default:
       drush:
         alias: 'local'
       text:
-        username_field: "Benutzername"
-        password_field: "Passwort"
-        log_in: "Anmelden"
+        username_field: "Username"
+        password_field: "Password"
+        log_in: "Log in"
