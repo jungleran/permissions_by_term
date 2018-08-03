@@ -19,24 +19,37 @@ Feature: Access
       | Only admin user can edit       | Admin      | 0      | 2014-10-17 8:00am | Tag admin     | unpublished           |
       | Authenticated user can access  | Admin      | 0      | 2014-10-17 8:00am | Tag two       | unpublished           |
       | Anonymous user can access      | Admin      | 1      | 2014-10-17 8:00am | Tag anonymous | anonymous             |
+      | Node with tag without perm     | Admin      | 1      | 2014-10-17 8:00am | Tag three     | anonymous             |
     Given users:
       | name          | mail            | pass     |
       | Joe           | joe@example.com | password |
     Given Node access records are rebuild.
 
-  Scenario: Anonymous users cannot see restricted node
-    Given I open node view by node title "Authenticated user can access"
-    Then I should see text matching "Access denied"
+#  Scenario: Anonymous users cannot see restricted node
+#    Given I open node view by node title "Authenticated user can access"
+#    Then I should see text matching "Access denied"
+#
+#  Scenario: Anonymous users can see allowed node with term with multiple user role relation in view
+#    Given I am on "/"
+#    And the cache has been cleared
+#    Then I should see text matching "Anonymous user can access"
+#
+#  Scenario: Users access nodes by view
+#    Given I am logged in as a user with the "administrator" role
+#    Then I am on "/"
+#    And I should see text matching "Only admin can access"
+#    Given I am logged in as "Joe"
+#    Then I am on "/"
+#    And I should not see text matching "Only admin can access"
 
-  Scenario: Anonymous users can see allowed node with term with multiple user role relation in view
-    Given I am on "/"
-    And the cache has been cleared
-    Then I should see text matching "Anonymous user can access"
-
-  Scenario: Users access nodes by view
+  Scenario: Users cannot visit node after term permission is being added to a term without permissions
     Given I am logged in as a user with the "administrator" role
+    Then I open node view by node title "Node with tag without perm"
+    And I click "Tag three"
+    Then I click "Edit"
+    And I click by selector "#fieldset_term_access summary" via JavaScript
+    And I check checkbox with id "edit-access-role-administrator"
+    Then I click by selector "#edit-submit" via JavaScript
+    And I am on "/user/logout"
     Then I am on "/"
-    And I should see text matching "Only admin can access"
-    Given I am logged in as "Joe"
-    Then I am on "/"
-    And I should not see text matching "Only admin can access"
+    And I should not see the text "Node with tag without perm"
