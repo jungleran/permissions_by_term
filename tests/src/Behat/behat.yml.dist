@@ -22,8 +22,12 @@ default:
       base_url: http://localhost:80
     Drupal\DrupalExtension:
       blackbox: ~
+      drupal:
+        drupal_root: '%paths.base%'
       api_driver: 'drupal'
       drush:
         alias: 'local'
-      drupal:
-        drupal_root: '%paths.base%'
+      text:
+        username_field: "Benutzername"
+        password_field: "Passwort"
+        log_in: "Anmelden"
