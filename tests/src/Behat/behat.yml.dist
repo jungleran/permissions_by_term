@@ -11,17 +11,22 @@ default:
         features: '%paths.base%/modules/permissions_by_term/tests/src/Behat/Features'
   extensions:
     Behat\MinkExtension:
-      browser_name: chrome
-      javascript_session: selenium2
-      default_session: selenium2
-      goutte: ~
+      javascript_session: 'selenium2'
+      browser_name: 'chrome'
+      show_cmd: "open %s"
       selenium2:
-        wd_host: "http://localhost:4444/wd/hub"
-        browser: "chrome"
-        capabilities: { "browserName": "chrome", "browser": "chrome", "version":  "*", "chrome": { switches: ["--no-sandbox"] } }
-      base_url: http://localhost:80
+        wd_host: 'http://localhost:4444/wd/hub'
+      base_url: http://localhost:8000
+      sessions:
+          default:
+            goutte: ~
+          javascript:
+            selenium2:
+              browser: phantomjs
     Drupal\DrupalExtension:
       blackbox: ~
+      api_driver: 'drupal'
+      drush:
+        alias: 'local'
       drupal:
         drupal_root: '%paths.base%'
-      api_driver: 'drupal'
