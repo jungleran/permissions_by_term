@@ -25,9 +25,3 @@ default:
       drupal:
         drupal_root: '%paths.base%'
       api_driver: 'drupal'
-      drush:
-        alias: 'local'
-      text:
-        username_field: "Username"
-        password_field: "Password"
-        log_in: "Log in"
