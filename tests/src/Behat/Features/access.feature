@@ -1,4 +1,4 @@
-@api @drupal
+@api @drupal @javascript
 Feature: Access
   Several automated tests for the Permissions by Term Drupal 8 module.
 
