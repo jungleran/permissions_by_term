@@ -25,22 +25,22 @@ Feature: Access
       | Joe           | joe@example.com | password |
     Given Node access records are rebuild.
 
-#  Scenario: Anonymous users cannot see restricted node
-#    Given I open node view by node title "Authenticated user can access"
-#    Then I should see text matching "Access denied"
-#
-#  Scenario: Anonymous users can see allowed node with term with multiple user role relation in view
-#    Given I am on "/"
-#    And the cache has been cleared
-#    Then I should see text matching "Anonymous user can access"
-#
-#  Scenario: Users access nodes by view
-#    Given I am logged in as a user with the "administrator" role
-#    Then I am on "/"
-#    And I should see text matching "Only admin can access"
-#    Given I am logged in as "Joe"
-#    Then I am on "/"
-#    And I should not see text matching "Only admin can access"
+  Scenario: Anonymous users cannot see restricted node
+    Given I open node view by node title "Authenticated user can access"
+    Then I should see text matching "Access denied"
+
+  Scenario: Anonymous users can see allowed node with term with multiple user role relation in view
+    Given I am on "/"
+    And the cache has been cleared
+    Then I should see text matching "Anonymous user can access"
+
+  Scenario: Users access nodes by view
+    Given I am logged in as a user with the "administrator" role
+    Then I am on "/"
+    And I should see text matching "Only admin can access"
+    Given I am logged in as "Joe"
+    Then I am on "/"
+    And I should not see text matching "Only admin can access"
 
   Scenario: Users cannot visit node after term permission is being added to a term without permissions
     Given I am logged in as a user with the "administrator" role

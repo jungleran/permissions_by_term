@@ -88,19 +88,20 @@ function permissions_by_term_submit($form, FormState $formState) {
   $access_storage = \Drupal::service('permissions_by_term.access_storage');
   $access_update = $access_storage->saveTermPermissions($formState, $termId);
 
-  // Check if we need to rebuild node_access by term id
-  $rebuild_cache = false;
+  // Check if we need to rebuild cache and node_access
+  $rebuild_cache_and_node_access = false;
 
   // Has anything has changed?
   foreach($access_update as $values) {
     if(!empty($values)) {
-      $rebuild_cache = true;
+      $rebuild_cache_and_node_access = true;
       break;
     }
   }
 
-  // Do we need to flush the cache?
-  if($rebuild_cache === true) {
+  // Do we need to flush the cache and the node access records?
+  if($rebuild_cache_and_node_access === true) {
+    node_access_rebuild(TRUE);
     Cache::invalidateTags(['search_index:node_search']);
   }
 }
