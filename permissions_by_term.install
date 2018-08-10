@@ -37,7 +37,6 @@ function permissions_by_term_schema() {
       ],
     ],
     'primary key' => [
-      'tid',
       'uid',
     ],
   ];
@@ -64,7 +63,6 @@ function permissions_by_term_schema() {
       ],
     ],
     'primary key' => [
-      'tid',
       'rid',
     ],
   ];
