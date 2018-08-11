@@ -3,21 +3,8 @@
 namespace Drupal\Tests\permissions_by_term\Kernel;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\Entity\Node;
-use Drupal\permissions_by_term\Service\AccessStorage;
-use Drupal\taxonomy\Entity\Term;
-use Drupal\taxonomy\Entity\Vocabulary;
-use Drupal\user\Entity\Role;
-use Drupal\user\Entity\User;
-use Drupal\user\RoleInterface;
-use Prophecy\Argument;
 
-/**
- * Class AccessCheckTest
- *
- * @package Drupal\Tests\permissions_by_term\Kernel
- * @group permissions_by_term
- */
+
 class AccessStorageTest extends PBTKernelTestBase {
 
   /**
@@ -31,7 +18,7 @@ class AccessStorageTest extends PBTKernelTestBase {
     $_REQUEST = array (
       'access' =>
         array (
-          'user' => '',
+          'user' => 'admin (1), editor (45)',
           'role' =>
             array (
               'authenticated' => 'authenticated',
@@ -39,34 +26,84 @@ class AccessStorageTest extends PBTKernelTestBase {
         ),
     );
 
+    $formStateStub = $this->mockFormState('en', [
+      'role' =>
+        [
+          'authenticated' => 'authenticated',
+          'anonymous'     => 0,
+          'administrator' => 0,
+        ],
+    ]);
+
+
+    $this->assertEquals(array (
+      'UserIdPermissionsToRemove' =>
+        array (
+        ),
+      'UserIdPermissionsToAdd' =>
+        array(
+          '0' => '1',
+          '1' => '45',
+        ),
+      'UserRolePermissionsToRemove' =>
+        array (
+        ),
+      'aRoleIdPermissionsToAdd' =>
+        array (
+          0 => 'authenticated',
+        ),
+    ), $this->accessStorage->saveTermPermissions($formStateStub, 1));
+
+    $formStateStub = $this->mockFormState('de', [
+      'role' =>
+        [
+          'authenticated' => 'authenticated',
+          'anonymous'     => 0,
+          'administrator' => 0,
+        ],
+    ]);
+
+    $this->assertEquals(array (
+      'UserIdPermissionsToRemove' =>
+        array (
+        ),
+      'UserIdPermissionsToAdd' =>
+        array(
+          '0' => '1',
+          '1' => '45',
+        ),
+      'UserRolePermissionsToRemove' =>
+        array (
+        ),
+      'aRoleIdPermissionsToAdd' =>
+        array (
+          0 => 'authenticated',
+        ),
+    ), $this->accessStorage->saveTermPermissions($formStateStub, 1));
+  }
+
+  private function mockFormState($langcode, $accessOutput) {
     $formStateStub = $this->getMockBuilder(FormStateInterface::class)
       ->getMock();
 
     $map = [
       [
-        'langcode', NULL,
-       [
-         ['value' => 'en']
-       ]
+        'langcode',
+        NULL,
+        [
+          ['value' => $langcode]
+        ]
       ],
       [
-        'access', NULL,
-        [
-          'role' =>
-            [
-              'authenticated' => 'authenticated',
-              'anonymous'     => 0,
-              'administrator' => 0,
-            ],
-        ],
+        'access',
+        NULL,
+        $accessOutput
       ]
     ];
     $formStateStub->expects($this->any())
       ->method('getValue')
       ->will($this->returnValueMap($map));
-
-    $this->accessStorage->saveTermPermissions($formStateStub, 1);
+    return $formStateStub;
   }
-
 
 }
