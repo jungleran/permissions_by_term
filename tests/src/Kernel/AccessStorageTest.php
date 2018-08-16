@@ -4,7 +4,9 @@ namespace Drupal\Tests\permissions_by_term\Kernel;
 
 use Drupal\Core\Form\FormStateInterface;
 
-
+/**
+ * @group permissions_by_term
+ */
 class AccessStorageTest extends PBTKernelTestBase {
 
   /**
