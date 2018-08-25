@@ -6,6 +6,7 @@ use Behat\Gherkin\Node\TableNode;
 use Drupal\Driver\DrupalDriver;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\user\Entity\Role;
 
 /**
  * Class PermissionsByTermContext
@@ -243,6 +244,17 @@ class PermissionsByTermContext extends RawDrupalContext {
   public function clickBySelector(string $selector)
   {
     $this->getSession()->executeScript("document.querySelector('" . $selector . "').click()");
+  }
+
+  /**
+   * @Given /^editor role exists$/
+   */
+  public function createEditorRole() {
+    if (!Role::load('editor')) {
+      $role = Role::create(['id' => 'editor']);
+      $role->grantPermission('edit any article content')
+        ->save();
+    }
   }
 
 }

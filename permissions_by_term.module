@@ -12,6 +12,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
+use Drupal\permissions_by_term\Service\AccessCheck;
+use Drupal\permissions_by_term\Service\NodeAccess;
 use Drupal\taxonomy\Entity\Term;
 
 /**

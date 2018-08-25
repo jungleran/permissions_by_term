@@ -3,6 +3,7 @@ Feature: Access
   Several automated tests for the Permissions by Term Drupal 8 module.
 
   Background:
+    Given editor role exists
     Given restricted "tags" terms:
       | name          | access_user   | access_role                             |
       | Tag one       |               | administrator                           |
@@ -59,3 +60,8 @@ Feature: Access
     Then I open node view by node title "Node with tag without perm"
     And I click "Edit"
     Then I should not see the text "The website encountered an unexpected error. Please try again later."
+
+  Scenario: Editor cannot access disallowed node edit form
+    Given I am logged in as a user with the "editor" role
+    Then I open node edit form by node title "Only admin can access"
+    And I should see text matching "Access denied"
