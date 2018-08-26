@@ -7,6 +7,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\permissions_by_term\NodeAccessStorage;
 use Drupal\user\Entity\User;
 use Drupal\user\Entity\Role;
 
@@ -59,6 +60,11 @@ class AccessStorage {
    * @var AccessCheck
    */
   protected $accessCheck;
+
+  /**
+   * @var array
+   */
+  static private $nodeAccess;
 
   /**
    * AccessStorageService constructor.
@@ -554,23 +560,44 @@ class AccessStorage {
    */
   public function getTidsByNid($nid)
   {
-    $node = \Drupal::entityTypeManager()->getStorage('node')->load($nid);
-    $tids = [];
+    $tempstore = \Drupal::service('user.private_tempstore')->get('permissions_by_term');
 
-    foreach ($node->getFields() as $field) {
-      if ($field->getFieldDefinition()->getType() == 'entity_reference' && $field->getFieldDefinition()->getSetting('target_type') == 'taxonomy_term') {
-        $aReferencedTaxonomyTerms = $field->getValue();
-        if (!empty($aReferencedTaxonomyTerms)) {
-          foreach ($aReferencedTaxonomyTerms as $aReferencedTerm) {
-            if (isset($aReferencedTerm['target_id'])) {
-              $tids[] = $aReferencedTerm['target_id'];
-            }
-          }
-        }
+    if (empty(self::$nodeAccess)) {
+      $nodeAccess = $tempstore->get('node_access');
+      if (!empty($nodeAccess)) {
+        self::$nodeAccess = $nodeAccess;
       }
     }
 
-    return $tids;
+    if (empty(self::$nodeAccess)) {
+
+      $allNodes = \Drupal::entityTypeManager()->getStorage('node')->loadMultiple();
+
+      foreach ($allNodes as $node) {
+        $tids = [];
+
+        foreach ($node->getFields() as $field) {
+          if ($field->getFieldDefinition()
+              ->getType() == 'entity_reference' && $field->getFieldDefinition()
+              ->getSetting('target_type') == 'taxonomy_term') {
+            $aReferencedTaxonomyTerms = $field->getValue();
+            if (!empty($aReferencedTaxonomyTerms)) {
+              foreach ($aReferencedTaxonomyTerms as $aReferencedTerm) {
+                if (isset($aReferencedTerm['target_id'])) {
+                  $tids[] = $aReferencedTerm['target_id'];
+                }
+              }
+            }
+          }
+        }
+
+        self::$nodeAccess[$nid] = $tids;
+      }
+
+      $tempstore->set('node_access', self::$nodeAccess);
+    }
+
+    return self::$nodeAccess[$nid];
   }
 
   /**
