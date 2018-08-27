@@ -68,12 +68,7 @@ class AccessStorage {
   static private $nodeAccessTids;
 
   /**
-   * @var bool
-   */
-  static private $nodeAccessTidsRetrieved = FALSE;
-
-  /**
-   * @var \Drupal\Core\TempStore\SharedTempStoreFactory
+   * @var SharedTempStoreFactory
    */
   private $sharedTempStoreFactory;
 
@@ -558,9 +553,8 @@ class AccessStorage {
     return $sUserInfos;
   }
 
-  public function getTidsByNid($nid)
-  {
-    if (\Drupal::currentUser() instanceof AccountProxy && self::$nodeAccessTidsRetrieved === FALSE) {
+  public function getTidsByNid($nid) {
+    if (\Drupal::currentUser() instanceof AccountProxy && !isset(self::$nodeAccessTids[$nid])) {
       /**
        * @var \Drupal\Core\TempStore\SharedTempStore $sharedTempstore
        */
@@ -570,13 +564,11 @@ class AccessStorage {
         $nodeAccess = $sharedTempstore->get('node_access');
         if (!empty($nodeAccess)) {
           self::$nodeAccessTids = $nodeAccess;
-          self::$nodeAccessTidsRetrieved = TRUE;
         }
       }
     }
 
-    if (self::$nodeAccessTidsRetrieved === FALSE) {
-
+    if (empty(self::$nodeAccessTids[$nid])) {
       $allNodes = \Drupal::entityTypeManager()->getStorage('node')->loadMultiple();
 
       foreach ($allNodes as $node) {
@@ -600,8 +592,6 @@ class AccessStorage {
         self::$nodeAccessTids[$nid] = $tids;
       }
 
-      self::$nodeAccessTidsRetrieved = TRUE;
-
       if (\Drupal::currentUser() instanceof AccountProxy) {
         /**
          * @var \Drupal\Core\TempStore\SharedTempStore $sharedTempstore
@@ -611,11 +601,7 @@ class AccessStorage {
       }
     }
 
-    if (isset(self::$nodeAccessTids[$nid])) {
-      return self::$nodeAccessTids[$nid];
-    }
-
-    return [];
+    return self::$nodeAccessTids[$nid];
   }
 
   /**

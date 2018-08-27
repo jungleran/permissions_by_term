@@ -16,6 +16,31 @@ class AccessStorageTest extends PBTKernelTestBase {
     parent::setUp();
   }
 
+  private function mockFormState(string $langcode, array $accessOutput) {
+    $formStateStub = $this->getMockBuilder(FormStateInterface::class)
+      ->getMock();
+
+    $map = [
+      [
+        'langcode',
+        NULL,
+        [
+          ['value' => $langcode]
+        ]
+      ],
+      [
+        'access',
+        NULL,
+        $accessOutput
+      ]
+    ];
+    $formStateStub->expects($this->any())
+      ->method('getValue')
+      ->will($this->returnValueMap($map));
+
+    return $formStateStub;
+  }
+
   public function testSaveMultipleLanguageCodes() {
     $_REQUEST = array (
       'access' =>
@@ -84,28 +109,10 @@ class AccessStorageTest extends PBTKernelTestBase {
     ), $this->accessStorage->saveTermPermissions($formStateStub, 1));
   }
 
-  private function mockFormState($langcode, $accessOutput) {
-    $formStateStub = $this->getMockBuilder(FormStateInterface::class)
-      ->getMock();
+  public function testTidsByNidRetrieval() {
+    $this->createRelationOneGrantedTerm();
 
-    $map = [
-      [
-        'langcode',
-        NULL,
-        [
-          ['value' => $langcode]
-        ]
-      ],
-      [
-        'access',
-        NULL,
-        $accessOutput
-      ]
-    ];
-    $formStateStub->expects($this->any())
-      ->method('getValue')
-      ->will($this->returnValueMap($map));
-    return $formStateStub;
+    self::assertCount(3, $this->accessStorage->getTidsByNid('1'));
   }
 
 }
