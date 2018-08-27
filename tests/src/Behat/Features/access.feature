@@ -24,7 +24,7 @@ Feature: Access
     Given users:
       | name          | mail            | pass     |
       | Joe           | joe@example.com | password |
-    Given Node access records are rebuild.
+    Given Node access records are rebuild
 
   Scenario: Anonymous users cannot see restricted node
     Given I open node view by node title "Authenticated user can access"
@@ -63,5 +63,7 @@ Feature: Access
 
   Scenario: Editor cannot access disallowed node edit form
     Given I am logged in as a user with the "editor" role
+    And I open node view by node title "Only admin can access"
+    And I should see text matching "Access denied"
     Then I open node edit form by node title "Only admin can access"
     And I should see text matching "Access denied"

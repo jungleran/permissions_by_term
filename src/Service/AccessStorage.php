@@ -7,9 +7,10 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\permissions_by_term\NodeAccessStorage;
+use Drupal\Core\Session\AccountProxy;
 use Drupal\user\Entity\User;
 use Drupal\user\Entity\Role;
+use Drupal\Core\TempStore\SharedTempStoreFactory;
 
 /**
  * Class AccessStorage.
@@ -64,19 +65,23 @@ class AccessStorage {
   /**
    * @var array
    */
-  static private $nodeAccess;
+  static private $nodeAccessTids;
 
   /**
-   * AccessStorageService constructor.
-   *
-   * @param Connection  $database
-   * @param TermHandler        $term
-   * @param AccessCheck $accessCheck
+   * @var bool
    */
-  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck) {
+  static private $nodeAccessTidsRetrieved = FALSE;
+
+  /**
+   * @var \Drupal\Core\TempStore\SharedTempStoreFactory
+   */
+  private $sharedTempStoreFactory;
+
+  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, SharedTempStoreFactory $sharedTempStoreFactory) {
     $this->database  = $database;
     $this->term = $term;
     $this->accessCheck = $accessCheck;
+    $this->sharedTempStoreFactory = $sharedTempStoreFactory;
   }
 
   /**
@@ -553,23 +558,24 @@ class AccessStorage {
     return $sUserInfos;
   }
 
-  /**
-   * @param $nid
-   *
-   * @return array
-   */
   public function getTidsByNid($nid)
   {
-    $tempstore = \Drupal::service('user.private_tempstore')->get('permissions_by_term');
+    if (\Drupal::currentUser() instanceof AccountProxy && self::$nodeAccessTidsRetrieved === FALSE) {
+      /**
+       * @var \Drupal\Core\TempStore\SharedTempStore $sharedTempstore
+       */
+      $sharedTempstore = $this->sharedTempStoreFactory->get('permissions_by_term');
 
-    if (empty(self::$nodeAccess)) {
-      $nodeAccess = $tempstore->get('node_access');
-      if (!empty($nodeAccess)) {
-        self::$nodeAccess = $nodeAccess;
+      if (empty(self::$nodeAccessTids)) {
+        $nodeAccess = $sharedTempstore->get('node_access');
+        if (!empty($nodeAccess)) {
+          self::$nodeAccessTids = $nodeAccess;
+          self::$nodeAccessTidsRetrieved = TRUE;
+        }
       }
     }
 
-    if (empty(self::$nodeAccess)) {
+    if (self::$nodeAccessTidsRetrieved === FALSE) {
 
       $allNodes = \Drupal::entityTypeManager()->getStorage('node')->loadMultiple();
 
@@ -591,13 +597,25 @@ class AccessStorage {
           }
         }
 
-        self::$nodeAccess[$nid] = $tids;
+        self::$nodeAccessTids[$nid] = $tids;
       }
 
-      $tempstore->set('node_access', self::$nodeAccess);
+      self::$nodeAccessTidsRetrieved = TRUE;
+
+      if (\Drupal::currentUser() instanceof AccountProxy) {
+        /**
+         * @var \Drupal\Core\TempStore\SharedTempStore $sharedTempstore
+         */
+        $sharedTempstore = $this->sharedTempStoreFactory->get('permissions_by_term');
+        $sharedTempstore->set('node_access', self::$nodeAccessTids);
+      }
     }
 
-    return self::$nodeAccess[$nid];
+    if (isset(self::$nodeAccessTids[$nid])) {
+      return self::$nodeAccessTids[$nid];
+    }
+
+    return [];
   }
 
   /**

@@ -5,6 +5,7 @@
  * Allows access to terms in a vocabulary to be limited by user or role.
  */
 
+use Drupal\Core\Access\AccessResultForbidden;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormState;
@@ -13,7 +14,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
 use Drupal\permissions_by_term\Service\AccessCheck;
-use Drupal\permissions_by_term\Service\NodeAccess;
+use Drupal\permissions_by_term\Service\AccessStorage;
 use Drupal\taxonomy\Entity\Term;
 
 /**
@@ -231,6 +232,14 @@ function permissions_by_term_form_alter(&$form, FormStateInterface $formState, $
     $nid = null;
     if (!empty($node = \Drupal::routeMatch()->getParameter('node'))) {
       $nid = $node->id();
+      /**
+       * @var AccessCheck $accessCheck
+       */
+      $accessCheck = \Drupal::service('permissions_by_term.access_check');
+      $accessResult = $accessCheck->handleNode($nid, $langcode);
+      if ($accessResult instanceof AccessResultForbidden) {
+        return $accessResult;
+      }
     }
 
     $viewFilePath = drupal_get_path('module', 'permissions_by_term') . '/src/View/node-details.html.twig';
@@ -372,7 +381,7 @@ function permissions_by_term_options_list_alter(array &$options, array $context)
     foreach ($options as $id => $names) {
       if ($id !== '_none') {
         /**
-         * @var \Drupal\permissions_by_term\Service\AccessCheck $accessCheck
+         * @var AccessCheck $accessCheck
          */
         $accessCheck = \Drupal::service('permissions_by_term.access_check');
 
@@ -401,7 +410,7 @@ function permissions_by_term_options_list_alter(array &$options, array $context)
 function permissions_by_term_user_cancel($edit, $account, $method) {
   $deleted_user_id = $account->id();
 
-  /* @var \Drupal\permissions_by_term\Service\AccessStorage $access_storage */
+  /* @var AccessStorage $access_storage */
   $access_storage = \Drupal::service('permissions_by_term.access_storage');
   $access_storage->deleteAllTermPermissionsByUserId($deleted_user_id);
 }
@@ -412,7 +421,7 @@ function permissions_by_term_user_cancel($edit, $account, $method) {
  * Deletes all term permissions from storage when a term is deleted.
  */
 function permissions_by_term_taxonomy_term_delete(EntityInterface $entity) {
-  /* @var \Drupal\permissions_by_term\Service\AccessStorage $access_storage */
+  /* @var AccessStorage $access_storage */
   $access_storage = \Drupal::service('permissions_by_term.access_storage');
   $access_storage->deleteAllTermPermissionsByTid($entity->id());
 }

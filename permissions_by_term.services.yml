@@ -9,7 +9,7 @@ services:
         arguments: ['@database', '@event_dispatcher']
     permissions_by_term.access_storage:
         class: Drupal\permissions_by_term\Service\AccessStorage
-        arguments: ['@database',  '@permissions_by_term.term_handler', '@permissions_by_term.access_check']
+        arguments: ['@database',  '@permissions_by_term.term_handler', '@permissions_by_term.access_check', '@user.shared_tempstore']
     permissions_by_term.node_access_record_factory:
         class: \Drupal\permissions_by_term\Factory\NodeAccessRecordFactory
     permissions_by_term.node_access:
