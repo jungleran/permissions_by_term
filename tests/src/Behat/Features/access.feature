@@ -55,7 +55,7 @@ Feature: Access
     Then I am on "/"
     And I should not see the text "Node with tag without perm"
 
-  Scenario: I do not see any error or warning when I want to edit an node
+  Scenario: I do not see fixed error when I want to edit an node
     Given I am logged in as a user with the "administrator" role
     Then I open node view by node title "Node with tag without perm"
     And I click "Edit"

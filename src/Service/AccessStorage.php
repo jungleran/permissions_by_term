@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Session\AccountProxy;
+use Drupal\Core\TempStore\SharedTempStore;
 use Drupal\user\Entity\User;
 use Drupal\user\Entity\Role;
 use Drupal\Core\TempStore\SharedTempStoreFactory;
@@ -767,6 +768,14 @@ class AccessStorage {
         ->condition('ti.tid', $tid);
 
       return $query->execute()->fetchCol();
+  }
+
+  public function resetSharedTempStore() {
+    /**
+     * @var SharedTempStore $sharedTempstore
+     */
+    $sharedTempstore = $this->sharedTempStoreFactory->get('permissions_by_term');
+    $sharedTempstore->set('node_access', []);
   }
 
 }

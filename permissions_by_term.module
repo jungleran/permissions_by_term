@@ -104,6 +104,7 @@ function permissions_by_term_submit($form, FormState $formState) {
 
   // Do we need to flush the cache and the node access records?
   if($rebuild_cache_and_node_access === true) {
+    $access_storage->resetSharedTempStore();
     node_access_rebuild(TRUE);
     Cache::invalidateTags(['search_index:node_search']);
   }
@@ -353,6 +354,11 @@ function permissions_by_term_node_access_records(\Drupal\node\NodeInterface $nod
  */
 function permissions_by_term_user_insert($user) {
   Cache::invalidateTags(['search_index:node_search']);
+  /**
+   * @var AccessStorage $access_storage
+   */
+  $access_storage = \Drupal::service('permissions_by_term.access_storage');
+  $access_storage->resetSharedTempStore();
 }
 
 /**
@@ -369,6 +375,11 @@ function permissions_by_term_user_update($user) {
  */
 function permissions_by_term_node_insert($node) {
   Cache::invalidateTags(['search_index:node_search']);
+  /**
+   * @var AccessStorage $access_storage
+   */
+  $access_storage = \Drupal::service('permissions_by_term.access_storage');
+  $access_storage->resetSharedTempStore();
 }
 
 /**
@@ -408,10 +419,10 @@ function permissions_by_term_options_list_alter(array &$options, array $context)
  */
 function permissions_by_term_user_cancel($edit, $account, $method) {
   $deleted_user_id = $account->id();
-
   /* @var AccessStorage $access_storage */
   $access_storage = \Drupal::service('permissions_by_term.access_storage');
   $access_storage->deleteAllTermPermissionsByUserId($deleted_user_id);
+  $access_storage->resetSharedTempStore();
 }
 
 /**
@@ -423,4 +434,5 @@ function permissions_by_term_taxonomy_term_delete(EntityInterface $entity) {
   /* @var AccessStorage $access_storage */
   $access_storage = \Drupal::service('permissions_by_term.access_storage');
   $access_storage->deleteAllTermPermissionsByTid($entity->id());
+  $access_storage->resetSharedTempStore();
 }
