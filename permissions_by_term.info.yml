@@ -7,5 +7,5 @@ dependencies:
   - 'drupal:taxonomy'
 type: module
 core: '8.x'
-version: '8.x-1.52'
+version: '8.x-2.00'
 package: 'Permissions by Term'

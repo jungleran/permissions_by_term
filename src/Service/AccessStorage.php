@@ -555,7 +555,7 @@ class AccessStorage {
   }
 
   public function getTidsByNid($nid) {
-    if (\Drupal::currentUser() instanceof AccountProxy && !isset(self::$nodeAccessTids[$nid])) {
+    if (\Drupal::currentUser() instanceof AccountProxy && empty(self::$nodeAccessTids[$nid])) {
       /**
        * @var \Drupal\Core\TempStore\SharedTempStore $sharedTempstore
        */
@@ -570,6 +570,12 @@ class AccessStorage {
     }
 
     if (empty(self::$nodeAccessTids[$nid])) {
+      $query = $this->database->select('taxonomy_index', 'ti')
+        ->fields('ti', ['nid', 'tid']);
+
+      $result = $query->execute()
+        ->fetchAll('nid');
+
       $allNodes = \Drupal::entityTypeManager()->getStorage('node')->loadMultiple();
 
       foreach ($allNodes as $node) {
@@ -591,15 +597,15 @@ class AccessStorage {
         }
 
         self::$nodeAccessTids[$nid] = $tids;
+        if (\Drupal::currentUser() instanceof AccountProxy) {
+          /**
+           * @var \Drupal\Core\TempStore\SharedTempStore $sharedTempstore
+           */
+          $sharedTempstore = $this->sharedTempStoreFactory->get('permissions_by_term');
+          $sharedTempstore->set('node_access', self::$nodeAccessTids);
+        }
       }
 
-      if (\Drupal::currentUser() instanceof AccountProxy) {
-        /**
-         * @var \Drupal\Core\TempStore\SharedTempStore $sharedTempstore
-         */
-        $sharedTempstore = $this->sharedTempStoreFactory->get('permissions_by_term');
-        $sharedTempstore->set('node_access', self::$nodeAccessTids);
-      }
     }
 
     return self::$nodeAccessTids[$nid];

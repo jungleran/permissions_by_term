@@ -139,10 +139,7 @@ abstract class PBTKernelTestBase extends KernelTestBase {
     \Drupal::service('current_user')->setAccount($testUser);
   }
 
-  /**
-   * @return int
-   */
-  protected function createRelationOneGrantedTerm() {
+  protected function createRelationOneGrantedTerm(): void {
     $term = Term::create([
       'name' => 'term1',
       'vid' => 'test',
