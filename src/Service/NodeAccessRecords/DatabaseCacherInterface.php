@@ -7,4 +7,6 @@ interface DatabaseCacherInterface {
 
   public function getData() : array;
 
+  public function setData() : array;
+
 }

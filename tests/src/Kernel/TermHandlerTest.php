@@ -27,7 +27,7 @@ class TermHandlerTest extends PBTKernelTestBase {
     $termHandler = \Drupal::service('permissions_by_term.term_handler');
     $tidsBoundToAllNids = $termHandler->getTidsBoundToAllNids();
 
-    $expectedData = array (
+    $expectedNidToTidsPairs = array (
       1 =>
         array (
           0 => '1',
@@ -42,7 +42,7 @@ class TermHandlerTest extends PBTKernelTestBase {
         ),
     );
 
-    self::assertArraySubset($expectedData, $tidsBoundToAllNids);
+    self::assertArraySubset($expectedNidToTidsPairs, $tidsBoundToAllNids);
   }
 
 }

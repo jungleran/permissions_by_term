@@ -31,7 +31,7 @@ services:
 
     permissions_by_term.node_term_data_cacher:
       class: \Drupal\permissions_by_term\Service\NodeAccessRecords\NodeTermDataCacher
-      arguments: ['@database', '@user.shared_tempstore']
+      autowire: true
 
 
 
