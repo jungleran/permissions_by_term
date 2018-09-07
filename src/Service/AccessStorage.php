@@ -6,12 +6,14 @@ use Drupal\Component\Utility\Tags;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Session\AccountProxy;
-use Drupal\Core\TempStore\SharedTempStore;
+use Drupal\Driver\Exception\Exception;
+use Drupal\node\Entity\Node;
+use Drupal\permissions_by_term\KeyValueCache\CacheNegotiator;
+use Drupal\permissions_by_term\Model\NidToTidsModel;
 use Drupal\user\Entity\User;
 use Drupal\user\Entity\Role;
-use Drupal\Core\TempStore\SharedTempStoreFactory;
 
 /**
  * Class AccessStorage.
@@ -64,20 +66,19 @@ class AccessStorage {
   protected $accessCheck;
 
   /**
-   * @var array
+   * @var \Drupal\permissions_by_term\KeyValueCache\CacheNegotiator
    */
-  static private $nodeAccessTids;
+  private $cacheNegotiator;
 
-  /**
-   * @var SharedTempStoreFactory
-   */
-  private $sharedTempStoreFactory;
 
-  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, SharedTempStoreFactory $sharedTempStoreFactory) {
+  private $logger;
+
+  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, CacheNegotiator $cacheNegotiator, LoggerChannelInterface $logger) {
     $this->database  = $database;
     $this->term = $term;
     $this->accessCheck = $accessCheck;
-    $this->sharedTempStoreFactory = $sharedTempStoreFactory;
+    $this->cacheNegotiator = $cacheNegotiator;
+    $this->logger = $logger;
   }
 
   /**
@@ -554,62 +555,67 @@ class AccessStorage {
     return $sUserInfos;
   }
 
-  // @TODO: This method needs to retrieve data from cache.
-  public function getTidsByNid($nid) {
-    if (\Drupal::currentUser() instanceof AccountProxy && empty(self::$nodeAccessTids[$nid])) {
-      /**
-       * @var \Drupal\Core\TempStore\SharedTempStore $sharedTempstore
-       */
-      $sharedTempstore = $this->sharedTempStoreFactory->get('permissions_by_term');
+  private function getAllNidsToTidsPairsFromDatabase() {
+    $nids = \Drupal::database()->select('taxonomy_index')
+      ->fields('taxonomy_index', ['nid'])
+      ->execute()
+      ->fetchCol();
+    $nids = array_unique($nids);
 
-      if (empty(self::$nodeAccessTids)) {
-        $nodeAccess = $sharedTempstore->get('node_access');
-        if (!empty($nodeAccess)) {
-          self::$nodeAccessTids = $nodeAccess;
-        }
-      }
+    if (empty($nids)) {
+      return [];
     }
 
-    if (empty(self::$nodeAccessTids[$nid])) {
-      $query = $this->database->select('taxonomy_index', 'ti')
-        ->fields('ti', ['nid', 'tid']);
+    $nodes = Node::loadMultiple($nids);
 
-      $result = $query->execute()
-        ->fetchAll('nid');
+    $nidsToTidsPairs = [];
 
-      $allNodes = \Drupal::entityTypeManager()->getStorage('node')->loadMultiple();
+    foreach ($nodes as $node) {
+      $nidsToTidsPairs[$node->id()] = [];
+      $tids = [];
 
-      foreach ($allNodes as $node) {
-        $tids = [];
-
-        foreach ($node->getFields() as $field) {
-          if ($field->getFieldDefinition()
-              ->getType() == 'entity_reference' && $field->getFieldDefinition()
-              ->getSetting('target_type') == 'taxonomy_term') {
-            $aReferencedTaxonomyTerms = $field->getValue();
-            if (!empty($aReferencedTaxonomyTerms)) {
-              foreach ($aReferencedTaxonomyTerms as $aReferencedTerm) {
-                if (isset($aReferencedTerm['target_id'])) {
-                  $tids[] = $aReferencedTerm['target_id'];
-                }
+      foreach ($node->getFields() as $field) {
+        if ($field->getFieldDefinition()
+            ->getType() == 'entity_reference' && $field->getFieldDefinition()
+            ->getSetting('target_type') == 'taxonomy_term') {
+          $aReferencedTaxonomyTerms = $field->getValue();
+          if (!empty($aReferencedTaxonomyTerms)) {
+            foreach ($aReferencedTaxonomyTerms as $aReferencedTerm) {
+              if (isset($aReferencedTerm['target_id'])) {
+                $tids[] = $aReferencedTerm['target_id'];
               }
             }
           }
         }
+      }
 
-        self::$nodeAccessTids[$nid] = $tids;
-        if (\Drupal::currentUser() instanceof AccountProxy) {
-          /**
-           * @var \Drupal\Core\TempStore\SharedTempStore $sharedTempstore
-           */
-          $sharedTempstore = $this->sharedTempStoreFactory->get('permissions_by_term');
-          $sharedTempstore->set('node_access', self::$nodeAccessTids);
+      try {
+        $nidsToTidsPairs[$node->id()] = $tids;
+        if (empty($tids)) {
+          throw new \Exception('No tids retrieved, but expected via taxonomy_index table.');
         }
+      } catch(Exception $exception) {
+        $this->logger->error($exception->getMessage());
       }
 
     }
 
-    return self::$nodeAccessTids[$nid];
+    return $nidsToTidsPairs;
+  }
+
+
+  public function getTidsByNid($nid): array {
+    if ($this->cacheNegotiator->has(NidToTidsModel::class)) {
+      return $this->cacheNegotiator->get(NidToTidsModel::class)[$nid];
+    }
+
+    $nidsToTidsPairs = $this->getAllNidsToTidsPairsFromDatabase();
+    if (!empty($nidsToTidsPairs[$nid])) {
+      $this->cacheNegotiator->set(NidToTidsModel::class, $nidsToTidsPairs);
+      return $nidsToTidsPairs[$nid];
+    }
+
+    return [];
   }
 
   /**
@@ -775,14 +781,6 @@ class AccessStorage {
         ->condition('ti.tid', $tid);
 
       return $query->execute()->fetchCol();
-  }
-
-  public function resetSharedTempStore() {
-    /**
-     * @var SharedTempStore $sharedTempstore
-     */
-    $sharedTempstore = $this->sharedTempStoreFactory->get('permissions_by_term');
-    $sharedTempstore->set('node_access', []);
   }
 
 }

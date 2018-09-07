@@ -20,12 +20,16 @@ class StaticStorage implements CacheInterface {
     self::$staticStorage[$namespace] = $data;
   }
 
-  public function get(string $namespace): array {
-    return self::$staticStorage[$namespace];
+  public function get(string $namespace): ?array {
+    if (isset(self::$staticStorage[$namespace])) {
+      return self::$staticStorage[$namespace];
+    }
+
+    return NULL;
   }
 
   public function has(string $namespace): bool {
-    if (\is_array(self::$staticStorage[$namespace]) && \count(self::$staticStorage[$namespace]) > 0) {
+    if (isset(self::$staticStorage[$namespace]) && \count(self::$staticStorage[$namespace]) > 0) {
       return TRUE;
     }
 

@@ -28,6 +28,8 @@ class CacheNegotiator implements CacheInterface {
     if ($this->sharedTempStore->has($namespace)) {
       return $this->sharedTempStore->get($namespace);
     }
+
+    return null;
   }
 
   public function set(string $namespace, array $data): void {

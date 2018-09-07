@@ -13,6 +13,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\NodeInterface;
+use Drupal\permissions_by_term\KeyValueCache\CacheNegotiator;
+use Drupal\permissions_by_term\Model\NidToTidsModel;
 use Drupal\permissions_by_term\Service\AccessCheck;
 use Drupal\permissions_by_term\Service\AccessStorage;
 use Drupal\taxonomy\Entity\Term;
@@ -355,10 +357,10 @@ function permissions_by_term_node_access_records(\Drupal\node\NodeInterface $nod
 function permissions_by_term_user_insert($user) {
   Cache::invalidateTags(['search_index:node_search']);
   /**
-   * @var AccessStorage $access_storage
+   * @var CacheNegotiator $cacheNegotiator
    */
-  $access_storage = \Drupal::service('permissions_by_term.access_storage');
-  $access_storage->resetSharedTempStore();
+  $cacheNegotiator = \Drupal::service('permissions_by_term.cache_negotiator');
+  $cacheNegotiator->clear(NidToTidsModel::class);
 }
 
 /**
@@ -376,10 +378,10 @@ function permissions_by_term_user_update($user) {
 function permissions_by_term_node_insert($node) {
   Cache::invalidateTags(['search_index:node_search']);
   /**
-   * @var AccessStorage $access_storage
+   * @var CacheNegotiator $cacheNegotiator
    */
-  $access_storage = \Drupal::service('permissions_by_term.access_storage');
-  $access_storage->resetSharedTempStore();
+  $cacheNegotiator = \Drupal::service('permissions_by_term.cache_negotiator');
+  $cacheNegotiator->clear(NidToTidsModel::class);
 }
 
 /**
@@ -422,7 +424,11 @@ function permissions_by_term_user_cancel($edit, $account, $method) {
   /* @var AccessStorage $access_storage */
   $access_storage = \Drupal::service('permissions_by_term.access_storage');
   $access_storage->deleteAllTermPermissionsByUserId($deleted_user_id);
-  $access_storage->resetSharedTempStore();
+  /**
+   * @var CacheNegotiator $cacheNegotiator
+   */
+  $cacheNegotiator = \Drupal::service('permissions_by_term.cache_negotiator');
+  $cacheNegotiator->clear(NidToTidsModel::class);
 }
 
 /**
@@ -434,5 +440,9 @@ function permissions_by_term_taxonomy_term_delete(EntityInterface $entity) {
   /* @var AccessStorage $access_storage */
   $access_storage = \Drupal::service('permissions_by_term.access_storage');
   $access_storage->deleteAllTermPermissionsByTid($entity->id());
-  $access_storage->resetSharedTempStore();
+  /**
+   * @var CacheNegotiator $cacheNegotiator
+   */
+  $cacheNegotiator = \Drupal::service('permissions_by_term.cache_negotiator');
+  $cacheNegotiator->clear(NidToTidsModel::class);
 }

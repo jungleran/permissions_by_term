@@ -165,20 +165,8 @@ Class CacheNegotiatorTest extends UnitTestCase {
       )
       ->willReturn(NULL);
 
-    $staticStorage = $this->getMockBuilder(StaticStorage::class)
-      ->getMock();
-    $staticStorage->expects($this->exactly(2))
-      ->method('has')
-      ->with(
-        $this->equalTo(NidToTidsModel::class)
-      )
-      ->willReturn(FALSE);
-    $staticStorage->expects($this->exactly(0))
-      ->method('get')
-      ->with(
-        $this->equalTo(NidToTidsModel::class)
-      )
-      ->willReturn(NULL);
+    $staticStorage = new StaticStorage();
+    $staticStorage->set(NidToTidsModel::class, $data);
 
     /** @var SharedTempStore $sharedTempStore */
     /** @var StaticStorage $staticStorage */
