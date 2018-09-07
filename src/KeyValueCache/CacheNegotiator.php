@@ -43,6 +43,8 @@ class CacheNegotiator implements CacheInterface {
     if ($this->sharedTempStore->has($namespace)) {
       return TRUE;
     }
+
+    return FALSE;
   }
 
   public function clear(string $namespace): void {
