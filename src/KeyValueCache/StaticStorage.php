@@ -6,17 +6,10 @@
  * Time: 09:44
  */
 
-namespace Drupal\permissions_by_term\StaticStorage;
-
-use Drupal\permissions_by_term\KeyValueCache\CacheInterface;
+namespace Drupal\permissions_by_term\KeyValueCache;
 
 
 class StaticStorage implements CacheInterface {
-
-  /**
-   * @var string
-   */
-  private $staticStorageKey;
 
   /**
    * @var array
@@ -24,15 +17,15 @@ class StaticStorage implements CacheInterface {
   private static $staticStorage;
 
   public function set(string $namespace, array $data) : void {
-    self::$staticStorage[$this->staticStorageKey] = $data;
+    self::$staticStorage[$namespace] = $data;
   }
 
   public function get(string $namespace): array {
-    return self::$staticStorage[$this->staticStorageKey];
+    return self::$staticStorage[$namespace];
   }
 
-  public function has(string $key): bool {
-    if (\is_array(self::$staticStorage[$this->staticStorageKey]) && \count(self::$staticStorage[$this->staticStorageKey]) > 0) {
+  public function has(string $namespace): bool {
+    if (\is_array(self::$staticStorage[$namespace]) && \count(self::$staticStorage[$namespace]) > 0) {
       return TRUE;
     }
 
@@ -40,8 +33,7 @@ class StaticStorage implements CacheInterface {
   }
 
   public function clear(string $namespace): void {
-    unset(self::$staticStorage[$this->staticStorageKey]);
+    unset(self::$staticStorage[$namespace]);
   }
-
 
 }

@@ -1,9 +1,7 @@
 <?php
 
-namespace Drupal\permissions_by_term\StaticStorage;
+namespace Drupal\permissions_by_term\KeyValueCache;
 
-
-use Drupal\permissions_by_term\KeyValueCache\CacheInterface;
 
 class SharedTempStore implements CacheInterface {
 
@@ -11,7 +9,7 @@ class SharedTempStore implements CacheInterface {
     // TODO: Implement get() method.
   }
 
-  public function set(string $namespace): void {
+  public function set(string $namespace, array $data): void {
     // TODO: Implement set() method.
   }
 

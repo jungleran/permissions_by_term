@@ -1,33 +1,58 @@
 <?php
 
-namespace Drupal\permissions_by_term\StaticStorage;
-
-use Drupal\permissions_by_term\KeyValueCache\CacherInterface;
+namespace Drupal\permissions_by_term\KeyValueCache;
 
 
-class CacheNegotiator {
+class CacheNegotiator implements CacheInterface {
 
   /**
-   * @var \Drupal\Core\TempStore\SharedTempStoreFactory
+   * @var \Drupal\permissions_by_term\KeyValueCache\SharedTempStore
    */
   private $sharedTempStore;
 
   /**
-   * @var \Drupal\permissions_by_term\StaticStorage\StaticStorageInterface
+   * @var \Drupal\permissions_by_term\KeyValueCache\StaticStorage
    */
   private $staticStorage;
 
-  public function __construct(CacherInterface $sharedTempStore, StaticStorageInterface $staticStorage) {
+  public function __construct(SharedTempStore $sharedTempStore, StaticStorage $staticStorage) {
     $this->sharedTempStore = $sharedTempStore;
     $this->staticStorage = $staticStorage;
   }
 
-  public function getData() {
+  public function get(string $namespace): ?array {
+    if ($this->staticStorage->has($namespace)) {
+      return $this->staticStorage->get($namespace);
+    }
 
+    if ($this->sharedTempStore->has($namespace)) {
+      return $this->sharedTempStore->get($namespace);
+    }
   }
 
-  public function setData() {
+  public function set(string $namespace, array $data): void {
+    $this->staticStorage->set($namespace, $data);
+    $this->sharedTempStore->set($namespace, $data);
+  }
 
+  public function has(string $namespace): bool {
+    if ($this->staticStorage->has($namespace)) {
+      return TRUE;
+    }
+
+    if ($this->sharedTempStore->has($namespace)) {
+      return TRUE;
+    }
+  }
+
+  public function clear(string $namespace): void {
+    if ($this->staticStorage->has($namespace)) {
+      $this->staticStorage->clear($namespace);
+    }
+
+    if ($this->sharedTempStore->has($namespace)) {
+      $this->sharedTempStore->clear($namespace);
+    }
   }
 
 }
