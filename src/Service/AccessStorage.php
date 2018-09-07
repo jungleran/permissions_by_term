@@ -554,6 +554,7 @@ class AccessStorage {
     return $sUserInfos;
   }
 
+  // @TODO: This method needs to retrieve data from cache.
   public function getTidsByNid($nid) {
     if (\Drupal::currentUser() instanceof AccountProxy && empty(self::$nodeAccessTids[$nid])) {
       /**

@@ -33,5 +33,7 @@ services:
       class: \Drupal\permissions_by_term\Service\NodeAccessRecords\NodeTermDataCacher
       autowire: true
 
-
+    permissions_by_term.cache_negotiator:
+      class:
+      arguments: ['@user.shared_tempstore']
 
