@@ -43,7 +43,7 @@ Feature: Access
     Then I am on "/"
     And I should not see text matching "Only admin can access"
 
-  Scenario: Users cannot visit node after term permission is being added to a term without permissions
+  Scenario: Users cannot visit node, after term with permission is being added
     Given I am logged in as a user with the "administrator" role
     Then I open node view by node title "Node with tag without perm"
     And I click "Tag three"

@@ -106,7 +106,11 @@ function permissions_by_term_submit($form, FormState $formState) {
 
   // Do we need to flush the cache and the node access records?
   if($rebuild_cache_and_node_access === true) {
-    $access_storage->resetSharedTempStore();
+    /**
+     * @var CacheNegotiator $cacheNegotiator
+     */
+    $cacheNegotiator = \Drupal::service('permissions_by_term.cache_negotiator');
+    $cacheNegotiator->clear(NidToTidsModel::class);
     node_access_rebuild(TRUE);
     Cache::invalidateTags(['search_index:node_search']);
   }
