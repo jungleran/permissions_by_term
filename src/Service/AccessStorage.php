@@ -606,7 +606,10 @@ class AccessStorage {
 
   public function getTidsByNid($nid): array {
     if ($this->cacheNegotiator->has(NidToTidsModel::class)) {
-      return $this->cacheNegotiator->get(NidToTidsModel::class)[$nid];
+      $nidsToTidsPairs = $this->cacheNegotiator->get(NidToTidsModel::class);
+      if (!empty($nidsToTidsPairs[$nid])) {
+        return $nidsToTidsPairs[$nid];
+      }
     }
 
     $nidsToTidsPairs = $this->getAllNidsToTidsPairsFromDatabase();

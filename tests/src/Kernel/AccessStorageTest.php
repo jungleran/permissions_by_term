@@ -62,7 +62,6 @@ class AccessStorageTest extends PBTKernelTestBase {
         ],
     ]);
 
-
     $this->assertEquals(array (
       'UserIdPermissionsToRemove' =>
         array (
@@ -113,6 +112,8 @@ class AccessStorageTest extends PBTKernelTestBase {
     $this->createRelationOneGrantedTerm();
 
     self::assertCount(3, $this->accessStorage->getTidsByNid('1'));
+
+    self::assertCount(0, $this->accessStorage->getTidsByNid('99'));
   }
 
 }
