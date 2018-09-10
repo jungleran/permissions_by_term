@@ -23,6 +23,7 @@ Class CacheNegotiatorTest extends UnitTestCase {
    */
   public function testGetDataFromStaticStorage(array $data) {
     $sharedTempStore = $this->getMockBuilder(SharedTempStore::class)
+      ->disableOriginalConstructor()
       ->getMock();
     $sharedTempStore->expects($this->exactly(0))
       ->method('has')
@@ -46,6 +47,7 @@ Class CacheNegotiatorTest extends UnitTestCase {
    */
   public function testGetDataFromSharedTempStore(array $data) {
     $sharedTempStore = $this->getMockBuilder(SharedTempStore::class)
+      ->disableOriginalConstructor()
       ->getMock();
     $sharedTempStore->expects($this->exactly(1))
       ->method('has')
@@ -87,6 +89,7 @@ Class CacheNegotiatorTest extends UnitTestCase {
    */
   public function testHasDataByStaticStorage(array $data) {
     $sharedTempStore = $this->getMockBuilder(SharedTempStore::class)
+      ->disableOriginalConstructor()
       ->getMock();
     $sharedTempStore->expects($this->exactly(0))
       ->method('has')
@@ -110,6 +113,7 @@ Class CacheNegotiatorTest extends UnitTestCase {
    */
   public function testHasDataBySharedTempStore(array $data) {
     $sharedTempStore = $this->getMockBuilder(SharedTempStore::class)
+      ->disableOriginalConstructor()
       ->getMock();
     $sharedTempStore->expects($this->exactly(1))
       ->method('has')
@@ -151,6 +155,7 @@ Class CacheNegotiatorTest extends UnitTestCase {
    */
   public function testClear(array $data) {
     $sharedTempStore = $this->getMockBuilder(SharedTempStore::class)
+      ->disableOriginalConstructor()
       ->getMock();
     $sharedTempStore->expects($this->exactly(2))
       ->method('has')
