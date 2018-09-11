@@ -66,8 +66,7 @@ abstract class PBTKernelTestBase extends KernelTestBase {
     $this->installSchema('system', ['key_value_expire', 'sequences']);
     $this->installEntitySchema('node');
     $this->installEntitySchema('taxonomy_term');
-    $this->installConfig(['permissions_by_term']);
-    $this->installConfig(['language']);
+    $this->installConfig(['permissions_by_term', 'language']);
     $this->installSchema('node', 'node_access');
     $this->installSchema('permissions_by_term', 'permissions_by_term_user');
     $this->installSchema('permissions_by_term', 'permissions_by_term_role');
@@ -139,10 +138,7 @@ abstract class PBTKernelTestBase extends KernelTestBase {
     \Drupal::service('current_user')->setAccount($testUser);
   }
 
-  /**
-   * @return int
-   */
-  protected function createRelationOneGrantedTerm() {
+  protected function createRelationOneGrantedTerm(): void {
     $term = Term::create([
       'name' => 'term1',
       'vid' => 'test',

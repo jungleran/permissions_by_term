@@ -6,7 +6,12 @@ use Drupal\Component\Utility\Tags;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Driver\Exception\Exception;
+use Drupal\node\Entity\Node;
+use Drupal\permissions_by_term\KeyValueCache\CacheNegotiator;
+use Drupal\permissions_by_term\Model\NidToTidsModel;
 use Drupal\user\Entity\User;
 use Drupal\user\Entity\Role;
 
@@ -61,16 +66,19 @@ class AccessStorage {
   protected $accessCheck;
 
   /**
-   * AccessStorageService constructor.
-   *
-   * @param Connection  $database
-   * @param TermHandler        $term
-   * @param AccessCheck $accessCheck
+   * @var \Drupal\permissions_by_term\KeyValueCache\CacheNegotiator
    */
-  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck) {
+  private $cacheNegotiator;
+
+
+  private $logger;
+
+  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, CacheNegotiator $cacheNegotiator, LoggerChannelInterface $logger) {
     $this->database  = $database;
     $this->term = $term;
     $this->accessCheck = $accessCheck;
+    $this->cacheNegotiator = $cacheNegotiator;
+    $this->logger = $logger;
   }
 
   /**
@@ -547,30 +555,70 @@ class AccessStorage {
     return $sUserInfos;
   }
 
-  /**
-   * @param $nid
-   *
-   * @return array
-   */
-  public function getTidsByNid($nid)
-  {
-    $node = \Drupal::entityTypeManager()->getStorage('node')->load($nid);
-    $tids = [];
+  private function getAllNidsToTidsPairsFromDatabase() {
+    $nids = \Drupal::database()->select('taxonomy_index')
+      ->fields('taxonomy_index', ['nid'])
+      ->execute()
+      ->fetchCol();
+    $nids = array_unique($nids);
 
-    foreach ($node->getFields() as $field) {
-      if ($field->getFieldDefinition()->getType() == 'entity_reference' && $field->getFieldDefinition()->getSetting('target_type') == 'taxonomy_term') {
-        $aReferencedTaxonomyTerms = $field->getValue();
-        if (!empty($aReferencedTaxonomyTerms)) {
-          foreach ($aReferencedTaxonomyTerms as $aReferencedTerm) {
-            if (isset($aReferencedTerm['target_id'])) {
-              $tids[] = $aReferencedTerm['target_id'];
+    if (empty($nids)) {
+      return [];
+    }
+
+    $nodes = Node::loadMultiple($nids);
+
+    $nidsToTidsPairs = [];
+
+    foreach ($nodes as $node) {
+      $nidsToTidsPairs[$node->id()] = [];
+      $tids = [];
+
+      foreach ($node->getFields() as $field) {
+        if ($field->getFieldDefinition()
+            ->getType() == 'entity_reference' && $field->getFieldDefinition()
+            ->getSetting('target_type') == 'taxonomy_term') {
+          $aReferencedTaxonomyTerms = $field->getValue();
+          if (!empty($aReferencedTaxonomyTerms)) {
+            foreach ($aReferencedTaxonomyTerms as $aReferencedTerm) {
+              if (isset($aReferencedTerm['target_id'])) {
+                $tids[] = $aReferencedTerm['target_id'];
+              }
             }
           }
         }
       }
+
+      try {
+        $nidsToTidsPairs[$node->id()] = $tids;
+        if (empty($tids)) {
+          throw new \Exception('No tids retrieved, but expected via taxonomy_index table.');
+        }
+      } catch(Exception $exception) {
+        $this->logger->error($exception->getMessage());
+      }
+
     }
 
-    return $tids;
+    return $nidsToTidsPairs;
+  }
+
+
+  public function getTidsByNid($nid): array {
+    if ($this->cacheNegotiator->has(NidToTidsModel::class)) {
+      $nidsToTidsPairs = $this->cacheNegotiator->get(NidToTidsModel::class);
+      if (!empty($nidsToTidsPairs[$nid])) {
+        return $nidsToTidsPairs[$nid];
+      }
+    }
+
+    $nidsToTidsPairs = $this->getAllNidsToTidsPairsFromDatabase();
+    if (!empty($nidsToTidsPairs[$nid])) {
+      $this->cacheNegotiator->set(NidToTidsModel::class, $nidsToTidsPairs);
+      return $nidsToTidsPairs[$nid];
+    }
+
+    return [];
   }
 
   /**

@@ -103,7 +103,7 @@ class PermissionsByTermContext extends RawDrupalContext {
   }
 
   /**
-   * @Given Node access records are rebuild.
+   * @Given Node access records are rebuild
    */
   public function nodeAccessRecordsAreRebuild()
   {

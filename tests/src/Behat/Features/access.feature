@@ -24,7 +24,7 @@ Feature: Access
     Given users:
       | name          | mail            | pass     |
       | Joe           | joe@example.com | password |
-    Given Node access records are rebuild.
+    Given Node access records are rebuild
 
   Scenario: Anonymous users cannot see restricted node
     Given I open node view by node title "Authenticated user can access"
@@ -43,7 +43,7 @@ Feature: Access
     Then I am on "/"
     And I should not see text matching "Only admin can access"
 
-  Scenario: Users cannot visit node after term permission is being added to a term without permissions
+  Scenario: Users cannot visit node, after term with permission is being added
     Given I am logged in as a user with the "administrator" role
     Then I open node view by node title "Node with tag without perm"
     And I click "Tag three"
@@ -55,7 +55,7 @@ Feature: Access
     Then I am on "/"
     And I should not see the text "Node with tag without perm"
 
-  Scenario: I do not see any error or warning when I want to edit an node
+  Scenario: I do not see fixed error when I want to edit an node
     Given I am logged in as a user with the "administrator" role
     Then I open node view by node title "Node with tag without perm"
     And I click "Edit"
@@ -63,5 +63,7 @@ Feature: Access
 
   Scenario: Editor cannot access disallowed node edit form
     Given I am logged in as a user with the "editor" role
+    And I open node view by node title "Only admin can access"
+    And I should see text matching "Access denied"
     Then I open node edit form by node title "Only admin can access"
     And I should see text matching "Access denied"

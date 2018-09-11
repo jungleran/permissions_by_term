@@ -21,14 +21,11 @@ class AccessCheckTest extends PBTKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
   }
 
-  /**
-   * @return void
-   */
-  public function testDisabledSingleTermRestriction() {
+  public function testDisabledSingleTermRestriction(): void {
     $database = $this->container->get('database');
     $database->truncate('node_access')->execute();
     $this->createRelationOneGrantedTerm();
@@ -52,10 +49,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $this->assertCount(2, $permittedNids);
   }
 
-  /**
-   * @return void
-   */
-  public function testNoGrantedTermRestriction() {
+  public function testNoGrantedTermRestriction(): void {
     $database = $this->container->get('database');
     $database->truncate('node_access')->execute();
     $this->createRelationNoGrantedTerm();
@@ -78,10 +72,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $this->assertCount(0, $permittedNids);
   }
 
-  /**
-   * @return void
-   */
-  public function testNoTermRestriction() {
+  public function testNoTermRestriction(): void {
     $database = $this->container->get('database');
     $database->truncate('node_access')->execute();
     $this->createRelationWithoutRestriction();
@@ -104,10 +95,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $this->assertCount(0, $permittedNids);
   }
 
-  /**
-   * @return void
-   */
-  public function testSingleTermRestrictionWithRestrictedTerms() {
+  public function testSingleTermRestrictionWithRestrictedTerms(): void {
     $database = $this->container->get('database');
     $database->truncate('node_access')->execute();
     $this->createRelationOneGrantedTerm();
@@ -131,10 +119,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $this->assertCount(1, $permittedNids);
   }
 
-  /**
-   * @return void
-   */
-  public function testSingleTermRestrictionWithNoRestrictedTerms() {
+  public function testSingleTermRestrictionWithNoRestrictedTerms(): void {
     $database = $this->container->get('database');
     $database->truncate('node_access')->execute();
     $this->createRelationWithoutRestriction();
@@ -157,7 +142,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $this->assertCount(0, $permittedNids);
   }
 
-  public function testCheckAccessAsGuest() {
+  public function testCheckAccessAsGuest(): void {
     $term = Term::create([
       'name' => 'term1',
       'vid' => 'test',
@@ -167,7 +152,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $this->accessCheck->isAccessAllowedByDatabase($term->id(), 0);
   }
 
-  public function testBypassNodeAccess() {
+  public function testBypassNodeAccess(): void {
     Vocabulary::create([
       'name'     => 'Test Multilingual',
       'vid'      => 'test_multilingual',
