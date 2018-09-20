@@ -257,4 +257,14 @@ class PermissionsByTermContext extends RawDrupalContext {
     }
   }
 
+  /**
+   * @Given /^permission mode is set$/
+   */
+  public function permissionModeIsSet() {
+    \Drupal::configFactory()
+      ->getEditable('permissions_by_term.settings')
+      ->set('permission_mode', TRUE)
+      ->save();
+  }
+
 }

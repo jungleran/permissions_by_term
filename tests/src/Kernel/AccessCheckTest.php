@@ -8,7 +8,6 @@ use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
-use Drupal\user\RoleInterface;
 
 /**
  * Class AccessCheckTest
@@ -31,7 +30,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $this->createRelationOneGrantedTerm();
     $this->createRelationAllGrantedTerms();
 
-    \Drupal::configFactory()->getEditable('permissions_by_term.settings.single_term_restriction')->set('value', FALSE)->save();
+    \Drupal::configFactory()->getEditable('permissions_by_term.settings')->set('single_term_restriction', FALSE)->save();
     $this->assertTrue($this->accessCheck->canUserAccessByNodeId($this->getNidOneGrantedTerm()));
 
     node_access_rebuild();
@@ -54,7 +53,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $database->truncate('node_access')->execute();
     $this->createRelationNoGrantedTerm();
 
-    \Drupal::configFactory()->getEditable('permissions_by_term.settings.single_term_restriction')->set('value', FALSE)->save();
+    \Drupal::configFactory()->getEditable('permissions_by_term.settings')->set('single_term_restriction', FALSE)->save();
     $this->assertFalse($this->accessCheck->canUserAccessByNodeId($this->getNidNoGrantedTerm()));
 
     node_access_rebuild();
@@ -77,7 +76,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $database->truncate('node_access')->execute();
     $this->createRelationWithoutRestriction();
 
-    \Drupal::configFactory()->getEditable('permissions_by_term.settings.single_term_restriction')->set('value', FALSE)->save();
+    \Drupal::configFactory()->getEditable('permissions_by_term.settings')->set('single_term_restriction', FALSE)->save();
     $this->assertTrue($this->accessCheck->canUserAccessByNodeId($this->getNidNoRestriction()));
 
     node_access_rebuild();
@@ -101,7 +100,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $this->createRelationOneGrantedTerm();
     $this->createRelationAllGrantedTerms();
 
-    \Drupal::configFactory()->getEditable('permissions_by_term.settings.single_term_restriction')->set('value', TRUE)->save();
+    \Drupal::configFactory()->getEditable('permissions_by_term.settings')->set('single_term_restriction', TRUE)->save();
     $this->assertFalse($this->accessCheck->canUserAccessByNodeId($this->getNidOneGrantedTerm()));
 
     node_access_rebuild();
@@ -124,7 +123,7 @@ class AccessCheckTest extends PBTKernelTestBase {
     $database->truncate('node_access')->execute();
     $this->createRelationWithoutRestriction();
 
-    \Drupal::configFactory()->getEditable('permissions_by_term.settings.single_term_restriction')->set('value', TRUE)->save();
+    \Drupal::configFactory()->getEditable('permissions_by_term.settings')->set('single_term_restriction', TRUE)->save();
     $this->assertTrue($this->accessCheck->canUserAccessByNodeId($this->getNidOneGrantedTerm()));
 
     node_access_rebuild();

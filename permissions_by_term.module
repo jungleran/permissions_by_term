@@ -333,7 +333,8 @@ function permissions_by_term_node_access_records(\Drupal\node\NodeInterface $nod
       break;
     }
   }
-  if (!$has_term_access_restrictions) {
+
+  if (!$has_term_access_restrictions && !\Drupal::configFactory()->getEditable('permissions_by_term.settings')->get('permission_mode')) {
     return;
   }
 
