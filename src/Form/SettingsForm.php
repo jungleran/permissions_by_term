@@ -29,23 +29,23 @@ class SettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
-    $description_single_term_restriction = <<<EOT
+    $description_require_all_terms_granted = <<<EOT
 By default users are granted access content, as long they have access to a <strong>single</strong>
-related taxonomy term. If the single term restriction option is checked, they must
+related taxonomy term. If the <strong>require all terms granted</strong> option is checked, they must
 have access to <strong>all</strong> related taxonomy terms to access an node.
 EOT;
 
     $description_permission_mode = <<<EOT
-This mode makes nodes accessible (view and edit) only, if editors have been granted the permission for a related node via taxonomy terms. Users won't have access to nodes matching any of the following conditions:
+This mode makes nodes accessible (view and edit) only, if editors have become explicitly the permission to them. Users won't have access to nodes matching any of the following conditions:
 <br />- nodes without any terms
 <br />- nodes without any terms which grant them permission
 EOT;
 
-    $form['single_term_restriction'] = [
+    $form['require_all_terms_granted'] = [
       '#type' => 'checkbox',
-      '#title' => t('Single term restriction'),
-      '#description' => t($description_single_term_restriction),
-      '#default_value' => \Drupal::config('permissions_by_term.settings')->get('single_term_restriction'),
+      '#title' => t('Require all terms granted'),
+      '#description' => t($description_require_all_terms_granted),
+      '#default_value' => \Drupal::config('permissions_by_term.settings')->get('require_all_terms_granted'),
     ];
 
     $form['permission_mode'] = [
@@ -64,7 +64,7 @@ EOT;
   public function submitForm(array &$form, FormStateInterface $form_state) {
     \Drupal::configFactory()
       ->getEditable('permissions_by_term.settings')
-      ->set('single_term_restriction', $form_state->getValue('single_term_restriction'))
+      ->set('require_all_terms_granted', $form_state->getValue('require_all_terms_granted'))
       ->save();
 
     \Drupal::configFactory()

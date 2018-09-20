@@ -5,6 +5,6 @@ permissions_by_term.settings:
     permission_mode:
       type: boolean
       label: 'Permission mode'
-    single_term_restriction:
+    require_all_terms_granted:
       type: boolean
-      label: 'Single term restriction'
+      label: 'Require all terms granted'

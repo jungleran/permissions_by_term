@@ -1,2 +1,2 @@
 permission_mode: FALSE
-single_term_restriction: FALSE
+require_all_terms_granted: FALSE

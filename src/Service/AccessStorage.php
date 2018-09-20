@@ -692,7 +692,7 @@ class AccessStorage {
     $nidsWithNoTidRestriction = $this->getUnrestrictedNids();
     $nidsByTids = $this->term->getNidsByTids($this->getPermittedTids($user->id(), $user->getRoles()));
 
-    if (\Drupal::config('permissions_by_term.settings')->get('single_term_restriction')) {
+    if (\Drupal::config('permissions_by_term.settings')->get('require_all_terms_granted')) {
       $permittedNids = [];
       foreach ($nidsByTids as $nid) {
         if($this->accessCheck->canUserAccessByNodeId($nid, $user->id(), $this->getLangCode($nid))) {

@@ -51,9 +51,9 @@ class AccessCheck {
     }
 
     $configPermissionMode = \Drupal::config('permissions_by_term.settings')->get('permission_mode');
-    $singleTermRestriction = \Drupal::config('permissions_by_term.settings')->get('single_term_restriction');
+    $requireAllTermsGranted = \Drupal::config('permissions_by_term.settings')->get('require_all_terms_granted');
 
-    if (!$configPermissionMode && (!$singleTermRestriction)) {
+    if (!$configPermissionMode && (!$requireAllTermsGranted)) {
       $access_allowed = TRUE;
     } else {
       $access_allowed = FALSE;
@@ -73,12 +73,12 @@ class AccessCheck {
       if ($termInfo instanceof Term && $termInfo->get('langcode')->getLangcode() == $langcode) {
         $access_allowed = $this->isAccessAllowedByDatabase($term->tid, $uid, $termInfo->get('langcode')->getLangcode());
         if (!$access_allowed) {
-          if ($singleTermRestriction) {
+          if ($requireAllTermsGranted) {
             return $access_allowed;
           }
         }
 
-        if ($access_allowed && !$singleTermRestriction) {
+        if ($access_allowed && !$requireAllTermsGranted) {
           return $access_allowed;
         }
       }
