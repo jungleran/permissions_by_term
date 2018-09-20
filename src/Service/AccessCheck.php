@@ -46,12 +46,14 @@ class AccessCheck {
    */
   public function canUserAccessByNodeId($nid, $uid = FALSE, $langcode = '') {
 		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
-
     if (\Drupal::currentUser()->hasPermission('bypass node access')) {
       return TRUE;
     }
 
-    if (!$singleTermRestriction = \Drupal::config('permissions_by_term.settings.single_term_restriction')->get('value')) {
+    $configPermissionMode = \Drupal::config('permissions_by_term.settings')->get('permission_mode');
+    $requireAllTermsGranted = \Drupal::config('permissions_by_term.settings')->get('require_all_terms_granted');
+
+    if (!$configPermissionMode && (!$requireAllTermsGranted)) {
       $access_allowed = TRUE;
     } else {
       $access_allowed = FALSE;
@@ -61,7 +63,7 @@ class AccessCheck {
       ->query("SELECT tid FROM {taxonomy_index} WHERE nid = :nid",
       [':nid' => $nid])->fetchAll();
 
-    if (empty($terms)) {
+    if (empty($terms) && !$configPermissionMode) {
       return TRUE;
     }
 
@@ -71,12 +73,12 @@ class AccessCheck {
       if ($termInfo instanceof Term && $termInfo->get('langcode')->getLangcode() == $langcode) {
         $access_allowed = $this->isAccessAllowedByDatabase($term->tid, $uid, $termInfo->get('langcode')->getLangcode());
         if (!$access_allowed) {
-          if ($singleTermRestriction) {
+          if ($requireAllTermsGranted) {
             return $access_allowed;
           }
         }
 
-        if ($access_allowed && !$singleTermRestriction) {
+        if ($access_allowed && !$requireAllTermsGranted) {
           return $access_allowed;
         }
       }
@@ -103,7 +105,7 @@ class AccessCheck {
 
     $tid = (int) $tid;
 
-    if (!$this->isAnyPermissionSetForTerm($tid, $langcode)) {
+    if (!$this->isAnyPermissionSetForTerm($tid, $langcode) && !\Drupal::config('permissions_by_term.settings')->get('permission_mode')) {
       return TRUE;
     }
 
