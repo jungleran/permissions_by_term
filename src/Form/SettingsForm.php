@@ -36,7 +36,7 @@ have access to <strong>all</strong> related taxonomy terms to access an node.
 EOT;
 
     $description_permission_mode = <<<EOT
-This mode should make nodes accessible (view and edit) only, if editors have the permission for a related node via taxonomy terms. Users won't have access to nodes with the following conditions:
+This mode makes nodes accessible (view and edit) only, if editors have been granted the permission for a related node via taxonomy terms. Users won't have access to nodes matching any of the following conditions:
 <br />- nodes without any terms
 <br />- nodes without any terms which grant them permission
 EOT;
