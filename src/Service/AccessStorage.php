@@ -12,8 +12,8 @@ use Drupal\Driver\Exception\Exception;
 use Drupal\node\Entity\Node;
 use Drupal\permissions_by_term\KeyValueCache\CacheNegotiator;
 use Drupal\permissions_by_term\Model\NidToTidsModel;
-use Drupal\user\Entity\User;
 use Drupal\user\Entity\Role;
+use Drupal\user\Entity\User;
 
 /**
  * Class AccessStorage.

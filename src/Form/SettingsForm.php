@@ -42,11 +42,13 @@ This mode makes nodes accessible (view and edit) only, if editors have been expl
 EOT;
 
     $description_disable_node_access_records = <<<EOT
-Disable node access records. PbT won't hide nodes in :
+By disabling node access records, PbT won't hide nodes in:
 <br />- listings made by the Views module (e.g. search result pages)
 <br />- menus<br />
-This setting can be useful, if you just want to restrict nodes on node view and node edit. Like hiding unpublished nodes from editors during a content moderation workflow.<br /><br/>
-Disabling node access records will save you some time on node save and taxonomy save, since the node access records must not be rebuild.
+This setting can be useful, if you just want to restrict nodes on node view and 
+node edit. Like hiding unpublished nodes from editors during a content 
+moderation workflow. Disabling node access records will save you some time on 
+node save and taxonomy save, since the node access records must not be rebuild.
 EOT;
 
     $form['require_all_terms_granted'] = [

@@ -104,7 +104,7 @@ function permissions_by_term_submit($form, FormState $formState) {
     }
   }
 
-  if (!\Drupal::configFactory()->getEditable('permissions_by_term.settings')->get('disable_node_access_records')) {
+  if (\Drupal::configFactory()->getEditable('permissions_by_term.settings')->get('disable_node_access_records')) {
     $rebuild_cache_and_node_access = false;
   }
 

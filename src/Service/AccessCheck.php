@@ -6,8 +6,8 @@ use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Database\Connection;
 use Drupal\permissions_by_term\Event\PermissionsByTermDeniedEvent;
-use Drupal\user\Entity\User;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\user\Entity\User;
 
 /**
  * AccessCheckService class.
