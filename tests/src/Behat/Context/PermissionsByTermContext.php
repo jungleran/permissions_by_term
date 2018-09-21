@@ -120,6 +120,16 @@ class PermissionsByTermContext extends RawDrupalContext {
   }
 
   /**
+   * @Given node access records are enabled
+   */
+  public function nodeAccessRecordsAreEnabled(): void {
+    \Drupal::configFactory()
+      ->getEditable('permissions_by_term.settings')
+      ->set('disable_node_access_records', FALSE)
+      ->save();
+  }
+
+  /**
    * @Then /^wait (\d+) seconds$/
    */
   public function waitSeconds($secondsNumber)
@@ -287,7 +297,7 @@ class PermissionsByTermContext extends RawDrupalContext {
   /**
    * @Given /^permission mode is set$/
    */
-  public function permissionModeIsSet() {
+  public function permissionModeIsSet(): void {
     \Drupal::configFactory()
       ->getEditable('permissions_by_term.settings')
       ->set('permission_mode', TRUE)
