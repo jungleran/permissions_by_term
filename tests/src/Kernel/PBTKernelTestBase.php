@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\permissions_by_term\Kernel;
 
+use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -12,6 +13,7 @@ use Drupal\permissions_by_term\Service\AccessCheck;
 use Drupal\permissions_by_term\Service\AccessStorage;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 
 /**
@@ -76,6 +78,7 @@ abstract class PBTKernelTestBase extends KernelTestBase {
     $this->createTestVocabularies();
     $this->createPageNodeType();
     $this->createCurrentUser();
+    $this->createAdminUser();
   }
 
   protected function createTestVocabularies() {
@@ -127,7 +130,7 @@ abstract class PBTKernelTestBase extends KernelTestBase {
     ])->save();
   }
 
-  protected function createCurrentUser() {
+  protected function createCurrentUser(): void {
     $testUser = User::create([
       'uid' => 2,
       'name' => 'foobar',
@@ -136,6 +139,38 @@ abstract class PBTKernelTestBase extends KernelTestBase {
 
     $testUser->save();
     \Drupal::service('current_user')->setAccount($testUser);
+  }
+
+  protected function createAdminUser() {
+    if (($role = Role::load('administrator')) === null) {
+      $role = [
+        'id' => 'administrator',
+        'label' => 'administrator',
+        'permissions' => [
+          'access comments',
+          'administer comments',
+          'post comments',
+          'post comments without approval',
+          'access content',
+          'administer content types',
+          'administer nodes',
+          'bypass node access',
+        ]
+      ];
+      try {
+        Role::create($role)->save();
+      } catch (EntityStorageException $exception) {
+        exit($exception->getMessage());
+      }
+    }
+
+
+    $adminUser = User::create([
+      'uid' => 1,
+      'name' => 'admin',
+      'roles' => ['administrator']
+    ]);
+    $adminUser->save();
   }
 
   protected function createRelationOneGrantedTerm(): void {
@@ -185,10 +220,7 @@ abstract class PBTKernelTestBase extends KernelTestBase {
     $this->setNidOneGrantedTerm($node->id());
   }
 
-  /**
-   * @return int
-   */
-  protected function createRelationNoGrantedTerm() {
+  protected function createRelationNoGrantedTerm(): void {
     $term = Term::create([
       'name' => 'term2',
       'vid' => 'test',
