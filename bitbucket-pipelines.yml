@@ -15,7 +15,7 @@ pipelines:
           - composer
         script:
           - apt-get update
-          - apt-get install -y screen php7.1-sqlite libsqlite3-dev sqlite3
+          - apt-get install -y screen
           - curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh -o install_nvm.sh
           - bash install_nvm.sh
           - source ~/.profile
@@ -33,8 +33,7 @@ pipelines:
           - (cd drupal/web/modules/permissions_by_term/js/ && npm install && npm run bat)
           - (cd drupal/web && ../vendor/drush/drush/drush si standard --db-url=mysql://root:testing@127.0.01/testing -y && ../vendor/drush/drush/drush en permissions_by_term -y)
           - (cd drupal && cp web/modules/permissions_by_term/tests/src/Behat/composer-require-namespace.php . && php composer-require-namespace.php && composer dump-autoload)
-          - (cd drupal && cat composer.json)
-          - screen -dmS php-server php -S localhost:8000 -t ./drupal/web/.ht.router.php
+          - (cd drupal/web && screen -dmS php-server php -S localhost:80 .ht.router.php)
           - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat)
         services:
           - testing
