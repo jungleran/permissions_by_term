@@ -34,7 +34,7 @@ Feature: Node access records config option
     And the "edit-disable-node-access-records" checkbox should be unchecked
     Then I check checkbox with id "edit-disable-node-access-records"
     And I submit the form
-    Then I should see text matching "Rebuilding"
+    Then I should see text matching "Rebuilding" after a while
     And I should see text matching "The content access permissions have been rebuilt." after a while
     Then I am on "/admin/permissions-by-term/settings"
     Then I should see text matching "Disable node access records"
@@ -49,7 +49,7 @@ Feature: Node access records config option
     And I click by selector "#fieldset_term_access > summary" via JavaScript
     Then I check checkbox with id "edit-access-role-administrator"
     And I submit the form
-    Then I should see text matching "Rebuilding"
+    Then I should see text matching "Rebuilding" after a while
     And I should see text matching "The content access permissions have been rebuilt." after a while
 
   Scenario: Content access permissions rebuild message does not appear after term save
