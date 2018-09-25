@@ -31,13 +31,14 @@ pipelines:
           - mv permissions_by_term drupal/web/modules/
           - (cd drupal/web/modules/permissions_by_term/tests/ && ../../../../vendor/bin/phpunit --testdox)
           - (cd drupal/web/modules/permissions_by_term/js/ && npm install && npm run bat)
-          - (cd drupal/web && ../vendor/drush/drush/drush si standard --db-url=sqlite://sites/default/files/db.sqlite -y && ../vendor/drush/drush/drush en permissions_by_term -y)
+          - (cd drupal/web && ../vendor/drush/drush/drush si standard --db-url=mysql://root:testing@127.0.01/testing -y && ../vendor/drush/drush/drush en permissions_by_term -y)
           - (cd drupal && cp web/modules/permissions_by_term/tests/src/Behat/composer-require-namespace.php . && php composer-require-namespace.php && composer dump-autoload)
           - (cd drupal && cat composer.json)
           - screen -dmS php-server php -S localhost:8000 -t ./drupal/web/.ht.router.php
           - (cd drupal/web && cp modules/permissions_by_term/tests/src/Behat/behat.yml.dist behat.yml && ../vendor/bin/behat)
         services:
           - testing
+          - mysql
     - step:
         name: Deploy
         script:
@@ -51,3 +52,8 @@ definitions:
   services:
     testing:
       image: darksolar/selenium-chrome-headless
+    mysql:
+      image: mechtecs/docker_big_mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: testing
+        MYSQL_DATABASE: testing
