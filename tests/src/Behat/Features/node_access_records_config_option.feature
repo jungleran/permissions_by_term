@@ -34,7 +34,6 @@ Feature: Node access records config option
     And the "edit-disable-node-access-records" checkbox should be unchecked
     Then I check checkbox with id "edit-disable-node-access-records"
     And I submit the form
-    Then I should see text matching "Rebuilding" after a while
     And I should see text matching "The content access permissions have been rebuilt." after a while
     Then I am on "/admin/permissions-by-term/settings"
     Then I should see text matching "Disable node access records"
