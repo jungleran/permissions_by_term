@@ -48,7 +48,6 @@ Feature: Node access records config option
     And I click by selector "#fieldset_term_access > summary" via JavaScript
     Then I check checkbox with id "edit-access-role-administrator"
     And I submit the form
-    Then I should see text matching "Rebuilding" after a while
     And I should see text matching "The content access permissions have been rebuilt." after a while
 
   Scenario: Content access permissions rebuild message does not appear after term save
