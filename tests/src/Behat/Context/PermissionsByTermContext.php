@@ -17,6 +17,8 @@ class PermissionsByTermContext extends RawDrupalContext {
 
   private const MAX_DURATION_SECONDS = 1200;
 
+  private const MAX_SHORT_DURATION_SECONDS = 20;
+
   public function __construct() {
     $driver = new DrupalDriver(DRUPAL_ROOT, '');
     $driver->setCoreFromVersion();

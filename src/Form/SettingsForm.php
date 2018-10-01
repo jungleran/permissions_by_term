@@ -89,16 +89,22 @@ EOT;
       ->set('permission_mode', $form_state->getValue('permission_mode'))
       ->save();
 
-    \Drupal::configFactory()
-      ->getEditable('permissions_by_term.settings')
-      ->set('disable_node_access_records', $form_state->getValue('disable_node_access_records'))
-      ->save();
-
-    if (!$form_state->getValue('disable_node_access_records') || !\Drupal::configFactory()
+    if ($form_state->getValue('disable_node_access_records') && !\Drupal::configFactory()
         ->getEditable('permissions_by_term.settings')
         ->get('disable_node_access_records')) {
       node_access_rebuild(true);
     }
+
+    if (!$form_state->getValue('disable_node_access_records') && \Drupal::configFactory()
+        ->getEditable('permissions_by_term.settings')
+        ->get('disable_node_access_records')) {
+      node_access_rebuild(true);
+    }
+
+    \Drupal::configFactory()
+      ->getEditable('permissions_by_term.settings')
+      ->set('disable_node_access_records', $form_state->getValue('disable_node_access_records'))
+      ->save();
 
     parent::submitForm($form, $form_state);
   }
