@@ -94,7 +94,11 @@ EOT;
       ->set('disable_node_access_records', $form_state->getValue('disable_node_access_records'))
       ->save();
 
-    node_access_rebuild(true);
+    if (!$form_state->getValue('disable_node_access_records') || !\Drupal::configFactory()
+        ->getEditable('permissions_by_term.settings')
+        ->get('disable_node_access_records')) {
+      node_access_rebuild(true);
+    }
 
     parent::submitForm($form, $form_state);
   }
