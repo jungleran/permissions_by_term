@@ -2,10 +2,9 @@
 
 namespace Drupal\permissions_by_term\Service;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Database\Connection;
 use Drupal\taxonomy\Entity\Term;
-use Drupal\Component\Utility\Html;
-use PDO;
 
 /**
  * Class Term

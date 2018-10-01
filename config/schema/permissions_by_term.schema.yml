@@ -8,3 +8,6 @@ permissions_by_term.settings:
     require_all_terms_granted:
       type: boolean
       label: 'Require all terms granted'
+    disable_node_access_records:
+      type: boolean
+      label: 'Disable node access records'

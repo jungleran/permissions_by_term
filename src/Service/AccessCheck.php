@@ -6,8 +6,8 @@ use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Database\Connection;
 use Drupal\permissions_by_term\Event\PermissionsByTermDeniedEvent;
-use Drupal\user\Entity\User;
 use Drupal\taxonomy\Entity\Term;
+use Drupal\user\Entity\User;
 
 /**
  * AccessCheckService class.
@@ -38,14 +38,18 @@ class AccessCheck {
   }
 
   /**
-   * @param int $nid
-   * @param bool $uid
-   * @param string $langcode
-   *
    * @return array|bool
    */
   public function canUserAccessByNodeId($nid, $uid = FALSE, $langcode = '') {
 		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
+
+		if ($uid) {
+      $user = User::load($uid);
+      if ($user instanceof User && $user->hasPermission('bypass node access')) {
+        return TRUE;
+      }
+    }
+
     if (\Drupal::currentUser()->hasPermission('bypass node access')) {
       return TRUE;
     }

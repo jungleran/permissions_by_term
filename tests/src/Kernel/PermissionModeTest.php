@@ -5,10 +5,6 @@ namespace Drupal\Tests\permissions_by_term\Kernel;
 use Drupal\Core\Access\AccessResultForbidden;
 use Drupal\Core\Access\AccessResultNeutral;
 use Drupal\node\Entity\Node;
-use Drupal\permissions_by_term\Service\AccessStorage;
-use Drupal\taxonomy\Entity\Term;
-use Drupal\taxonomy\Entity\Vocabulary;
-use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 
 /**
@@ -35,6 +31,17 @@ class PermissionModeTest extends PBTKernelTestBase {
       ->set('permission_mode', TRUE)
       ->save();
     self::assertFalse($this->accessCheck->canUserAccessByNodeId($this->getNidNoRestriction()));
+
+    self::assertTrue($this->accessCheck->canUserAccessByNodeId($this->getNidNoRestriction(), 1), 'Admin user is not allowed. But this user must be allowed.');
+  }
+
+  public function testCanAdminUserAccessByNodeId(): void {
+    $this->createRelationWithoutRestriction();
+    \Drupal::configFactory()
+      ->getEditable('permissions_by_term.settings')
+      ->set('permission_mode', TRUE)
+      ->save();
+    self::assertTrue($this->accessCheck->canUserAccessByNodeId($this->getNidNoRestriction(), 1), 'Admin user is not allowed. But this user must be allowed.');
   }
 
   public function testHandleNode(): void {
@@ -48,6 +55,18 @@ class PermissionModeTest extends PBTKernelTestBase {
       ->set('permission_mode', TRUE)
       ->save();
     self::assertInstanceOf(AccessResultForbidden::class, $this->accessCheck->handleNode($node->id(), $node->language()->getId()));
+  }
+
+  public function testHandleNodeAsAdmin(): void {
+    $this->createRelationWithoutRestriction();
+    $node = Node::load($this->getNidNoRestriction());
+    \Drupal::configFactory()
+      ->getEditable('permissions_by_term.settings')
+      ->set('permission_mode', TRUE)
+      ->save();
+
+    \Drupal::service('current_user')->setAccount(User::load(1));
+    self::assertInstanceOf(AccessResultNeutral::class, $this->accessCheck->handleNode($node->id(), $node->language()->getId()), 'Admin user is not allowed. But this user must be allowed.');
   }
 
   public function testNodeAccessRecordCreation(): void {

@@ -41,6 +41,16 @@ This mode makes nodes accessible (view and edit) only, if editors have been expl
 <br />- nodes without any terms which grant them permission
 EOT;
 
+    $description_disable_node_access_records = <<<EOT
+By disabling node access records, PbT won't hide nodes in:
+<br />- listings made by the Views module (e.g. search result pages)
+<br />- menus<br />
+This setting can be useful, if you just want to restrict nodes on node view and 
+node edit. Like hiding unpublished nodes from editors during a content 
+moderation workflow. Disabling node access records will save you some time on 
+node save and taxonomy save, since the node access records must not be rebuild.
+EOT;
+
     $form['require_all_terms_granted'] = [
       '#type' => 'checkbox',
       '#title' => t('Require all terms granted'),
@@ -53,6 +63,13 @@ EOT;
       '#title' => t('Permission mode'),
       '#description' => t($description_permission_mode),
       '#default_value' => \Drupal::config('permissions_by_term.settings')->get('permission_mode'),
+    ];
+
+    $form['disable_node_access_records'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Disable node access records'),
+      '#description' => t($description_disable_node_access_records),
+      '#default_value' => \Drupal::config('permissions_by_term.settings')->get('disable_node_access_records'),
     ];
 
     return parent::buildForm($form, $form_state);
@@ -72,7 +89,22 @@ EOT;
       ->set('permission_mode', $form_state->getValue('permission_mode'))
       ->save();
 
-    node_access_rebuild(true);
+    if ($form_state->getValue('disable_node_access_records') && !\Drupal::configFactory()
+        ->getEditable('permissions_by_term.settings')
+        ->get('disable_node_access_records')) {
+      node_access_rebuild(true);
+    }
+
+    if (!$form_state->getValue('disable_node_access_records') && \Drupal::configFactory()
+        ->getEditable('permissions_by_term.settings')
+        ->get('disable_node_access_records')) {
+      node_access_rebuild(true);
+    }
+
+    \Drupal::configFactory()
+      ->getEditable('permissions_by_term.settings')
+      ->set('disable_node_access_records', $form_state->getValue('disable_node_access_records'))
+      ->save();
 
     parent::submitForm($form, $form_state);
   }

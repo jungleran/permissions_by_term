@@ -26,6 +26,7 @@ Feature: Permission mode
       | name          | mail            | pass     |
       | Joe           | joe@example.com | password |
     Given permission mode is set
+    Given node access records are enabled
     Given Node access records are rebuild
 
   Scenario: Editor cannot access disallowed node edit form

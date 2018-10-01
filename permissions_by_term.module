@@ -104,6 +104,10 @@ function permissions_by_term_submit($form, FormState $formState) {
     }
   }
 
+  if (\Drupal::configFactory()->getEditable('permissions_by_term.settings')->get('disable_node_access_records')) {
+    $rebuild_cache_and_node_access = false;
+  }
+
   // Do we need to flush the cache and the node access records?
   if($rebuild_cache_and_node_access === true) {
     /**
@@ -312,7 +316,7 @@ function permissions_by_term_node_grants(\Drupal\Core\Session\AccountInterface $
  */
 function permissions_by_term_node_access_records(\Drupal\node\NodeInterface $node) {
   // Do not return any grants for nodes that this module doesn't manage.
-  if (!$node->isPublished()) {
+  if (!$node->isPublished() || \Drupal::configFactory()->getEditable('permissions_by_term.settings')->get('disable_node_access_records')) {
     return;
   }
   $has_term_access_restrictions = FALSE;

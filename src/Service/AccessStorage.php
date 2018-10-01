@@ -12,8 +12,8 @@ use Drupal\Driver\Exception\Exception;
 use Drupal\node\Entity\Node;
 use Drupal\permissions_by_term\KeyValueCache\CacheNegotiator;
 use Drupal\permissions_by_term\Model\NidToTidsModel;
-use Drupal\user\Entity\User;
 use Drupal\user\Entity\Role;
+use Drupal\user\Entity\User;
 
 /**
  * Class AccessStorage.
@@ -306,14 +306,7 @@ class AccessStorage {
       ->execute();
   }
 
-  /**
-   * @param array  $aUserIdsGrantedAccess
-   * @param int    $term_id
-   * @param string $langcode
-   *
-   * @throws \Exception
-   */
-  public function addTermPermissionsByUserIds($aUserIdsGrantedAccess, $term_id, $langcode = '') {
+  public function addTermPermissionsByUserIds(array $aUserIdsGrantedAccess, int $term_id, string $langcode = ''): void {
 		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
 
     foreach ($aUserIdsGrantedAccess as $iUserIdGrantedAccess) {

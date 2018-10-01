@@ -3,7 +3,6 @@
 namespace Drupal\permissions_by_term\Service\NodeAccessRecords;
 
 
-use Drupal\Core\Database\Database;
 use Drupal\permissions_by_term\Service\TermHandler;
 
 class NodeTermDataCacher extends DatabaseCacherAbstract {

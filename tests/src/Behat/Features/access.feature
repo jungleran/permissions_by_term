@@ -24,6 +24,7 @@ Feature: Access
     Given users:
       | name          | mail            | pass     |
       | Joe           | joe@example.com | password |
+    Given node access records are enabled
     Given Node access records are rebuild
 
   Scenario: Anonymous users cannot see restricted node
