@@ -298,15 +298,17 @@ function permissions_by_term_node_access(NodeInterface $node, $op, AccountInterf
  * Implements hook_node_grants().
  */
 function permissions_by_term_node_grants(\Drupal\Core\Session\AccountInterface $account, $op) {
+  $grants = [];
+
   if ($op == 'view') {
     /**
      * @var \Drupal\permissions_by_term\Service\AccessStorage $accessStorage
      */
     $accessStorage = \Drupal::service('permissions_by_term.access_storage');
-    $grants = $accessStorage->getGids(\Drupal::currentUser());
-
-    return $grants;
+    $grants = $accessStorage->getGids($account);
   }
+
+  return $grants;
 }
 
 /**

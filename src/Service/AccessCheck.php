@@ -54,6 +54,10 @@ class AccessCheck {
       return TRUE;
     }
 
+    if (empty($uid)) {
+      $uid = \Drupal::currentUser()->id();
+    }
+
     $configPermissionMode = \Drupal::config('permissions_by_term.settings')->get('permission_mode');
     $requireAllTermsGranted = \Drupal::config('permissions_by_term.settings')->get('require_all_terms_granted');
 
@@ -75,11 +79,12 @@ class AccessCheck {
       $termInfo = Term::load($term->tid);
 
       if ($termInfo instanceof Term && $termInfo->get('langcode')->getLangcode() == $langcode) {
+        if (!$this->isAnyPermissionSetForTerm($term->tid, $termInfo->get('langcode')->getLangcode())) {
+          continue;
+        }
         $access_allowed = $this->isAccessAllowedByDatabase($term->tid, $uid, $termInfo->get('langcode')->getLangcode());
-        if (!$access_allowed) {
-          if ($requireAllTermsGranted) {
-            return $access_allowed;
-          }
+        if (!$access_allowed && $requireAllTermsGranted) {
+          return $access_allowed;
         }
 
         if ($access_allowed && !$requireAllTermsGranted) {
@@ -101,10 +106,10 @@ class AccessCheck {
   public function isAccessAllowedByDatabase($tid, $uid = FALSE, $langcode = '') {
 		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
 
-    if ($uid === FALSE || (int) $uid === 0) {
-      $user = \Drupal::currentUser();
-    } elseif (is_numeric($uid)) {
+    if (is_numeric($uid)) {
       $user = User::load($uid);
+    } else {
+      $user = \Drupal::currentUser();
     }
 
     $tid = (int) $tid;
@@ -116,9 +121,7 @@ class AccessCheck {
     /* At this point permissions are enabled, check to see if this user or one
      * of their roles is allowed.
      */
-    $aUserRoles = $user->getRoles();
-
-    foreach ($aUserRoles as $sUserRole) {
+    foreach ($user->getRoles() as $sUserRole) {
 
       if ($this->isTermAllowedByUserRole($tid, $sUserRole, $langcode)) {
         return TRUE;
@@ -126,14 +129,11 @@ class AccessCheck {
 
     }
 
-    $iUid = intval($user->id());
-
-    if ($this->isTermAllowedByUserId($tid, $iUid, $langcode)) {
+    if ($this->isTermAllowedByUserId($tid, $user->id(), $langcode)) {
       return TRUE;
     }
 
     return FALSE;
-
   }
 
   /**
@@ -197,22 +197,17 @@ class AccessCheck {
 
   }
 
-  /**
-   * @param string $nodeId
-   * @param string $langcode
-   *
-   * @return AccessResult
-   */
-  public function handleNode($nodeId, $langcode) {
-    if ($this->canUserAccessByNodeId($nodeId, false, $langcode) === TRUE) {
-      return AccessResult::neutral();
-    }
-    else {
+  public function handleNode($nodeId, string $langcode): AccessResult {
+    $result = AccessResult::neutral();
+
+    if (!$this->canUserAccessByNodeId($nodeId, false, $langcode)) {
       $accessDeniedEvent = new PermissionsByTermDeniedEvent($nodeId);
       $this->eventDispatcher->dispatch(PermissionsByTermDeniedEvent::NAME, $accessDeniedEvent);
 
-      return AccessResult::forbidden();
+      $result = AccessResult::forbidden();
     }
+
+    return $result;
   }
 
 }
