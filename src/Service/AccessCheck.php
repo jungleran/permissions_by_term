@@ -106,7 +106,7 @@ class AccessCheck {
   public function isAccessAllowedByDatabase($tid, $uid = FALSE, $langcode = '') {
 		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
 
-    if (is_numeric($uid)) {
+    if (is_numeric($uid) && $uid > 0) {
       $user = User::load($uid);
     } else {
       $user = \Drupal::currentUser();
