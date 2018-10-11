@@ -37,25 +37,16 @@ class AccessCheck {
     $this->eventDispatcher = $eventDispatcher;
   }
 
-  /**
-   * @return array|bool
-   */
-  public function canUserAccessByNodeId($nid, $uid = FALSE, $langcode = '') {
+  public function canUserAccessByNodeId($nid, $uid = FALSE, $langcode = ''): bool {
 		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
-
-		if ($uid) {
-      $user = User::load($uid);
-      if ($user instanceof User && $user->hasPermission('bypass node access')) {
-        return TRUE;
-      }
-    }
-
-    if (\Drupal::currentUser()->hasPermission('bypass node access')) {
-      return TRUE;
-    }
 
     if (empty($uid)) {
       $uid = \Drupal::currentUser()->id();
+    }
+
+    $user = User::load($uid);
+    if ($user instanceof User && $user->hasPermission('bypass node access')) {
+      return TRUE;
     }
 
     $configPermissionMode = \Drupal::config('permissions_by_term.settings')->get('permission_mode');
