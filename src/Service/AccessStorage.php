@@ -530,7 +530,7 @@ class AccessStorage {
     if (!empty($aAllowedUsers)) {
 
       foreach ($aAllowedUsers as $oUser) {
-        $iUid = intval($oUser->id());
+        $iUid = (int)$oUser->id();
         if ($iUid !== 0) {
           $sUsername = $oUser->getDisplayName();
         }

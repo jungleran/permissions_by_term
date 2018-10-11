@@ -141,14 +141,48 @@ class AccessCheckTest extends PBTKernelTestBase {
     $this->assertCount(0, $permittedNids);
   }
 
-  public function testCheckAccessAsGuest(): void {
+  public function testCheckAccessAsGuestWithNoTermRestriction(): void {
     $term = Term::create([
       'name' => 'term1',
       'vid' => 'test',
     ]);
     $term->save();
 
-    $this->accessCheck->isAccessAllowedByDatabase($term->id(), 0);
+    self::assertTrue($this->accessCheck->isAccessAllowedByDatabase($term->id(), 0));
+  }
+
+  public function testCheckAccessAsGuestWithTermRestriction(): void {
+    $termRestricted = Term::create([
+      'name' => 'term1',
+      'vid' => 'test',
+    ]);
+    $termRestricted->save();
+
+    $termNotRestricted = Term::create([
+      'name' => 'term1',
+      'vid' => 'test',
+    ]);
+    $termNotRestricted->save();
+
+    $this->accessStorage->addTermPermissionsByUserIds([1], $termRestricted->id());
+
+    self::assertFalse($this->accessCheck->isAccessAllowedByDatabase($termRestricted->id(), 0));
+
+    $node = Node::create([
+      'type' => 'page',
+      'title' => 'test_title',
+      'field_tags' => [
+        [
+          'target_id' => $termRestricted->id()
+        ],
+        [
+          'target_id' => $termNotRestricted->id()
+        ],
+      ]
+    ]);
+    $node->save();
+
+    self::assertFalse($this->accessCheck->canUserAccessByNodeId($node->id(), 0));
   }
 
   public function testBypassNodeAccess(): void {
