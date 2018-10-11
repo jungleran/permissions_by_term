@@ -184,11 +184,11 @@ class AccessCheck {
   public function isAnyPermissionSetForTerm($tid, $langcode = '') {
 		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
 
-    $iUserTableResults = intval($this->database->query("SELECT COUNT(1) FROM {permissions_by_term_user} WHERE tid = :tid AND langcode = :langcode",
-      [':tid' => $tid, ':langcode' => $langcode])->fetchField());
+    $iUserTableResults = (int)$this->database->query("SELECT COUNT(1) FROM {permissions_by_term_user} WHERE tid = :tid AND langcode = :langcode",
+      [':tid' => $tid, ':langcode' => $langcode])->fetchField();
 
-    $iRoleTableResults = intval($this->database->query("SELECT COUNT(1) FROM {permissions_by_term_role} WHERE tid = :tid AND langcode = :langcode",
-      [':tid' => $tid, ':langcode' => $langcode])->fetchField());
+    $iRoleTableResults = (int)$this->database->query("SELECT COUNT(1) FROM {permissions_by_term_role} WHERE tid = :tid AND langcode = :langcode",
+      [':tid' => $tid, ':langcode' => $langcode])->fetchField();
 
     if ($iUserTableResults > 0 ||
       $iRoleTableResults > 0) {

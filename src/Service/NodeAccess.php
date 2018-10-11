@@ -153,7 +153,7 @@ class NodeAccess {
    */
   public function isNodeOwner($nid, $uid) {
     $node = $this->node->load($nid);
-    if (intval($node->getOwnerId()) == intval($uid)) {
+    if ((int)$node->getOwnerId() == (int)$uid) {
       return TRUE;
     }
 
