@@ -1,4 +1,6 @@
-const _ = require('lodash');
+const get = require('lodash/get');
+const includes = require('lodash/includes');
+const isEmpty = require('lodash/isEmpty');
 
 /**
  * @param PermissionsOutput permissionsOutput
@@ -14,7 +16,7 @@ DomClient.prototype.renderPermissionsInfo = function() {
 
   let allowedUsersHtml = '<b>' + this.drupal.t('Allowed users:') + '</b> ';
 
-  if (!_.isEmpty(this.permissionsOutput.getUsernames())) {
+  if (!isEmpty(this.permissionsOutput.getUsernames())) {
     allowedUsersHtml += this.permissionsOutput.getUsernames().join(', ');
   } else {
     allowedUsersHtml += '<i>' + this.drupal.t('No user restrictions.') + '</i>';
@@ -22,7 +24,7 @@ DomClient.prototype.renderPermissionsInfo = function() {
 
   let allowedRolesHtml = '<b>' + this.drupal.t('Allowed roles:') + '</b> ';
 
-  if (!_.isEmpty(this.permissionsOutput.getRoles())) {
+  if (!isEmpty(this.permissionsOutput.getRoles())) {
     allowedRolesHtml += this.permissionsOutput.getRoles().join(', ');
   } else {
     allowedRolesHtml += '<i>' + this.drupal.t('No role restrictions.') + '</i>';;
@@ -32,7 +34,7 @@ DomClient.prototype.renderPermissionsInfo = function() {
 
   let newTermInfo = this.document.createElement('div');
   newTermInfo.innerHTML = '<div id="edit-permissions-by-term-info"><div class="form-type-item">' + generalInfoText + '<br /><br />' + allowedUsersHtml + '<br />' + allowedRolesHtml + '</div></div>';
-  this.document.querySelector('#edit-permissions-by-term-info .form-type-item').replaceWith(newTermInfo);
+  this.document.querySelector('#edit-permissions-by-term-info .form-type-item').innerHTML = newTermInfo.outerHTML;
 
 }
 
@@ -43,7 +45,7 @@ DomClient.prototype._computeTidsByAutocomplete = function(fieldWrapperCSSClass) 
 
   for (let autocompleteInput of autocompleteInputs) {
 
-    if (autocompleteInput.value !== undefined && _.includes(autocompleteInput.value, '(') && _.includes(autocompleteInput.value, ')')) {
+    if (autocompleteInput.value !== undefined && includes(autocompleteInput.value, '(') && includes(autocompleteInput.value, ')')) {
 
       let tidsInBrackets = autocompleteInput.value.match(/\(\d+\)/g);
 
@@ -51,7 +53,7 @@ DomClient.prototype._computeTidsByAutocomplete = function(fieldWrapperCSSClass) 
 
         for (let i = 0; i < tidsInBrackets.length; ++i) {
           let selectedTid = parseInt(tidsInBrackets[i].replace('(', '').replace(')', ''));
-          if (!_.includes(selectedTids, selectedTid)) {
+          if (!includes(selectedTids, selectedTid)) {
             selectedTids.push(String(selectedTid));
           }
         }
@@ -114,16 +116,16 @@ DomClient.prototype.computeTids = function(formElementCssClass) {
 DomClient.prototype._getInputType = function(formElementCssClass) {
   let formElement = null;
 
-  if (!_.isEmpty(this.document.querySelector(formElementCssClass + ' select'))) {
+  if (!isEmpty(this.document.querySelector(formElementCssClass + ' select'))) {
     formElement = 'select';
   }
 
-  if (!_.isEmpty(this.document.querySelector(formElementCssClass + ' input'))) {
+  if (!isEmpty(this.document.querySelector(formElementCssClass + ' input'))) {
     formElement = 'input';
   }
 
   if (formElement === 'input') {
-    if (_.get(this.document.querySelector(formElementCssClass + ' input.form-autocomplete'), 'type') && this.document.querySelector(formElementCssClass + ' input.form-autocomplete').type === "text") {
+    if (get(this.document.querySelector(formElementCssClass + ' input.form-autocomplete'), 'type') && this.document.querySelector(formElementCssClass + ' input.form-autocomplete').type === "text") {
       return 'text';
     }
     if (this.document.querySelector(formElementCssClass + ' input').type === "checkbox") {
@@ -133,7 +135,7 @@ DomClient.prototype._getInputType = function(formElementCssClass) {
       return 'radio';
     }
   }
-  if (!_.isEmpty(formElement) && this.document.querySelector(formElementCssClass + ' select').tagName === "SELECT") {
+  if (!isEmpty(formElement) && this.document.querySelector(formElementCssClass + ' select').tagName === "SELECT") {
     return 'select';
   }
 
