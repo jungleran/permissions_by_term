@@ -1,9 +1,8 @@
 const path = require('path');
 const fs = require('fs');
-const webpack = require('webpack');
 
 module.exports = {
-  entry: ['whatwg-fetch', './src/drupal-behavior-function/node-form-client.js'],
+  entry: ['./src/drupal-behavior-function/node-form-client.js'],
   output: {
     path: path.join(__dirname, '/webpack-dist/'),
     filename: 'bundle.js'
@@ -21,10 +20,5 @@ module.exports = {
       }
     ]
   },
-  devtool: 'none',
-  plugins: [
-    new webpack.ProvidePlugin({
-      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-    }),
-  ]
+  devtool: 'source-map',
 };

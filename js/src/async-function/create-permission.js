@@ -1,6 +1,5 @@
 import isEmpty from 'lodash/isEmpty';
 import Backend from '../model/backend.prototype';
-import 'babel-polyfill';
 
 /**
  * @returns Access

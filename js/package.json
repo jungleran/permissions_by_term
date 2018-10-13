@@ -8,9 +8,7 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "babel-polyfill": "^6.26.0",
     "es6-promise": "^4.2.5",
-    "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.10",
     "qunit": "^2.6.1",
     "sinon": "^5.0.10",
@@ -21,7 +19,7 @@
     "babel-build-for-test": "babel src/**/*.js test/*.js -d babel-compiled-test",
     "cleanup-babel-test": "rm -rf babel-compiled-test/",
     "build-and-test": "mv src/drupal-behavior-function /tmp && npm run-script webpack-test && mv /tmp/drupal-behavior-function src/ && npm run-script test",
-    "build": "webpack --config webpack.production.js --mode production",
+    "build": "webpack --config webpack.js --mode production",
     "build-dev": "webpack --config webpack.js --mode development",
     "webpack-test": "npx webpack --entry ./src/**/*.js ./test/*.js --output ./webpack-dist/bundle-test.js --mode development",
     "bat": "npm run-script build-and-test"
