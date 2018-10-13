@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports = {
-  entry: ['./src/drupal-behavior-function/node-form-client.js'],
+  entry: ['babel-polyfill', './src/drupal-behavior-function/node-form-client.js'],
   output: {
     path: path.join(__dirname, '/webpack-dist/'),
     filename: 'bundle.js'
@@ -20,5 +20,5 @@ module.exports = {
       }
     ]
   },
-  devtool: 'source-map',
+  devtool: 'none',
 };

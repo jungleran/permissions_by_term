@@ -1,7 +1,6 @@
 {
-  "name": "pbt",
-  "version": "1.0.0",
-  "description": "JavaScript code has been tested with [Jasmine](https://jasmine.github.io/). Install the dependencies by [Yarn](https://yarnpkg.com/lang/en/). Just run `yarn`. To run the tests, switch to the `js` folder and run `yarn test`.",
+  "name": "permissions_by_term",
+  "description": "JavaScript package definition",
   "main": "node-form.js",
   "dependencies": {
     "axios": "^0.18.0",
@@ -12,7 +11,15 @@
     "lodash": "^4.17.10",
     "qunit": "^2.6.1",
     "sinon": "^5.0.10",
-    "webpack-cli": "^3.0"
+    "webpack-cli": "^3.0",
+    "babel-polyfill": "^6.26.0",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-transform-arrow-functions": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^4.20.2"
   },
   "scripts": {
     "test": "npx qunit webpack-dist/bundle-test.js",
@@ -23,16 +30,5 @@
     "build-dev": "webpack --config webpack.js --mode development",
     "webpack-test": "npx webpack --entry ./src/**/*.js ./test/*.js --output ./webpack-dist/bundle-test.js --mode development",
     "bat": "npm run-script build-and-test"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/plugin-transform-arrow-functions": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-loader": "^7.1.5",
-    "babel-preset-env": "^1.7.0",
-    "webpack": "^4.20.2"
   }
 }
