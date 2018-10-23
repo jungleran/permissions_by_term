@@ -5,6 +5,7 @@ namespace Drupal\Tests\permissions_by_term\Behat\Context;
 use Behat\Gherkin\Node\TableNode;
 use Drupal\Driver\DrupalDriver;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
+use Drupal\menu_link_content\Entity\MenuLinkContent;
 use Drupal\taxonomy\Entity\Vocabulary;
 use Drupal\user\Entity\Role;
 
@@ -333,6 +334,60 @@ class PermissionsByTermContext extends RawDrupalContext {
    */
   public function dumpHTML() {
     print_r($this->getSession()->getPage()->getContent());
+  }
+
+  /**
+   * @Then /^I create main menu item for node with title "([^"]*)"$/
+   */
+  public function createMainMenuItemForNode(string $nodeTitle): void {
+    $query = \Drupal::service('database')->select('node_field_data', 'nfd')
+      ->fields('nfd', ['nid'])
+      ->condition('nfd.title', $nodeTitle);
+
+    $menuLink = MenuLinkContent::create([
+      'title'     => $nodeTitle,
+      'link'      => [
+        'uri' => 'internal:/node/' . $query->execute()
+            ->fetchField(),
+      ],
+      'menu_name' => 'main',
+      'expanded'  => TRUE,
+    ]);
+    $menuLink->save();
+  }
+
+  /**
+   * @Then /^I should see menu item text matching "([^"]*)"$/
+   */
+  public function seeMenuItemMatchingText(string $text): void {
+    $xpath = '//*/ul/li/a[text() = "' . $text . '"]';
+
+    $session = $this->getSession(); // get the mink session
+    $element = $session->getPage()->find(
+      'xpath',
+      $session->getSelectorsHandler()->selectorToXpath('xpath', $xpath)
+    );
+
+    if ($element === NULL) {
+      throw new \InvalidArgumentException(sprintf('Could not evaluate XPath: "%s"', $xpath));
+    }
+  }
+
+  /**
+   * @Then /^I should not see menu item text matching "([^"]*)"$/
+   */
+  public function seeNotMenuItemMatchingText(string $text): void {
+    $xpath = '//*/ul/li/a[text() = "' . $text . '"]';
+
+    $session = $this->getSession(); // get the mink session
+    $element = $session->getPage()->find(
+      'xpath',
+      $session->getSelectorsHandler()->selectorToXpath('xpath', $xpath)
+    );
+
+    if ($element !== NULL) {
+      throw new \InvalidArgumentException(sprintf('Could not evaluate XPath: "%s"', $xpath));
+    }
   }
 
 }
