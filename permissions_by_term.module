@@ -295,6 +295,23 @@ function permissions_by_term_node_grants(\Drupal\Core\Session\AccountInterface $
 }
 
 /**
+ * Implements hook_node_access().
+ *
+ * Forwards user by drupal_access_denied(); to an access denied page, if a
+ * single restricted node is called.
+ *
+ * This hook is not fired if admin is logged in. Users with the
+ * "bypass node access" permission may always view and edit content
+ * through the administrative interface.
+ */
+function permissions_by_term_node_access(NodeInterface $node, $op, AccountInterface $account) {
+  /* @var \Drupal\permissions_by_term\Service\AccessCheck $accessCheck */
+  $accessCheck = \Drupal::service('permissions_by_term.access_check');
+
+  $accessCheck->dispatchDeniedEventOnRestricedAccess($node->id(), $node->language()->getId());
+}
+
+/**
  * Implements hook_node_access_records().
  *
  * Permissions can be rebuild at /admin/reports/status/rebuild.

@@ -192,13 +192,24 @@ class AccessCheck {
     $result = AccessResult::neutral();
 
     if (!$this->canUserAccessByNodeId($nodeId, false, $langcode)) {
-      $accessDeniedEvent = new PermissionsByTermDeniedEvent($nodeId);
-      $this->eventDispatcher->dispatch(PermissionsByTermDeniedEvent::NAME, $accessDeniedEvent);
+      $this->dispatchDeniedEvent($nodeId);
 
       $result = AccessResult::forbidden();
     }
 
     return $result;
+  }
+
+  public function dispatchDeniedEventOnRestricedAccess($nodeId, string $langcode): void {
+    if (!$this->canUserAccessByNodeId($nodeId, false, $langcode)) {
+      $this->dispatchDeniedEvent($nodeId);
+    }
+  }
+
+  private function dispatchDeniedEvent($nodeId): void
+  {
+    $accessDeniedEvent = new PermissionsByTermDeniedEvent($nodeId);
+    $this->eventDispatcher->dispatch(PermissionsByTermDeniedEvent::NAME, $accessDeniedEvent);
   }
 
 }
