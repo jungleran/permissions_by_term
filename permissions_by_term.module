@@ -174,7 +174,7 @@ EOT;
       '#description'             => t($description),
       '#value'                   => $sUserFormValue,
       '#size'                    => 60,
-      '#maxlenght'               => FALSE,
+      '#maxlength'               => FALSE,
       '#autocomplete_route_name' => 'permissions_by_term.autocomplete_multiple',
       '#weight'                  => -10,
     ];
