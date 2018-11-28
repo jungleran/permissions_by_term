@@ -390,4 +390,19 @@ class PermissionsByTermContext extends RawDrupalContext {
     }
   }
 
+  /**
+   * @Then /^I set default 403 HTTP status code error page page to node by title "([^"]*)"$/
+   */
+  public function setDefault403PageToNodeByTitle(string $title): void {
+    $query = \Drupal::service('database')->select('node_field_data', 'nfd')
+      ->fields('nfd', ['nid'])
+      ->condition('nfd.title', $title);
+
+    $config = \Drupal::service('config.factory')->getEditable('system.site');
+
+    $config
+      ->set('page.403', '/node/' . $query->execute()->fetchField())
+      ->save();
+  }
+
 }

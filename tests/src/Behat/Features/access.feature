@@ -69,7 +69,7 @@ Feature: Access
     Then I open node edit form by node title "Only admin can access"
     And I should see text matching "Access denied"
 
-  Scenario: I do want to be able to re-save an node
+  Scenario: I do want to be able to re-save an node with no term, which had a term relation previously
     Given I am logged in as a user with the "administrator" role
     Then I open node view by node title "Only admin can access"
     And I click "Edit"
@@ -77,3 +77,9 @@ Feature: Access
     And I scroll to element with id "edit-footer"
     Then I click by selector "#edit-submit" via JavaScript
     And I should not see the text "The website encountered an unexpected error. Please try again later."
+
+  Scenario: I want to be redirected to a custom page by the 403 HTTP status code
+    Given I set default 403 HTTP status code error page page to node by title "Everybody can access"
+    Given I am logged in as a user with the "editor" role
+    And I open node view by node title "Only admin can access"
+    And I should see text matching "Everybody can access"
