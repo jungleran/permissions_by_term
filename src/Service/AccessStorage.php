@@ -558,11 +558,25 @@ class AccessStorage {
    *   Array of term ids
    */
   public function getTidsByNid($nid): array {
-    return $this->database->select('taxonomy_index')
+    if ($this->cacheNegotiator->has(NidToTidsModel::class)) {
+      $nidsToTidsPairs = $this->cacheNegotiator->get(NidToTidsModel::class);
+      if (!empty($nidsToTidsPairs[$nid])) {
+        return $nidsToTidsPairs[$nid];
+      }
+    }
+
+    $tidsForNid = $this->database->select('taxonomy_index')
       ->fields('taxonomy_index', ['tid'])
       ->condition('nid', $nid)
       ->execute()
       ->fetchCol();
+
+    if (!empty($tidsForNid)) {
+      $nidsToTidsPairs = [];
+      $nidsToTidsPairs[$nid] = $tidsForNid;
+      $this->cacheNegotiator->set(NidToTidsModel::class, $nidsToTidsPairs);
+      return $tidsForNid;
+    }
   }
 
   /**
