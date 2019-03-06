@@ -577,6 +577,8 @@ class AccessStorage {
       $this->cacheNegotiator->set(NidToTidsModel::class, $nidsToTidsPairs);
       return $tidsForNid;
     }
+
+    return [];
   }
 
   /**
