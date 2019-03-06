@@ -548,62 +548,21 @@ class AccessStorage {
     return $sUserInfos;
   }
 
-  private function getAllNidsToTidsPairsFromDatabase() {
-    $nids = \Drupal::database()->select('taxonomy_index')
-      ->fields('taxonomy_index', ['nid'])
+  /**
+   * Returns an array of term ids attached to the passed node id.
+   *
+   * @param $nid
+   *   Node id.
+   *
+   * @return array
+   *   Array of term ids
+   */
+  public function getTidsByNid($nid): array {
+    return $this->database->select('taxonomy_index')
+      ->fields('taxonomy_index', ['tid'])
+      ->condition('nid', $nid)
       ->execute()
       ->fetchCol();
-    $nids = array_unique($nids);
-
-    if (empty($nids)) {
-      return [];
-    }
-
-    $nodes = Node::loadMultiple($nids);
-
-    $nidsToTidsPairs = [];
-
-    foreach ($nodes as $node) {
-      $nidsToTidsPairs[$node->id()] = [];
-      $tids = [];
-
-      foreach ($node->getFields() as $field) {
-        if ($field->getFieldDefinition()
-            ->getType() == 'entity_reference' && $field->getFieldDefinition()
-            ->getSetting('target_type') == 'taxonomy_term') {
-          $aReferencedTaxonomyTerms = $field->getValue();
-          if (!empty($aReferencedTaxonomyTerms)) {
-            foreach ($aReferencedTaxonomyTerms as $aReferencedTerm) {
-              if (isset($aReferencedTerm['target_id'])) {
-                $tids[] = $aReferencedTerm['target_id'];
-              }
-            }
-          }
-        }
-      }
-
-      $nidsToTidsPairs[$node->id()] = $tids;
-    }
-
-    return $nidsToTidsPairs;
-  }
-
-
-  public function getTidsByNid($nid): array {
-    if ($this->cacheNegotiator->has(NidToTidsModel::class)) {
-      $nidsToTidsPairs = $this->cacheNegotiator->get(NidToTidsModel::class);
-      if (!empty($nidsToTidsPairs[$nid])) {
-        return $nidsToTidsPairs[$nid];
-      }
-    }
-
-    $nidsToTidsPairs = $this->getAllNidsToTidsPairsFromDatabase();
-    if (!empty($nidsToTidsPairs[$nid])) {
-      $this->cacheNegotiator->set(NidToTidsModel::class, $nidsToTidsPairs);
-      return $nidsToTidsPairs[$nid];
-    }
-
-    return [];
   }
 
   /**
