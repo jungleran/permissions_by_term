@@ -572,7 +572,9 @@ class AccessStorage {
       ->fetchCol();
 
     if (!empty($tidsForNid)) {
-      $nidsToTidsPairs = [];
+      if (!\is_array($nidsToTidsPairs)) {
+        $nidsToTidsPairs = [];
+      }
       $nidsToTidsPairs[$nid] = $tidsForNid;
       $this->cacheNegotiator->set(NidToTidsModel::class, $nidsToTidsPairs);
       return $tidsForNid;
