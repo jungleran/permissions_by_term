@@ -559,6 +559,8 @@ class AccessStorage {
    *   Array of term ids
    */
   public function getTidsByNid($nid): array {
+    $nidsToTidsPairs = [];
+
     if ($this->cacheNegotiator->has(NidToTidsModel::class)) {
       $nidsToTidsPairs = $this->cacheNegotiator->get(NidToTidsModel::class);
       if (!empty($nidsToTidsPairs[$nid])) {
@@ -573,9 +575,6 @@ class AccessStorage {
       ->fetchCol();
 
     if (!empty($tidsForNid)) {
-      if (!isset($nidsToTidsPairs) || !\is_array($nidsToTidsPairs)) {
-        $nidsToTidsPairs = [];
-      }
       $nidsToTidsPairs[$nid] = $tidsForNid;
       $this->cacheNegotiator->set(NidToTidsModel::class, $nidsToTidsPairs);
       return $tidsForNid;
