@@ -14,6 +14,7 @@ use Drupal\permissions_by_term\KeyValueCache\CacheNegotiator;
 use Drupal\permissions_by_term\Model\NidToTidsModel;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
+use function GuzzleHttp\Promise\is_settled;
 
 /**
  * Class AccessStorage.
@@ -572,7 +573,7 @@ class AccessStorage {
       ->fetchCol();
 
     if (!empty($tidsForNid)) {
-      if (!\is_array($nidsToTidsPairs)) {
+      if (!isset($nidsToTidsPairs) || !\is_array($nidsToTidsPairs)) {
         $nidsToTidsPairs = [];
       }
       $nidsToTidsPairs[$nid] = $tidsForNid;
