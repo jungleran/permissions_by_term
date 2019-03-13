@@ -28,6 +28,7 @@ Feature: Access
 
   Scenario: Anonymous users cannot see restricted node
     Given I open node view by node title "Authenticated user can access"
+    And I dump the HTML
     Then I should see text matching "Access denied"
 
   Scenario: Anonymous users can see allowed node with term with multiple user role relation in view
