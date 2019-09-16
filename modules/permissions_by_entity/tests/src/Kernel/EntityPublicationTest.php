@@ -18,6 +18,7 @@ class EntityPublicationTest extends KernelTestBase {
     'dynamic_page_cache',
     'taxonomy',
     'user',
+    'permissions_by_term',
     'permissions_by_entity',
   ];
 
@@ -48,14 +49,16 @@ class EntityPublicationTest extends KernelTestBase {
     $this->anonymousUser->addRole($anonymousRole->id());
   }
 
-  public function testPublishedNodesAreAccessible() {
+  public function testAnonymousCanViewPublishedNodesWithoutTermPermissions() {
     $this->assertTrue($this->nodes['node_published']->isPublished());
-    $this->assertEquals(AccessResult::allowed(), $this->nodes['node_published']->access('view', $this->anonymousUser, TRUE));
+    $this->assertEquals(AccessResult::neutral(), permissions_by_entity_entity_access($this->nodes['node_published'], 'view', $this->anonymousUser));
+    $this->assertTrue($this->nodes['node_published']->access('view', $this->anonymousUser));
   }
 
-  public function testUnpublishedNodesAreInaccessible() {
+  public function testAnonymousCannotViewUnpublishedNodesWithoutTermPermissions() {
     $this->assertFalse($this->nodes['node_unpublished']->isPublished());
-    $this->assertEquals(AccessResult::forbidden(), $this->nodes['node_unpublished']->access('view', $this->anonymousUser, TRUE));
+    $this->assertEquals(AccessResult::neutral(), permissions_by_entity_entity_access($this->nodes['node_unpublished'], 'view', $this->anonymousUser));
+    $this->assertFalse($this->nodes['node_unpublished']->access('view', $this->anonymousUser));
   }
 
 }
