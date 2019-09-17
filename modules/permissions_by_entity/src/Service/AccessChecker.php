@@ -165,6 +165,9 @@ class AccessChecker extends AccessCheck implements AccessCheckerInterface {
     return TRUE;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function isAccessControlled(FieldableEntityInterface $entity): bool {
     $this->checkedEntityCache->clear();
 
