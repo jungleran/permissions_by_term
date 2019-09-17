@@ -18,6 +18,7 @@ class EntityPublicationTest extends KernelTestBase {
     'dynamic_page_cache',
     'taxonomy',
     'user',
+    'system',
     'permissions_by_term',
     'permissions_by_entity',
   ];
@@ -29,6 +30,9 @@ class EntityPublicationTest extends KernelTestBase {
    */
   private $nodes;
 
+  /**
+   * @var \Drupal\user\Entity\User
+   */
   private $anonymousUser;
 
   /**
@@ -37,6 +41,8 @@ class EntityPublicationTest extends KernelTestBase {
   public function setUp() {
     parent::setUp();
     $this->installEntitySchema('test_entity');
+    $this->installEntitySchema('user');
+    $this->installSchema('system', ['key_value_expire', 'sequences']);
 
     $this->nodes['node_unpublished'] = TestEntity::create(['langcode' => 'en']);
     $this->nodes['node_unpublished']->setUnpublished()->save();
@@ -45,17 +51,19 @@ class EntityPublicationTest extends KernelTestBase {
 
     $anonymousRole = Role::create(['id' => 'anonymous_users']);
     $anonymousRole->grantPermission('access content');
+    $anonymousRole->save();
     $this->anonymousUser = User::create(['id' => 0, 'name' => 'anonymous', 'email' => 'anonymous@example.com']);
     $this->anonymousUser->addRole($anonymousRole->id());
+    $this->anonymousUser->save();
   }
 
-  public function testAnonymousCanViewPublishedNodesWithoutTermPermissions() {
+  public function testAnonymousCanViewPublishedNodesWithoutTermPermissions(): void {
     $this->assertTrue($this->nodes['node_published']->isPublished());
     $this->assertEquals(AccessResult::neutral(), permissions_by_entity_entity_access($this->nodes['node_published'], 'view', $this->anonymousUser));
-    $this->assertTrue($this->nodes['node_published']->access('view', $this->anonymousUser));
+    $this->assertNotEqual(AccessResult::forbidden(), $this->nodes['node_published']->access('view', $this->anonymousUser, TRUE));
   }
 
-  public function testAnonymousCannotViewUnpublishedNodesWithoutTermPermissions() {
+  public function testAnonymousCannotViewUnpublishedNodesWithoutTermPermissions(): void {
     $this->assertFalse($this->nodes['node_unpublished']->isPublished());
     $this->assertEquals(AccessResult::neutral(), permissions_by_entity_entity_access($this->nodes['node_unpublished'], 'view', $this->anonymousUser));
     $this->assertFalse($this->nodes['node_unpublished']->access('view', $this->anonymousUser));
