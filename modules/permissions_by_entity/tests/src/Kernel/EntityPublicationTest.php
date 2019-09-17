@@ -8,6 +8,11 @@ use Drupal\pbt_entity_test\Entity\TestEntity;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 
+/**
+ * Class EntityPublicationTest.
+ *
+ * @package Drupal\Tests\permissions_by_entity\Kernel
+ */
 class EntityPublicationTest extends KernelTestBase {
 
   /**
@@ -24,13 +29,15 @@ class EntityPublicationTest extends KernelTestBase {
   ];
 
   /**
-   * The nodes.
+   * Nodes we will test against.
    *
    * @var \Drupal\node\Entity\Node[]
    */
   private $nodes;
 
   /**
+   * An anonymous user to run our tests as.
+   *
    * @var \Drupal\user\Entity\User
    */
   private $anonymousUser;
@@ -52,17 +59,28 @@ class EntityPublicationTest extends KernelTestBase {
     $anonymousRole = Role::create(['id' => 'anonymous_users']);
     $anonymousRole->grantPermission('access content');
     $anonymousRole->save();
-    $this->anonymousUser = User::create(['id' => 0, 'name' => 'anonymous', 'email' => 'anonymous@example.com']);
+    $this->anonymousUser = User::create([
+      'id' => 0,
+      'name' => 'anonymous',
+      'email' => 'anonymous@example.com',
+    ]);
     $this->anonymousUser->addRole($anonymousRole->id());
     $this->anonymousUser->save();
   }
 
+  /**
+   * Published nodes without restrictions should be visible to anonymous users.
+   */
   public function testAnonymousCanViewPublishedNodesWithoutTermPermissions(): void {
     $this->assertTrue($this->nodes['node_published']->isPublished());
     $this->assertEquals(AccessResult::neutral(), permissions_by_entity_entity_access($this->nodes['node_published'], 'view', $this->anonymousUser));
     $this->assertNotEqual(AccessResult::forbidden(), $this->nodes['node_published']->access('view', $this->anonymousUser, TRUE));
   }
 
+  /**
+   * Unpublished nodes without restrictions should not be visible to anonymous
+   * users.
+   */
   public function testAnonymousCannotViewUnpublishedNodesWithoutTermPermissions(): void {
     $this->assertFalse($this->nodes['node_unpublished']->isPublished());
     $this->assertEquals(AccessResult::neutral(), permissions_by_entity_entity_access($this->nodes['node_unpublished'], 'view', $this->anonymousUser));
