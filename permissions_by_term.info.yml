@@ -3,7 +3,6 @@ description: 'Restricts access to nodes and taxonomy terms via user to term rela
 dependencies:
   - 'drupal:system'
   - 'drupal:field'
-  - 'drupal:entity_reference'
   - 'drupal:taxonomy'
 type: module
 core: '8.x'
