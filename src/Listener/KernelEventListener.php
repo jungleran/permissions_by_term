@@ -143,7 +143,7 @@ class KernelEventListener implements EventSubscriberInterface
 
   private function handleAccessToTaxonomyTermViewsPages(): ?Response {
     $url_object = \Drupal::service('path.validator')->getUrlIfValid(\Drupal::service('path.current')->getPath());
-    if ($url_object->getRouteName() === 'entity.taxonomy_term.canonical') {
+    if ($url_object instanceof Url && $url_object->getRouteName() === 'entity.taxonomy_term.canonical') {
       $route_parameters = $url_object->getrouteParameters();
       $termLangcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
       if (!$this->accessCheckService->isAccessAllowedByDatabase($route_parameters['taxonomy_term'], \Drupal::currentUser()->id(), $termLangcode)) {
@@ -151,7 +151,7 @@ class KernelEventListener implements EventSubscriberInterface
       }
     }
 
-    return null;
+    return NULL;
   }
 
   private function handleAccessToNodePages(GetResponseEvent $event): ?Response {
