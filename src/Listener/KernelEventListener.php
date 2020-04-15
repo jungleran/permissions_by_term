@@ -3,12 +3,14 @@
 namespace Drupal\permissions_by_term\Listener;
 
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Drupal\Core\PageCache\ResponsePolicy\KillSwitch;
 use Drupal\Core\Url;
 use Drupal\permissions_by_term\Event\PermissionsByTermDeniedEvent;
 use Drupal\permissions_by_term\Service\AccessCheck;
 use Drupal\permissions_by_term\Service\AccessStorage;
 use Drupal\permissions_by_term\Service\TermHandler;
 use Drupal\taxonomy\Entity\Term;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -45,16 +47,21 @@ class KernelEventListener implements EventSubscriberInterface
    * @var AccessStorage
    */
   private $accessStorageService;
+  /**
+   * @var KillSwitch
+   */
+  private $pageCacheKillSwitch;
 
   /**
    * Instantiating of objects on class construction.
    */
-  public function __construct()
+  public function __construct(AccessCheck $accessCheck, AccessStorage $accessStorage, TermHandler $termHandler, ContainerAwareEventDispatcher $eventDispatcher, KillSwitch $pageCacheKillSwitch)
   {
-    $this->accessCheckService = \Drupal::service('permissions_by_term.access_check');
-    $this->accessStorageService = \Drupal::service('permissions_by_term.access_storage');
-    $this->term = \Drupal::service('permissions_by_term.term_handler');
-    $this->eventDispatcher = \Drupal::service('event_dispatcher');
+    $this->accessCheckService = $accessCheck;
+    $this->accessStorageService = $accessStorage;
+    $this->term = $termHandler;
+    $this->eventDispatcher = $eventDispatcher;
+    $this->pageCacheKillSwitch = $pageCacheKillSwitch;
   }
 
   /**
@@ -147,6 +154,7 @@ class KernelEventListener implements EventSubscriberInterface
       $route_parameters = $url_object->getrouteParameters();
       $termLangcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
       if (!$this->accessCheckService->isAccessAllowedByDatabase($route_parameters['taxonomy_term'], \Drupal::currentUser()->id(), $termLangcode)) {
+        $this->pageCacheKillSwitch->trigger();
         return $this->sendUserToAccessDeniedPage();
       }
     }
