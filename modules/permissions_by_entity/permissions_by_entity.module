@@ -14,13 +14,22 @@ use Drupal\Core\Session\AccountInterface;
  * Implements hook_entity_access().
  */
 function permissions_by_entity_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
+  static $entityAccessResults;
+
   /** @var \Drupal\permissions_by_entity\Service\AccessChecker $accessChecker */
   if ($operation === 'view' && $entity instanceof FieldableEntityInterface) {
+
+    if (isset($entityAccessResults[$entity->id()])) {
+      return $entityAccessResults[$entity->id()];
+    }
+
     $accessChecker = \Drupal::service('permissions_by_entity.access_checker');
     // Check if the entity is even using term based access control.
     if ($accessChecker->isAccessControlled($entity)) {
       // Do not just return a neutral result if access allowed by the module.
-      return $accessChecker->isAccessAllowed($entity, $account->id()) ? AccessResult::allowed() : AccessResult::forbidden('Access revoked by permissions_by_entity module.');
+      $entityAccessResults[$entity->id()] = $accessChecker->isAccessAllowed($entity, $account->id()) ? AccessResult::allowed() : AccessResult::forbidden('Access revoked by permissions_by_entity module.');
+
+      return $entityAccessResults[$entity->id()];
     }
   }
 
