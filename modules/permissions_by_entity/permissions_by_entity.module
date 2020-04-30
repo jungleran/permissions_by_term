@@ -14,24 +14,28 @@ use Drupal\Core\Session\AccountInterface;
  * Implements hook_entity_access().
  */
 function permissions_by_entity_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
-  static $entityAccessResults;
+  /**
+   * @var \Drupal\permissions_by_term\ProcessingResultsCache $cache
+   */
+  $cache = \Drupal::service('permissions_by_term.processing_results_cache');
+
+  $accessResult = AccessResult::neutral();
 
   /** @var \Drupal\permissions_by_entity\Service\AccessChecker $accessChecker */
   if ($operation === 'view' && $entity instanceof FieldableEntityInterface) {
-
-    if (isset($entityAccessResults[$entity->id()])) {
-      return $entityAccessResults[$entity->id()];
+    if ($cache->hasCache($account->id(), $entity->id())) {
+      return $cache->getCache($account->id(), $entity->id());
     }
 
     $accessChecker = \Drupal::service('permissions_by_entity.access_checker');
     // Check if the entity is even using term based access control.
     if ($accessChecker->isAccessControlled($entity)) {
       // Do not just return a neutral result if access allowed by the module.
-      $entityAccessResults[$entity->id()] = $accessChecker->isAccessAllowed($entity, $account->id()) ? AccessResult::allowed() : AccessResult::forbidden('Access revoked by permissions_by_entity module.');
-
-      return $entityAccessResults[$entity->id()];
+      $accessResult = $accessChecker->isAccessAllowed($entity, $account->id()) ? AccessResult::allowed() : AccessResult::forbidden('Access revoked by permissions_by_entity module.');
     }
+
+    $cache->setCache($account->id(), $entity->id(), $accessResult);
   }
 
-  return AccessResult::neutral();
+  return $accessResult;
 }

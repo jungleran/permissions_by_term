@@ -45,3 +45,7 @@ services:
       class: Drupal\Core\Logger\LoggerChannel
       factory: logger.factory:get
       arguments: ['permissions_by_term']
+
+    permissions_by_term.processing_results_cache:
+      class: Drupal\permissions_by_term\ProcessingResultsCache
+      arguments: ['@cache.default']
