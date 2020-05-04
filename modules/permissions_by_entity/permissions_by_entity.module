@@ -17,7 +17,7 @@ function permissions_by_entity_entity_access(EntityInterface $entity, $operation
   /**
    * @var \Drupal\permissions_by_term\Cache\AccessResultCache $cache
    */
-  $cache = \Drupal::service('permissions_by_term.processing_results_cache');
+  $cache = \Drupal::service('permissions_by_term.access_result_cache');
 
   $accessResult = AccessResult::neutral();
 
