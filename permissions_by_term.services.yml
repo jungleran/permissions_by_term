@@ -29,7 +29,7 @@ services:
       class: \Drupal\permissions_by_term\Service\NodeEntityBundleInfo
       arguments: ['@permissions_by_term.access_storage', '@permissions_by_term.term_handler', '@twig', '@database']
 
-    logger.channel.client_config_care:
+    logger.channel.permissions_by_term:
       class: Drupal\Core\Logger\LoggerChannel
       factory: logger.factory:get
       arguments: ['permissions_by_term']
@@ -42,8 +42,8 @@ services:
       arguments:
         - permissions_by_term
 
-    permissions_by_term.processing_results_cache:
-      class: Drupal\permissions_by_term\Cache\ProcessingResultsCache
+    permissions_by_term.access_result_cache:
+      class: Drupal\permissions_by_term\Cache\AccessResultCache
       arguments: ['@cache.permissions_by_term']
 
     permissions_by_term.key_value_cache:

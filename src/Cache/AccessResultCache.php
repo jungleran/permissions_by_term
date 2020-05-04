@@ -7,7 +7,7 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheBackendInterface;
 
 
-class ProcessingResultsCache {
+class AccessResultCache {
 
   /**
    * The default cache bin.
