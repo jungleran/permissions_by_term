@@ -48,11 +48,6 @@ class AccessStorage {
   private $keyValueCache;
 
   /**
-   * @var LoggerChannelInterface
-   */
-  private $logger;
-
-  /**
    * @var array
    */
   private $grantsCache;
