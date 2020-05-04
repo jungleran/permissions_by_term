@@ -10,6 +10,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Driver\Exception\Exception;
 use Drupal\node\Entity\Node;
+use Drupal\permissions_by_term\Cache\KeyValueCache;
 use Drupal\permissions_by_term\KeyValueCache\CacheNegotiator;
 use Drupal\permissions_by_term\Model\NidToTidsModel;
 use Drupal\user\Entity\Role;
@@ -31,27 +32,6 @@ class AccessStorage {
   protected $database;
 
   /**
-   * The term name for which the access is set.
-   *
-   * @var string
-   */
-  protected $sTermName;
-
-  /**
-   * The user ids which gain granted access.
-   *
-   * @var array
-   */
-  protected $aUserIdsGrantedAccess;
-
-  /**
-   * The roles with granted access.
-   *
-   * @var array
-   */
-  protected $aSubmittedRolesGrantedAccess;
-
-  /**
    * @var TermHandler
    */
   protected $term;
@@ -59,7 +39,7 @@ class AccessStorage {
   /**
    * @var string
    */
-  const NODE_ACCESS_REALM = 'permissions_by_term';
+  public const NODE_ACCESS_REALM = 'permissions_by_term';
 
   /**
    * @var AccessCheck
@@ -67,11 +47,13 @@ class AccessStorage {
   protected $accessCheck;
 
   /**
-   * @var \Drupal\permissions_by_term\KeyValueCache\CacheNegotiator
+   * @var KeyValueCache
    */
-  private $cacheNegotiator;
+  private $keyValueCache;
 
-
+  /**
+   * @var LoggerChannelInterface
+   */
   private $logger;
 
   /**
@@ -79,12 +61,11 @@ class AccessStorage {
    */
   private $grantsCache;
 
-  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, CacheNegotiator $cacheNegotiator, LoggerChannelInterface $logger) {
+  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, KeyValueCache $keyValueCache) {
     $this->database  = $database;
     $this->term = $term;
     $this->accessCheck = $accessCheck;
-    $this->cacheNegotiator = $cacheNegotiator;
-    $this->logger = $logger;
+    $this->keyValueCache = $keyValueCache;
     $this->grantsCache = [];
   }
 
@@ -567,8 +548,8 @@ class AccessStorage {
   public function getTidsByNid($nid): array {
     $nidsToTidsPairs = [];
 
-    if ($this->cacheNegotiator->has(NidToTidsModel::class)) {
-      $nidsToTidsPairs = $this->cacheNegotiator->get(NidToTidsModel::class);
+    if ($this->keyValueCache->has()) {
+      $nidsToTidsPairs = $this->keyValueCache->get();
       if (!empty($nidsToTidsPairs[$nid])) {
         return $nidsToTidsPairs[$nid];
       }
@@ -582,7 +563,7 @@ class AccessStorage {
 
     if (!empty($tidsForNid)) {
       $nidsToTidsPairs[$nid] = $tidsForNid;
-      $this->cacheNegotiator->set(NidToTidsModel::class, $nidsToTidsPairs);
+      $this->keyValueCache->set($nidsToTidsPairs);
       return $tidsForNid;
     }
 

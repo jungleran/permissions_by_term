@@ -1,9 +1,8 @@
 <?php
 
-namespace Drupal\permissions_by_term;
+namespace Drupal\permissions_by_term\Cache;
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Access\AccessResultReasonInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheBackendInterface;
 
@@ -21,14 +20,14 @@ class ProcessingResultsCache {
     $this->cache = $cache;
   }
 
-  public function setCache(int $accountId, int $entityId, AccessResult $accessResult): void {
+  public function setAccessResultsCache(int $accountId, int $entityId, AccessResult $accessResult): void {
     $data = \serialize($accessResult);
-    $cid = 'processing_results_cache:' . $entityId . ':' . $accountId;
+    $cid = 'permissions_by_term:access_result_cache:' . $entityId . ':' . $accountId;
 
     $tags = [
-      'processing_results_cache:' . $entityId . ':' . $accountId,
-      'processing_results_cache:' . $entityId,
-      'processing_results_cache',
+      'permissions_by_term:access_result_cache:' . $entityId . ':' . $accountId,
+      'permissions_by_term:access_result_cache:' . $entityId,
+      'permissions_by_term:access_result_cache',
     ];
 
     $tags = Cache::mergeTags($tags, [$cid]);
@@ -39,8 +38,8 @@ class ProcessingResultsCache {
     $staticCache = $data;
   }
 
-  public function getCache(int $accountId, int $entityId): AccessResult {
-    $cid = 'processing_results_cache:' . $entityId . ':' . $accountId;
+  public function getAccessResultsCache(int $accountId, int $entityId): AccessResult {
+    $cid = 'permissions_by_term:access_result_cache:' . $entityId . ':' . $accountId;
 
     $staticCache = &drupal_static(__FUNCTION__ . $cid, NULL);
 
@@ -59,8 +58,8 @@ class ProcessingResultsCache {
     return $data;
   }
 
-  public function hasCache(int $accountId, int $entityId): bool {
-    $cid = 'processing_results_cache:' . $entityId . ':' . $accountId;
+  public function hasAccessResultsCache(int $accountId, int $entityId): bool {
+    $cid = 'permissions_by_term:access_result_cache:' . $entityId . ':' . $accountId;
 
     $staticCache = &drupal_static(__FUNCTION__ . $cid, NULL);
 
