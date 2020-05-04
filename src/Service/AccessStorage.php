@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\permissions_by_term\Cache\GrantsCache;
 use Drupal\permissions_by_term\Cache\KeyValueCache;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
@@ -56,12 +57,12 @@ class AccessStorage {
    */
   private $grantsCache;
 
-  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, KeyValueCache $keyValueCache) {
+  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, KeyValueCache $keyValueCache, GrantsCache $grantsCache) {
     $this->database  = $database;
     $this->term = $term;
     $this->accessCheck = $accessCheck;
     $this->keyValueCache = $keyValueCache;
-    $this->grantsCache = [];
+    $this->grantsCache = $grantsCache;
   }
 
   /**
@@ -70,7 +71,7 @@ class AccessStorage {
    * @return array
    *   An array with chosen roles.
    */
-  public function getSubmittedRolesGrantedAccess(FormStateInterface $form_state) {
+  public function getSubmittedRolesGrantedAccess(FormStateInterface $form_state): array {
     $aRoles       = $form_state->getValue('access')['role'];
     $aChosenRoles = [];
     foreach ($aRoles as $sRole) {
@@ -608,15 +609,15 @@ class AccessStorage {
 
   /**
    * @param AccountInterface $user
-   *
-   * @return array
+   * @return \Drupal\Core\Access\AccessResult|null
+   * @throws \Exception
    */
   public function getGids(AccountInterface $user)
   {
     $grants = null;
 
-    if (isset($this->grantsCache[$user->id()])) {
-      return $this->grantsCache[$user->id()];
+    if ($this->grantsCache->has($user->id())) {
+      return $this->grantsCache->get($user->id());
     }
 
     if (!empty($permittedNids = $this->computePermittedTids($user))) {
@@ -632,7 +633,7 @@ class AccessStorage {
       }
     }
 
-    $this->grantsCache[$user->id()] = $grants;
+    $this->grantsCache->set($user->id(), $grants);
 
     return $grants;
   }
