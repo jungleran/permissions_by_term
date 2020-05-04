@@ -50,10 +50,6 @@ services:
       class: Drupal\permissions_by_term\Cache\KeyValueCache
       arguments: ['@cache.permissions_by_term']
 
-    permissions_by_term.grants_cache:
-      class: Drupal\permissions_by_term\Cache\GrantsCache
-      arguments: ['@cache.permissions_by_term']
-
     permissions_by_term.cache_invalidator:
       class: Drupal\permissions_by_term\Cache\CacheInvalidator
       autowire: true

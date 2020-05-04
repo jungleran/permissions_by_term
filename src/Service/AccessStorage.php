@@ -8,7 +8,6 @@ use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\permissions_by_term\Cache\GrantsCache;
 use Drupal\permissions_by_term\Cache\KeyValueCache;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
@@ -48,16 +47,21 @@ class AccessStorage {
   private $keyValueCache;
 
   /**
+   * @var LoggerChannelInterface
+   */
+  private $logger;
+
+  /**
    * @var array
    */
   private $grantsCache;
 
-  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, KeyValueCache $keyValueCache, GrantsCache $grantsCache) {
+  public function __construct(Connection $database, TermHandler $term, AccessCheck $accessCheck, KeyValueCache $keyValueCache) {
     $this->database  = $database;
     $this->term = $term;
     $this->accessCheck = $accessCheck;
     $this->keyValueCache = $keyValueCache;
-    $this->grantsCache = $grantsCache;
+    $this->grantsCache = [];
   }
 
   /**
@@ -66,7 +70,7 @@ class AccessStorage {
    * @return array
    *   An array with chosen roles.
    */
-  public function getSubmittedRolesGrantedAccess(FormStateInterface $form_state): array {
+  public function getSubmittedRolesGrantedAccess(FormStateInterface $form_state) {
     $aRoles       = $form_state->getValue('access')['role'];
     $aChosenRoles = [];
     foreach ($aRoles as $sRole) {
@@ -90,7 +94,7 @@ class AccessStorage {
       if (empty($aUserId)) {
         $form_state->setErrorByName('access][user',
           t('The user with ID %user_id does not exist.',
-          ['%user_id' => $sUserId]));
+            ['%user_id' => $sUserId]));
       }
     }
   }
@@ -286,7 +290,7 @@ class AccessStorage {
   }
 
   public function addTermPermissionsByUserIds(array $aUserIdsGrantedAccess, int $term_id, string $langcode = ''): void {
-		$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
+    $langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
 
     foreach ($aUserIdsGrantedAccess as $iUserIdGrantedAccess) {
       $queryResult = $this->database->query("SELECT uid FROM {permissions_by_term_user} WHERE tid = :tid AND uid = :uid AND langcode = :langcode",
@@ -311,7 +315,7 @@ class AccessStorage {
    * @throws \Exception
    */
   public function addTermPermissionsByRoleIds($aRoleIdsGrantedAccess, $term_id, $langcode = '') {
-  	$langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
+    $langcode = ($langcode === '') ? \Drupal::languageManager()->getCurrentLanguage()->getId() : $langcode;
 
     $roles = Role::loadMultiple();
     foreach ($roles as $role => $roleObj) {
@@ -365,13 +369,13 @@ class AccessStorage {
     return $aUserIds;
   }
 
-	/**
-	 * @param FormState $formState
+  /**
+   * @param FormState $formState
    * @param int $term_id
-	 *
-	 * @return array
-	 * @throws \Exception
-	 */
+   *
+   * @return array
+   * @throws \Exception
+   */
   public function saveTermPermissions(FormStateInterface $formState, $term_id) {
     $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
     if (!empty($formState->getValue('langcode'))) {
@@ -584,7 +588,7 @@ class AccessStorage {
       ->condition('n.nid', $nid);
 
     return $query->execute()
-      ->fetchAssoc()['type'];
+             ->fetchAssoc()['type'];
   }
 
   /**
@@ -599,20 +603,20 @@ class AccessStorage {
       ->condition('n.nid', $nid);
 
     return $query->execute()
-      ->fetchAssoc()['langcode'];
+             ->fetchAssoc()['langcode'];
   }
 
   /**
    * @param AccountInterface $user
-   * @return \Drupal\Core\Access\AccessResult|null
-   * @throws \Exception
+   *
+   * @return array
    */
   public function getGids(AccountInterface $user)
   {
     $grants = null;
 
-    if ($this->grantsCache->has($user->id())) {
-      return $this->grantsCache->get($user->id());
+    if (isset($this->grantsCache[$user->id()])) {
+      return $this->grantsCache[$user->id()];
     }
 
     if (!empty($permittedNids = $this->computePermittedTids($user))) {
@@ -628,9 +632,7 @@ class AccessStorage {
       }
     }
 
-    if (\is_array($grants) && \count($grants) > 0) {
-      $this->grantsCache->set($user->id(), $grants);
-    }
+    $this->grantsCache[$user->id()] = $grants;
 
     return $grants;
   }
@@ -727,11 +729,11 @@ class AccessStorage {
    */
   public function getNidsByTid($tid)
   {
-      $query = $this->database->select('taxonomy_index', 'ti')
-        ->fields('ti', ['nid'])
-        ->condition('ti.tid', $tid);
+    $query = $this->database->select('taxonomy_index', 'ti')
+      ->fields('ti', ['nid'])
+      ->condition('ti.tid', $tid);
 
-      return $query->execute()->fetchCol();
+    return $query->execute()->fetchCol();
   }
 
 }

@@ -19,8 +19,7 @@ class CacheInvalidator {
     $this->cache::invalidateTags([
       'search_index:node_search',
       'permissions_by_term:access_result_cache',
-      'permissions_by_term:key_value_cache',
-      'permissions_by_term:grants_cache'
+      'permissions_by_term:key_value_cache'
     ]);
   }
 
