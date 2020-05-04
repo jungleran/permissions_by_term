@@ -628,7 +628,9 @@ class AccessStorage {
       }
     }
 
-    $this->grantsCache->set($user->id(), $grants);
+    if (\is_array($grants) && \count($grants) > 0) {
+      $this->grantsCache->set($user->id(), $grants);
+    }
 
     return $grants;
   }
