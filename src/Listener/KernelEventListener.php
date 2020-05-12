@@ -78,20 +78,22 @@ class KernelEventListener implements EventSubscriberInterface
   /**
    * Access restriction on kernel request.
    */
-  public function onKernelRequest(GetResponseEvent $event): GetResponseEvent {
-    if (($result = $this->handleAccessToNodePages($event)) instanceof Response) {
-      $event->setResponse($result);
-    }
+  public function onKernelRequest(GetResponseEvent $event) {
+    if ($event->isMasterRequest()) {
 
-    if (($result = $this->handleAccessToTermAutocompleteLists($event)) instanceof Response) {
-      $event->setResponse($result);
-    }
+      if (($result = $this->handleAccessToNodePages($event)) instanceof Response) {
+        $event->setResponse($result);
+      }
 
-    if (($result = $this->handleAccessToTaxonomyTermViewsPages()) instanceof Response) {
-      $event->setResponse($result);
-    }
+      if (($result = $this->handleAccessToTermAutocompleteLists($event)) instanceof Response) {
+        $event->setResponse($result);
+      }
 
-    return $event;
+      if (($result = $this->handleAccessToTaxonomyTermViewsPages()) instanceof Response) {
+        $event->setResponse($result);
+      }
+
+    }
   }
 
   /**
