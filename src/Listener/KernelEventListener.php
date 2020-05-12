@@ -78,7 +78,7 @@ class KernelEventListener implements EventSubscriberInterface
   /**
    * Access restriction on kernel request.
    */
-  public function onKernelRequest(GetResponseEvent $event): Response {
+  public function onKernelRequest(GetResponseEvent $event): GetResponseEvent {
     if (($result = $this->handleAccessToNodePages($event)) instanceof Response) {
       $event->setResponse($result);
     }
