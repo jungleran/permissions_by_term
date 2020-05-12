@@ -3,6 +3,7 @@
 namespace Drupal\permissions_by_term\Listener;
 
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\PageCache\ResponsePolicy\KillSwitch;
 use Drupal\Core\Url;
 use Drupal\permissions_by_term\Event\PermissionsByTermDeniedEvent;
@@ -52,15 +53,25 @@ class KernelEventListener implements EventSubscriberInterface
   private $pageCacheKillSwitch;
 
   /**
-   * Instantiating of objects on class construction.
+   * @var bool
    */
-  public function __construct(AccessCheck $accessCheck, AccessStorage $accessStorage, TermHandler $termHandler, ContainerAwareEventDispatcher $eventDispatcher, KillSwitch $pageCacheKillSwitch)
+  private $disabledNodeAccessRecords;
+
+  public function __construct(
+    AccessCheck $accessCheck,
+    AccessStorage $accessStorage,
+    TermHandler $termHandler,
+    ContainerAwareEventDispatcher $eventDispatcher,
+    KillSwitch $pageCacheKillSwitch,
+    ConfigFactoryInterface $configFactory
+  )
   {
     $this->accessCheckService = $accessCheck;
     $this->accessStorageService = $accessStorage;
     $this->term = $termHandler;
     $this->eventDispatcher = $eventDispatcher;
     $this->pageCacheKillSwitch = $pageCacheKillSwitch;
+    $this->disabledNodeAccessRecords = $configFactory->get('permissions_by_term.settings')->get('disable_node_access_records');
   }
 
   /**
@@ -168,6 +179,10 @@ class KernelEventListener implements EventSubscriberInterface
       if (!$this->accessCheckService->canUserAccessByNodeId($nid, false, $this->accessStorageService->getLangCode($nid))) {
         $accessDeniedEvent = new PermissionsByTermDeniedEvent($nid);
         $this->eventDispatcher->dispatch(PermissionsByTermDeniedEvent::NAME, $accessDeniedEvent);
+
+        if ($this->disabledNodeAccessRecords) {
+          $this->pageCacheKillSwitch->trigger();
+        }
 
         return $this->sendUserToAccessDeniedPage();
       }
