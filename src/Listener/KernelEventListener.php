@@ -107,8 +107,8 @@ class KernelEventListener implements EventSubscriberInterface
    * Restricts access to terms on AJAX auto completion.
    */
   private function restrictTermAccessAtAutoCompletion(FilterResponseEvent $event) {
-    if ($event->getRequest()->attributes->get('target_type') == 'taxonomy_term' &&
-      $event->getRequest()->attributes->get('_route') == 'system.entity_autocomplete'
+    if ($event->getRequest()->attributes->get('target_type') === 'taxonomy_term' &&
+      $event->getRequest()->attributes->get('_route') === 'system.entity_autocomplete'
     ) {
       $json_suggested_terms = $event->getResponse()->getContent();
       $suggested_terms = json_decode($json_suggested_terms);
@@ -136,15 +136,14 @@ class KernelEventListener implements EventSubscriberInterface
   /**
    * The subscribed events.
    */
-  public static function getSubscribedEvents()
-  {
+  public static function getSubscribedEvents(): array {
     return [
       KernelEvents::REQUEST => 'onKernelRequest',
       KernelEvents::RESPONSE => 'onKernelResponse',
     ];
   }
 
-  private function canRequestGetNode(Request $request) {
+  private function canRequestGetNode(Request $request): bool {
     if (method_exists($request->attributes, 'get') && !empty($request->attributes->get('node'))) {
       if (method_exists($request->attributes->get('node'), 'get')) {
         return TRUE;
@@ -181,8 +180,6 @@ class KernelEventListener implements EventSubscriberInterface
         throw new AccessDeniedHttpException();
       }
     }
-
-    return null;
   }
 
   private function handleAccessToTermAutocompleteLists(GetResponseEvent $event) {
@@ -205,7 +202,6 @@ class KernelEventListener implements EventSubscriberInterface
       }
     }
 
-    return null;
   }
 
 }
