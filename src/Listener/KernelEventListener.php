@@ -13,7 +13,6 @@ use Drupal\permissions_by_term\Service\TermHandler;
 use Drupal\taxonomy\Entity\Term;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -184,8 +183,8 @@ class KernelEventListener implements EventSubscriberInterface
 
   private function handleAccessToTermAutocompleteLists(GetResponseEvent $event) {
     // Restrict access to taxonomy terms by autocomplete list.
-    if ($event->getRequest()->attributes->get('target_type') == 'taxonomy_term' &&
-      $event->getRequest()->attributes->get('_route') == 'system.entity_autocomplete') {
+    if ($event->getRequest()->attributes->get('target_type') === 'taxonomy_term' &&
+      $event->getRequest()->attributes->get('_route') === 'system.entity_autocomplete') {
       $query_string = $event->getRequest()->get('q');
       $query_string = trim($query_string);
 
