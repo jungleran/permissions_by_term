@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -77,20 +78,20 @@ class KernelEventListener implements EventSubscriberInterface
   /**
    * Access restriction on kernel request.
    */
-  public function onKernelRequest(GetResponseEvent $event): ?Response {
+  public function onKernelRequest(GetResponseEvent $event): Response {
     if (($result = $this->handleAccessToNodePages($event)) instanceof Response) {
-      return $result;
+      $event->setResponse($result);
     }
 
     if (($result = $this->handleAccessToTermAutocompleteLists($event)) instanceof Response) {
-      return $result;
+      $event->setResponse($result);
     }
 
     if (($result = $this->handleAccessToTaxonomyTermViewsPages()) instanceof Response) {
-      return $result;
+      $event->setResponse($result);
     }
 
-    return null;
+    return $event;
   }
 
   /**
@@ -151,28 +152,19 @@ class KernelEventListener implements EventSubscriberInterface
     return FALSE;
   }
 
-  private function sendUserToAccessDeniedPage(): Response {
-    $redirect_url = new Url('system.403');
-    $response = new RedirectResponse($redirect_url->toString());
-    $response->send();
-    return $response;
-  }
-
-  private function handleAccessToTaxonomyTermViewsPages(): ?Response {
+  private function handleAccessToTaxonomyTermViewsPages() {
     $url_object = \Drupal::service('path.validator')->getUrlIfValid(\Drupal::service('path.current')->getPath());
     if ($url_object instanceof Url && $url_object->getRouteName() === 'entity.taxonomy_term.canonical') {
       $route_parameters = $url_object->getrouteParameters();
       $termLangcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
       if (!$this->accessCheckService->isAccessAllowedByDatabase($route_parameters['taxonomy_term'], \Drupal::currentUser()->id(), $termLangcode)) {
         $this->pageCacheKillSwitch->trigger();
-        return $this->sendUserToAccessDeniedPage();
+        throw new AccessDeniedHttpException();
       }
     }
-
-    return NULL;
   }
 
-  private function handleAccessToNodePages(GetResponseEvent $event): ?Response {
+  private function handleAccessToNodePages(GetResponseEvent $event) {
     // Restricts access to nodes (views/edit).
     if ($this->canRequestGetNode($event->getRequest())) {
       $nid = $event->getRequest()->attributes->get('node')->get('nid')->getValue()['0']['value'];
@@ -184,14 +176,14 @@ class KernelEventListener implements EventSubscriberInterface
           $this->pageCacheKillSwitch->trigger();
         }
 
-        return $this->sendUserToAccessDeniedPage();
+        throw new AccessDeniedHttpException();
       }
     }
 
     return null;
   }
 
-  private function handleAccessToTermAutocompleteLists(GetResponseEvent $event): ?Response {
+  private function handleAccessToTermAutocompleteLists(GetResponseEvent $event) {
     // Restrict access to taxonomy terms by autocomplete list.
     if ($event->getRequest()->attributes->get('target_type') == 'taxonomy_term' &&
       $event->getRequest()->attributes->get('_route') == 'system.entity_autocomplete') {
@@ -207,7 +199,7 @@ class KernelEventListener implements EventSubscriberInterface
       }
 
       if (!$this->accessCheckService->isAccessAllowedByDatabase($tid, \Drupal::currentUser()->id(), $termLangcode)) {
-        return $this->sendUserToAccessDeniedPage();
+        throw new AccessDeniedHttpException();
       }
     }
 
