@@ -8,6 +8,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Symfony\Component\Yaml\Yaml;
 use Drupal\config_replace\Exception\NonexistentInitialConfigException;
+use Drupal\Core\File\FileSystemInterface;
 
 /**
  * Provides methods to rewrite configuration.
@@ -42,8 +43,12 @@ class ConfigReplacer implements ConfigReplacerInterface {
    */
   protected $logger;
 
+  /** @var \Drupal\Core\File\FileSystemInterface */
+  protected $fileSystem;
+
   /**
    * Constructs a new ConfigReplacer.
+   * @param \Drupal\Core\File\FileSystemInterface $fileSystem
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
@@ -54,11 +59,12 @@ class ConfigReplacer implements ConfigReplacerInterface {
    * @param \Drupal\language\Config\LanguageConfigFactoryOverrideInterface|NULL $language_config_factory_override
    *   (Optional) The language config factory override service.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler, LoggerChannelInterface $logger, $language_config_factory_override) {
+  public function __construct(FileSystemInterface $fileSystem, ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler, LoggerChannelInterface $logger, $language_config_factory_override) {
     $this->configFactory = $config_factory;
     $this->moduleHandler = $module_handler;
     $this->logger = $logger;
     $this->languageConfigFactoryOverride = $language_config_factory_override;
+    $this->fileSystem = $fileSystem;
   }
 
   /**
@@ -183,7 +189,7 @@ class ConfigReplacer implements ConfigReplacerInterface {
    *   'filename', and 'name' properties corresponding to the matched files.
    */
   protected function fileScanDirectory($dir, $mask, $options = array()) {
-    return file_scan_directory($dir, $mask, $options);
+    return $this->fileSystem->scanDirectory($dir, $mask, $options);
   }
 
 }
