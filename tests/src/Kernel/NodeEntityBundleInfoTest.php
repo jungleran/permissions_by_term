@@ -94,7 +94,7 @@ class NodeEntityBundleInfoTest extends PBTKernelTestBase {
       'userDisplayNames' => [1 => ['testUser1', 'testUser2', 'testUser3']]
     ];
 
-    $this->assertArraySubset($expectedPermissions, $permissions);
+    $this->assertEquals($expectedPermissions, $permissions);
   }
 
 }

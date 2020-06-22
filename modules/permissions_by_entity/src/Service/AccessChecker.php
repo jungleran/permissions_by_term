@@ -3,7 +3,7 @@
 namespace Drupal\permissions_by_entity\Service;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\permissions_by_entity\Event\EntityFieldValueAccessDeniedEvent;
 use Drupal\permissions_by_entity\Event\PermissionsByEntityEvents;
@@ -47,7 +47,7 @@ class AccessChecker extends AccessCheck implements AccessCheckerInterface {
    *   The event dispatcher.
    * @param \Drupal\permissions_by_entity\Service\CheckedEntityCache $checked_entity_cache
    *   The cache for checked entities.
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The core entity type manager.
    * @param \Drupal\Core\Database\Connection $database
    *   The database connection.
@@ -55,7 +55,7 @@ class AccessChecker extends AccessCheck implements AccessCheckerInterface {
   public function __construct(
     EventDispatcherInterface $event_dispatcher,
     CheckedEntityCache $checked_entity_cache,
-    EntityManagerInterface $entity_manager,
+    EntityTypeManagerInterface $entity_type_manager,
     Connection $database
   ) {
     parent::__construct($database, $event_dispatcher);

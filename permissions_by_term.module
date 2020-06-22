@@ -142,7 +142,7 @@ function permissions_by_term_form_taxonomy_term_form_alter(&$form, FormStateInte
 
     $aAllowedUsers = $access_storage->getAllowedUserIds($termId, $langcode);
     if (!empty($aAllowedUsers)) {
-      $aAllowedUsers = user_load_multiple($aAllowedUsers);
+      $aAllowedUsers = \Drupal\user\Entity\User::loadMultiple($aAllowedUsers);
       $sUserFormValue = $access_storage->getUserFormValue($aAllowedUsers);
     }
     else {
@@ -262,7 +262,7 @@ function isNodeEditForm() {
 /**
  * Implements hook_node_grants().
  */
-function permissions_by_term_node_grants(\Drupal\Core\Session\AccountInterface $account, $op) {
+function permissions_by_term_node_grants(AccountInterface $account, $op) {
   $grants = [];
 
   if ($op == 'view' && !\Drupal::configFactory()->getEditable('permissions_by_term.settings')->get('disable_node_access_records')) {
@@ -298,7 +298,7 @@ function permissions_by_term_node_access(NodeInterface $node, $op, AccountInterf
  *
  * Permissions can be rebuild at /admin/reports/status/rebuild.
  */
-function permissions_by_term_node_access_records(\Drupal\node\NodeInterface $node) {
+function permissions_by_term_node_access_records(NodeInterface $node) {
   // Do not return any grants for nodes that this module doesn't manage.
   if (!$node->isPublished() || \Drupal::configFactory()->getEditable('permissions_by_term.settings')->get('disable_node_access_records')) {
     return;

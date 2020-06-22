@@ -104,7 +104,7 @@ class EntityAccessCheckTest extends KernelTestBase {
   public function testAnonymousAccessDeniedUsingKernel() {
     $dispatcher = $this->getPopulatedDispatcher();
 
-    $this->setExpectedException(AccessDeniedHttpException::class);
+    $this->expectException(AccessDeniedHttpException::class);
     $dispatcher->dispatch(KernelEvents::REQUEST, $this->getRequestResponseEvent());
   }
 
@@ -134,7 +134,7 @@ class EntityAccessCheckTest extends KernelTestBase {
 
     // Execute second request for disallowed user.
     $this->container->get('current_user')->setAccount($this->terms['term_user_b']['user']);
-    $this->setExpectedException(AccessDeniedHttpException::class);
+    $this->expectException(AccessDeniedHttpException::class);
     $dispatcher->dispatch(KernelEvents::REQUEST, $this->getRequestResponseEvent());
   }
 
@@ -225,7 +225,7 @@ class EntityAccessCheckTest extends KernelTestBase {
     $request = new Request();
     $request->attributes->set('_entity', $this->nodes['test_entity_term_a']);
 
-    $kernel = $this->getMock(HttpKernelInterface::class);
+    $kernel = $this->createMock(HttpKernelInterface::class);
     return new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
   }
 
@@ -236,7 +236,7 @@ class EntityAccessCheckTest extends KernelTestBase {
    */
   private function getCachableResponseEvent() {
     $response = new CacheableResponse();
-    $kernel = $this->getMock(HttpKernelInterface::class);
+    $kernel = $this->createMock(HttpKernelInterface::class);
     $request = new Request();
     $request->attributes->set('_entity', $this->nodes['test_entity_term_a']);
 

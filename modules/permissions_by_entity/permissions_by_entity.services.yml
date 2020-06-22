@@ -7,7 +7,7 @@ services:
     arguments:
       - '@event_dispatcher'
       - '@permissions_by_entity.checked_entity_cache'
-      - '@entity.manager'
+      - '@entity_type.manager'
       - '@database'
 
   permissions_by_entity.kernel_event_subscriber:
