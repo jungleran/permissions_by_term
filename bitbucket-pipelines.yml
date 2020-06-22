@@ -1,4 +1,4 @@
-image: derh4nnes/pipeline-behat:latest
+image: tobiasb/php-cli:7.3-debian
 clone:
   depth: full
 options:
