@@ -127,7 +127,7 @@ class EntityAccessCheckTest extends KernelTestBase {
     // Execute first request for allowed user.
     $this->container->get('current_user')->setAccount($this->terms['term_user_a']['user']);
     $dispatcher->dispatch(KernelEvents::REQUEST, $this->getRequestEvent());
-    $dispatcher->dispatch(KernelEvents::RESPONSE, $this->getCachableResponseEvent());
+    $dispatcher->dispatch(KernelEvents::RESPONSE, $this->getCacheableResponseEvent());
 
     // Reset the cache to emulate a new request.
     $this->container->get('permissions_by_entity.checked_entity_cache')->clear();
@@ -230,11 +230,11 @@ class EntityAccessCheckTest extends KernelTestBase {
   }
 
   /**
-   * Gets a cachable filter response for term a.
+   * Gets a cacheable filter response for term "a".
    *
    * @return \Symfony\Component\HttpKernel\Event\ResponseEvent
    */
-  private function getCachableResponseEvent(): ResponseEvent {
+  private function getCacheableResponseEvent(): ResponseEvent {
     $response = new CacheableResponse();
     $kernel = $this->createMock(HttpKernelInterface::class);
     $request = new Request();
