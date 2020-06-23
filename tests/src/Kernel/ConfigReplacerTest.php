@@ -56,7 +56,7 @@ class ConfigReplacerTest extends KernelTestBase {
    * @covers ::rewriteModuleConfig
    * @covers ::rewriteConfig
    */
-  function testConfigRewrite() {
+  public function testConfigRewrite() {
     $expected_original_data = [
       'label' => 'Test 1',
       'is_admin' => FALSE,
