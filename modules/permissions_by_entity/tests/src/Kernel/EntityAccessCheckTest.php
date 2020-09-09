@@ -225,7 +225,7 @@ class EntityAccessCheckTest extends KernelTestBase {
     $request = new Request();
     $request->attributes->set('_entity', $this->nodes['test_entity_term_a']);
 
-    $kernel = $this->getMock(HttpKernelInterface::class);
+    $kernel = $this->createMock(HttpKernelInterface::class);
     return new GetResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
   }
 
@@ -236,7 +236,7 @@ class EntityAccessCheckTest extends KernelTestBase {
    */
   private function getCachableResponseEvent() {
     $response = new CacheableResponse();
-    $kernel = $this->getMock(HttpKernelInterface::class);
+    $kernel = $this->createMock(HttpKernelInterface::class);
     $request = new Request();
     $request->attributes->set('_entity', $this->nodes['test_entity_term_a']);
 
